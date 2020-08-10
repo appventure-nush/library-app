@@ -9,17 +9,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        node-version: [12.x]
+
     steps:
     - uses: actions/checkout@v2
-    - uses: borales/actions-yarn@v2.0.0
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
       with:
-        cmd: install # will run `yarn install` command
-    - uses: borales/actions-yarn@v2.0.0
-      with:
-        cmd: build # will run `yarn build` command
-    - uses: borales/actions-yarn@v2.0.0
-      with:
-        cmd: test # will run `yarn test` command
+        node-version: ${{ matrix.node-version }}
+    - run: npm install
+    - run: npm run build --if-present
+    - run: npm test
+      env:
+        CI: true
+
     - name: Push image to AppVenture registry
       uses: docker/build-push-action@v1
       with:
