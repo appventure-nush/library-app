@@ -8,14 +8,13 @@ import * as yup from 'yup';
 
 const validationSchema = yup.object().shape({
   email: yup.string().email().required(),
-  password: yup.string(),
 });
 
 const LoginForm = () => {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const emailLogin = async (email: String) => {
+  const emailLogin = (email: String) => {
     dispatch(actions.loginRequest({ email: email }));
     history.push('/');
   };
@@ -23,9 +22,9 @@ const LoginForm = () => {
   return (
     <Formik
       validateOnBlur={false}
-      initialValues={{ email: '', password: '' }}
-      onSubmit={async (values, { setSubmitting }) => {
-        await emailLogin(values.email);
+      initialValues={{ email: '' }}
+      onSubmit={(values, { setSubmitting }) => {
+        emailLogin(values.email);
         setSubmitting(false);
       }}
       validationSchema={validationSchema}

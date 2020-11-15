@@ -13,7 +13,7 @@ import { isLoggedIn } from 'app/containers/LoginPage/selectors';
 
 import { HomePage } from 'app/containers/HomePage/Loadable';
 import { NotFoundPage } from 'app/containers/NotFoundPage/Loadable';
-import { User } from 'types/User';
+import api from 'app/api';
 
 type Props = RouteComponentProps;
 
@@ -28,17 +28,12 @@ const AuthenticatedPages: React.FC<Props> = props => {
       history.push('/login');
       return;
     }
-    // const loggedIn = await api.auth.tokenLogin(refreshToken);
-    const isAuth = true;
-    if (!isAuth) {
+    const loggedIn = await api.auth.tokenLogin(refreshToken);
+    if (!loggedIn) {
       history.push('/login');
       return;
     }
-    // const user = await api.users.getOwnUser();
-    const user: User = {
-      name: 'admin',
-      email: 'admin@nush.app',
-    };
+    const user = await api.users.getOwnUser();
     if (!user) {
       console.log(
         'An unexpected error occured when logging in. Please try refreshing the page.',
