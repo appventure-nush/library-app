@@ -1,4 +1,4 @@
-import { User } from 'types/User';
+import { UserData } from 'types/User';
 
 export enum LoginErrorType {
   RESPONSE_ERROR = 1,
@@ -6,7 +6,7 @@ export enum LoginErrorType {
 }
 
 export interface LoginState {
-  user: User | null;
+  user: UserData | null;
   loading: boolean;
   error?: LoginErrorType | null;
 }

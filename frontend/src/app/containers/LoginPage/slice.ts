@@ -1,7 +1,7 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from 'utils/@reduxjs/toolkit';
 import { ContainerState, LoginErrorType } from './types';
-import { User } from 'types/User';
+import { UserData } from 'types/User';
 
 // The initial state of the LoginPage container
 export const initialState: ContainerState = {
@@ -23,7 +23,7 @@ const loginSlice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
-    loginSuccess(state, action: PayloadAction<User>) {
+    loginSuccess(state, action: PayloadAction<UserData>) {
       state.user = action.payload;
     },
   },
