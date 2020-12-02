@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import Booking from '../models/Booking';
-import { BookingCreationAttributes } from '../types/Booking';
+import { BookingCreateData, BookingCreationAttributes } from '../types/Booking';
 import { DestroyOptions } from 'sequelize';
+import { AccessTokenSignedPayload } from 'types/tokens';
 
 export default class BookingsController {
   public index(req: Request, res: Response) {
@@ -11,9 +12,17 @@ export default class BookingsController {
   }
 
   public create(req: Request, res: Response) {
-    const params: BookingCreationAttributes = req.body;
+    const payload = res.locals.payload as AccessTokenSignedPayload;
+    const { userId } = payload;
+    const params: BookingCreateData = req.body;
 
-    Booking.create<Booking>(params)
+    Booking.create<Booking>({
+      userId: userId,
+      purpose: params.purpose,
+      details: params.details,
+      startTime: params.startTime,
+      endTime: params.endTime,
+    })
       .then((booking: Booking) => res.status(201).json(booking))
       .catch((err: Error) => res.status(500).json(err));
   }
