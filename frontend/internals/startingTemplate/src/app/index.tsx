@@ -19,10 +19,10 @@ export function App() {
   return (
     <BrowserRouter>
       <Helmet
-        titleTemplate="%s - React Boilerplate"
-        defaultTitle="React Boilerplate"
+        titleTemplate="%s - NUSH Library"
+        defaultTitle="NUSH Library"
       >
-        <meta name="description" content="A React Boilerplate application" />
+        <meta name="description" content="NUS High Library Discussion Booking Application" />
       </Helmet>
 
       <Switch>
