@@ -1,3 +1,4 @@
+import { CreateBookingPageState } from 'app/containers/CreateBookingPage/types';
 import { DashboardPageState } from 'app/containers/DashboardPage/types';
 import { LoginState } from 'app/containers/LoginPage/types';
 import { ThemeState } from 'styles/theme/types';
@@ -12,6 +13,7 @@ import { ThemeState } from 'styles/theme/types';
 export interface RootState {
   theme?: ThemeState;
   dashboardPage?: DashboardPageState;
+  createBookingPage?: CreateBookingPageState;
   login: LoginState;
   // [INSERT NEW REDUCER KEY ABOVE] < Needed for generating containers seamlessly
 }

@@ -77,8 +77,11 @@ User.init(
 
 User.hasMany(Booking, {
   sourceKey: 'id',
-  foreignKey: 'bookingId',
-  as: 'bookings',
+  foreignKey: 'userId',
+  as: {
+    singular: 'booking',
+    plural: 'bookings',
+  },
 });
 
 User.sync({ force: true }).then(() => console.log('[Database] User table created'));

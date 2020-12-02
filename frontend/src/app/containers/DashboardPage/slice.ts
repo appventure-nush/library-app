@@ -3,7 +3,9 @@ import { createSlice } from 'utils/@reduxjs/toolkit';
 import { ContainerState } from './types';
 
 // The initial state of the DashboardPage container
-export const initialState: ContainerState = {};
+export const initialState: ContainerState = {
+  bookings: [],
+};
 
 const dashboardPageSlice = createSlice({
   name: 'dashboardPage',

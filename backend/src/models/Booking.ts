@@ -7,7 +7,8 @@ export default class Booking
   implements BookingAttributes {
   public id: number;
   public userId: number;
-  public title: string;
+  public purpose: string;
+  public details: string;
   public startTime: Date;
   public endTime: Date;
 
@@ -26,12 +27,16 @@ Booking.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    title: {
+    purpose: {
       type: new DataTypes.STRING(128),
       allowNull: false,
     },
+    details: {
+      type: new DataTypes.TEXT('medium'),
+      allowNull: false,
+    },
     startTime: {
-      type: DataTypes.SMALLINT,
+      type: DataTypes.DATE,
       allowNull: false,
     },
     endTime: {
