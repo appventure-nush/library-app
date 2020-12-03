@@ -1,4 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit';
+import { BookingListData } from 'types/Booking';
 import { createSlice } from 'utils/@reduxjs/toolkit';
 import { ContainerState } from './types';
 
@@ -11,7 +12,10 @@ const dashboardPageSlice = createSlice({
   name: 'dashboardPage',
   initialState,
   reducers: {
-    someAction(state, action: PayloadAction<any>) {},
+    dashboardRequest() {},
+    saveBookings(state, action: PayloadAction<Array<BookingListData>>) {
+      state.bookings = action.payload;
+    },
   },
 });
 

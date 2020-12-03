@@ -1,4 +1,5 @@
 import express, { Application, Router } from 'express';
+import { initDatabase } from './config/database';
 import * as bodyParser from 'body-parser';
 import routes from './config/routes';
 import cors, { CorsOptions } from 'cors';
@@ -11,6 +12,7 @@ class ApiServer {
   public app: Application;
 
   constructor() {
+    initDatabase();
     this.app = express();
     this.config();
     this.app.use('/', routes);

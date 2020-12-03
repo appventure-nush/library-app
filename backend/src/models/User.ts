@@ -8,10 +8,10 @@ import {
   HasManyCreateAssociationMixin,
   HasManyHasAssociationMixin,
   Association,
+  Sequelize,
 } from 'sequelize';
 import { BearerTokenType } from '../types/tokens';
 import { UserCreationAttributes, UserAttributes, Role } from '../types/User';
-import { database } from '../config/database';
 import Booking from './Booking';
 
 export default class User
@@ -52,36 +52,38 @@ export default class User
   };
 }
 
-User.init(
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
+export const initUser = (database: Sequelize) => {
+  User.init(
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      name: {
+        type: new DataTypes.STRING(128),
+        allowNull: false,
+      },
+      role: {
+        type: DataTypes.SMALLINT,
+        allowNull: false,
+      },
     },
-    name: {
-      type: new DataTypes.STRING(128),
-      allowNull: false,
+    {
+      tableName: 'users',
+      sequelize: database,
+      paranoid: true,
     },
-    role: {
-      type: DataTypes.SMALLINT,
-      allowNull: false,
-    },
-  },
-  {
-    tableName: 'users',
-    sequelize: database,
-    paranoid: true,
-  },
-);
+  );
+};
 
-User.hasMany(Booking, {
-  sourceKey: 'id',
-  foreignKey: 'userId',
-  as: {
-    singular: 'booking',
-    plural: 'bookings',
-  },
-});
-
-User.sync({ force: true }).then(() => console.log('[Database] User table created'));
+export function associateUser() {
+  User.hasMany(Booking, {
+    sourceKey: 'id',
+    foreignKey: 'userId',
+    as: {
+      singular: 'booking',
+      plural: 'bookings',
+    },
+  });
+}
