@@ -1,8 +1,12 @@
-// import { take, call, put, select, takeLatest } from 'redux-saga/effects';
-// import { actions } from './slice';
+import { call, put, takeLatest } from 'redux-saga/effects';
+import { actions } from './slice';
+import api from 'app/api';
 
-// export function* doSomething() {}
+export function* loadDashboard() {
+  const bookings = yield call(api.booking.getOwnBookings);
+  yield put(actions.saveBookings(bookings.data));
+}
 
 export function* dashboardPageSaga() {
-  // yield takeLatest(actions.someAction.type, doSomething);
+  yield takeLatest(actions.dashboardRequest.type, loadDashboard);
 }

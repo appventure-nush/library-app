@@ -1,9 +1,9 @@
 export interface BookingListData {
   id: number;
   userId: number;
-  purpose: String;
-  startTime: Date;
-  endTime: Date;
+  purpose: string;
+  startTime: string;
+  endTime: string;
 }
 
 export interface BookingData extends BookingListData {

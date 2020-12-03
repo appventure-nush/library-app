@@ -1,6 +1,7 @@
 import { takeLatest, put, call } from 'redux-saga/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { actions } from './slice';
+import { toast } from 'react-toastify';
 import api from 'app/api';
 
 export function* authorize(action: PayloadAction<{ email: string }>) {
@@ -17,8 +18,7 @@ export function* authorize(action: PayloadAction<{ email: string }>) {
       yield put(actions.loginSuccess(userData));
     }
   } catch (error) {
-    // toast.error("Incorrect email");
-    console.log(error);
+    toast.error('Incorrect email');
   }
 }
 
