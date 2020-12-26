@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { Switch, Route, BrowserRouter } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import './index.css';
 
 import { LoginPage } from './containers/LoginPage/Loadable';
 import AuthenticatedPages from './containers/AuthenticatedPages';

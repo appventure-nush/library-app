@@ -1,5 +1,9 @@
 import { AxiosResponse } from 'axios';
-import { BookingCreateData, BookingListData } from 'types/Booking';
+import {
+  BookingCreateData,
+  BookingListData,
+  BookingListViewData,
+} from 'types/Booking';
 import client from './client';
 
 const URL = '/bookings';
@@ -14,4 +18,10 @@ export async function getOwnBookings(): Promise<
   AxiosResponse<Array<BookingListData>>
 > {
   return client.get(`${URL}/self`);
+}
+
+export async function getBookings(): Promise<
+  AxiosResponse<BookingListViewData[]>
+> {
+  return client.get(`${URL}`);
 }
