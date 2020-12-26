@@ -7,9 +7,11 @@ import {
   withRouter,
   useHistory,
 } from 'react-router-dom';
-import { getRefreshToken } from 'app/localStorage';
-import { actions } from 'app/containers/LoginPage/slice';
+import { getRefreshToken, setRefreshToken } from 'app/localStorage';
+import { actions, reducer, sliceKey } from 'app/containers/LoginPage/slice';
+import { loginPageSaga } from 'app/containers/LoginPage/saga';
 import { isLoggedIn } from 'app/containers/LoginPage/selectors';
+import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 
 import { CreateBookingPage } from 'app/containers/CreateBookingPage/Loadable';
 import { DashboardPage } from 'app/containers/DashboardPage/Loadable';
@@ -35,6 +37,7 @@ import {
 import MenuIcon from '@material-ui/icons/Menu';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
+import { toast } from 'react-toastify';
 
 type Props = RouteComponentProps;
 
@@ -100,6 +103,9 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const AuthenticatedPages: React.FC<Props> = props => {
+  useInjectReducer({ key: sliceKey, reducer: reducer });
+  useInjectSaga({ key: sliceKey, saga: loginPageSaga });
+
   const history = useHistory();
   const dispatch = useDispatch();
   const loggedIn = useSelector(isLoggedIn);
@@ -114,12 +120,14 @@ const AuthenticatedPages: React.FC<Props> = props => {
     }
     const loggedIn = await api.auth.tokenLogin(refreshToken);
     if (!loggedIn) {
+      setRefreshToken(null);
       history.push('/login');
       return;
     }
     const user = await api.users.getOwnUser();
     if (!user) {
-      console.log(
+      setRefreshToken(null);
+      toast.error(
         'An unexpected error occured when logging in. Please try refreshing the page.',
       );
       return;
@@ -139,6 +147,10 @@ const AuthenticatedPages: React.FC<Props> = props => {
   };
 
   const trigger = useScrollTrigger();
+
+  if (!loggedIn) {
+    return <></>;
+  }
 
   return (
     <div className={classes.root}>
