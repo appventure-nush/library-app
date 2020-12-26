@@ -1,14 +1,41 @@
 import { Request, Response } from 'express';
 import Booking from '../models/Booking';
-import { BookingCreateData, BookingCreationAttributes } from '../types/Booking';
+import {
+  BookingCreateData,
+  BookingCreationAttributes,
+  BookingListViewData,
+} from '../types/Booking';
 import { DestroyOptions, Op } from 'sequelize';
 import { AccessTokenSignedPayload } from 'types/tokens';
 import User from '../models/User';
+import Room from '../models/Room';
 
 export default class BookingsController {
-  public index(req: Request, res: Response) {
-    Booking.findAll<Booking>({})
-      .then((bookings: Array<Booking>) => res.json(bookings))
+  public async index(req: Request, res: Response) {
+    const bookings = await Booking.findAll<Booking>({}).then((bookings: Array<Booking>) =>
+      bookings.map(async booking => {
+        const user = await User.findByPk<User>(booking.userId);
+        const room = await Room.findByPk<Room>(booking.roomId);
+        const bookingListViewData: BookingListViewData = {
+          id: booking.id,
+          user: {
+            id: user.id,
+            name: user.name,
+            role: user.role,
+          },
+          room: {
+            id: room.id,
+            name: room.name,
+          },
+          purpose: booking.purpose,
+          startTime: booking.startTime,
+          endTime: booking.endTime,
+        };
+        return bookingListViewData;
+      }),
+    );
+    Promise.all(bookings)
+      .then(bookings => res.status(201).json(bookings))
       .catch((err: Error) => res.status(500).json(err));
   }
 

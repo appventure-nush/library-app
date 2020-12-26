@@ -2,6 +2,7 @@ import { CreateBookingPageState } from 'app/containers/CreateBookingPage/types';
 import { DashboardPageState } from 'app/containers/DashboardPage/types';
 import { LoginState } from 'app/containers/LoginPage/types';
 import { ThemeState } from 'styles/theme/types';
+import { BookingListPageState } from 'app/containers/BookingListPage/types';
 // [IMPORT NEW CONTAINERSTATE ABOVE] < Needed for generating containers seamlessly
 
 /* 
@@ -15,5 +16,6 @@ export interface RootState {
   dashboardPage?: DashboardPageState;
   createBookingPage?: CreateBookingPageState;
   login: LoginState;
+  bookingListPage?: BookingListPageState;
   // [INSERT NEW REDUCER KEY ABOVE] < Needed for generating containers seamlessly
 }

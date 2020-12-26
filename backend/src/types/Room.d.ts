@@ -5,4 +5,9 @@ export interface RoomAttributes {
   name: string;
 }
 
+export interface RoomListData {
+  id: number;
+  name: string;
+}
+
 export interface RoomCreationAttributes extends Optional<RoomAttributes, 'id'> {}

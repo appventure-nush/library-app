@@ -1,32 +1,27 @@
 'use strict';
 
-// Role {
-//   STUDENT = 1,
-//   TEACHER = 11,
-//   LIBRARIAN = 12,
-//   ADMIN = 100,
-// }
-
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.bulkInsert(
-      'users',
+      'rooms',
       [
         {
-          name: 'Eric',
-          role: 1,
+          name: 'Room A',
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: 'A Nice Teacher',
-          role: 100,
+          name: 'Room B',
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: 'Issac',
-          role: 1,
+          name: 'Room C',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          name: 'Room D',
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -36,6 +31,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete('users', null, {});
+    await queryInterface.bulkDelete('rooms', null, {});
   },
 };

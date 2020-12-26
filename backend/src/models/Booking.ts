@@ -1,6 +1,8 @@
 import { Model, DataTypes } from 'sequelize';
 import database from '../config/database';
 import { BookingAttributes, BookingCreationAttributes } from 'types/Booking';
+import Room from './Room';
+import User from './User';
 
 export default class Booking
   extends Model<BookingAttributes, BookingCreationAttributes>

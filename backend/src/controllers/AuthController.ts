@@ -46,9 +46,7 @@ export default class AuthController {
     const { userId } = payload;
 
     User.findByPk<User>(userId).then((user: User | null) =>
-      user
-        ? res.status(201).json(user.createAuthenticationTokens())
-        : res.status(404).json({ errors: ['User not found'] }),
+      user ? res.status(201).json(user.createAuthenticationTokens()) : res.sendStatus(404),
     );
   }
 }

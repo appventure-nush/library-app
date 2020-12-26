@@ -10,7 +10,7 @@ import {
 import { getRefreshToken, setRefreshToken } from 'app/localStorage';
 import { actions, reducer, sliceKey } from 'app/containers/LoginPage/slice';
 import { loginPageSaga } from 'app/containers/LoginPage/saga';
-import { isLoggedIn } from 'app/containers/LoginPage/selectors';
+import { getCurrentUser } from 'app/containers/LoginPage/selectors';
 import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 
 import { CreateBookingPage } from 'app/containers/CreateBookingPage/Loadable';
@@ -37,7 +37,10 @@ import {
 import MenuIcon from '@material-ui/icons/Menu';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
+import BookIcon from '@material-ui/icons/Book';
 import { toast } from 'react-toastify';
+import { Role } from 'types/User';
+import { BookingListPage } from '../BookingListPage';
 
 type Props = RouteComponentProps;
 
@@ -108,7 +111,7 @@ const AuthenticatedPages: React.FC<Props> = props => {
 
   const history = useHistory();
   const dispatch = useDispatch();
-  const loggedIn = useSelector(isLoggedIn);
+  const currentUser = useSelector(getCurrentUser);
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
 
@@ -136,11 +139,11 @@ const AuthenticatedPages: React.FC<Props> = props => {
   }, [dispatch, history]);
 
   useEffect(() => {
-    if (loggedIn) {
+    if (currentUser) {
       return;
     }
     tokenLogin();
-  }, [loggedIn, tokenLogin]);
+  }, [currentUser, tokenLogin]);
 
   const toggleDrawerOpen = () => {
     setOpen(!open);
@@ -148,7 +151,7 @@ const AuthenticatedPages: React.FC<Props> = props => {
 
   const trigger = useScrollTrigger();
 
-  if (!loggedIn) {
+  if (!!!currentUser) {
     return <></>;
   }
 
@@ -193,6 +196,12 @@ const AuthenticatedPages: React.FC<Props> = props => {
         }}
       >
         <List>
+          <ListItem button onClick={() => history.push('/bookings')}>
+            <ListItemIcon>
+              <BookIcon />
+            </ListItemIcon>
+            <ListItemText primary={'All Bookings'} />
+          </ListItem>
           {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
             <ListItem button key={text}>
               <ListItemIcon>
@@ -231,6 +240,13 @@ const AuthenticatedPages: React.FC<Props> = props => {
             path={process.env.PUBLIC_URL + '/newbooking'}
             component={CreateBookingPage}
           />
+          {currentUser.role >= Role.LIBRARIAN && (
+            <Route
+              exact
+              path={process.env.PUBLIC_URL + '/bookings'}
+              component={BookingListPage}
+            />
+          )}
           <Route path={process.env.PUBLIC_URL + '/'} component={NotFoundPage} />
         </Switch>
       </main>
