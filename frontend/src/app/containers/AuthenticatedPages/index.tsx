@@ -7,17 +7,23 @@ import {
   withRouter,
   useHistory,
 } from 'react-router-dom';
-import { getRefreshToken } from 'app/localStorage';
-import { actions } from 'app/containers/LoginPage/slice';
-import { isLoggedIn } from 'app/containers/LoginPage/selectors';
+import { getRefreshToken, setRefreshToken } from 'app/localStorage';
+import { actions, reducer, sliceKey } from 'app/containers/LoginPage/slice';
+import { loginPageSaga } from 'app/containers/LoginPage/saga';
+import { getCurrentUser } from 'app/containers/LoginPage/selectors';
+import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 
-import { CreateBookingPage } from 'app/containers/CreateBookingPage/Loadable';
-import { DashboardPage } from 'app/containers/DashboardPage/Loadable';
+import StudentRoutes from './StudentRoutes';
+import LibrarianRoutes from './LibrarianRoutes';
+import TeacherRoutes from './TeacherRoutes';
+import AdminRoutes from './AdminRoutes';
 import { NotFoundPage } from 'app/containers/NotFoundPage/Loadable';
 import api from 'app/api';
 import clsx from 'clsx';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import { deepPurple } from '@material-ui/core/colors';
 import {
+  CardHeader,
   Drawer,
   CssBaseline,
   useScrollTrigger,
@@ -31,10 +37,13 @@ import {
   ListItemText,
   Toolbar,
   Typography,
+  Avatar,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
+import DashboardIcon from '@material-ui/icons/Dashboard';
+import BookIcon from '@material-ui/icons/Book';
+import { toast } from 'react-toastify';
+import { Role, roleString } from 'types/User';
 
 type Props = RouteComponentProps;
 
@@ -96,13 +105,20 @@ const useStyles = makeStyles((theme: Theme) =>
       }),
       marginLeft: 0,
     },
+    purple: {
+      color: theme.palette.getContrastText(deepPurple[500]),
+      backgroundColor: deepPurple[500],
+    },
   }),
 );
 
 const AuthenticatedPages: React.FC<Props> = props => {
+  useInjectReducer({ key: sliceKey, reducer: reducer });
+  useInjectSaga({ key: sliceKey, saga: loginPageSaga });
+
   const history = useHistory();
   const dispatch = useDispatch();
-  const loggedIn = useSelector(isLoggedIn);
+  const currentUser = useSelector(getCurrentUser);
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
 
@@ -114,12 +130,14 @@ const AuthenticatedPages: React.FC<Props> = props => {
     }
     const loggedIn = await api.auth.tokenLogin(refreshToken);
     if (!loggedIn) {
+      setRefreshToken(null);
       history.push('/login');
       return;
     }
     const user = await api.users.getOwnUser();
     if (!user) {
-      console.log(
+      setRefreshToken(null);
+      toast.error(
         'An unexpected error occured when logging in. Please try refreshing the page.',
       );
       return;
@@ -128,17 +146,34 @@ const AuthenticatedPages: React.FC<Props> = props => {
   }, [dispatch, history]);
 
   useEffect(() => {
-    if (loggedIn) {
+    if (currentUser) {
       return;
     }
     tokenLogin();
-  }, [loggedIn, tokenLogin]);
+  }, [currentUser, tokenLogin]);
 
   const toggleDrawerOpen = () => {
     setOpen(!open);
   };
 
   const trigger = useScrollTrigger();
+
+  if (!!!currentUser) {
+    return <></>;
+  }
+
+  const RoleRoutes = () => {
+    switch (currentUser.role) {
+      case Role.STUDENT:
+        return StudentRoutes;
+      case Role.TEACHER:
+        return TeacherRoutes;
+      case Role.LIBRARIAN:
+        return LibrarianRoutes;
+      case Role.ADMIN:
+        return AdminRoutes;
+    }
+  };
 
   return (
     <div className={classes.root}>
@@ -180,26 +215,43 @@ const AuthenticatedPages: React.FC<Props> = props => {
           paper: classes.drawerPaper,
         }}
       >
-        <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
+        <CardHeader
+          avatar={
+            <Avatar className={classes.purple}>
+              {currentUser.name.substring(0, 2)}
+            </Avatar>
+          }
+          title={currentUser.name}
+          subheader={roleString[currentUser.role]}
+          style={{ height: 64 }}
+        />
         <Divider />
+        {currentUser.role >= Role.LIBRARIAN && (
+          <>
+            <List>
+              <ListItem button onClick={() => history.push('/bookings')}>
+                <ListItemIcon>
+                  <BookIcon />
+                </ListItemIcon>
+                <ListItemText primary={'Bookings'} />
+              </ListItem>
+            </List>
+            <Divider />
+          </>
+        )}
         <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
+          <ListItem button onClick={() => history.push('/')}>
+            <ListItemIcon>
+              <DashboardIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Dashboard'} />
+          </ListItem>
+          <ListItem button onClick={() => history.push('/mybookings')}>
+            <ListItemIcon>
+              <BookIcon />
+            </ListItemIcon>
+            <ListItemText primary={'My Bookings'} />
+          </ListItem>
         </List>
       </Drawer>
       <main
@@ -209,16 +261,9 @@ const AuthenticatedPages: React.FC<Props> = props => {
       >
         <div className={classes.drawerHeader} />
         <Switch>
-          <Route
-            exact
-            path={process.env.PUBLIC_URL + '/'}
-            component={DashboardPage}
-          />
-          <Route
-            exact
-            path={process.env.PUBLIC_URL + '/newbooking'}
-            component={CreateBookingPage}
-          />
+          {RoleRoutes().map((RoleRoute, index) => (
+            <RoleRoute.type {...RoleRoute.props} key={index} />
+          ))}
           <Route path={process.env.PUBLIC_URL + '/'} component={NotFoundPage} />
         </Switch>
       </main>

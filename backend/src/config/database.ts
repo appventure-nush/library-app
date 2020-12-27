@@ -1,7 +1,5 @@
 import { Sequelize } from 'sequelize';
 import { config } from 'dotenv';
-import Booking, { initBooking } from '../models/Booking';
-import User, { associateUser, initUser } from '../models/User';
 
 switch (process.env.NODE_ENV) {
   case 'development':
@@ -23,12 +21,4 @@ const database = new Sequelize(POSTGRES_DBNAME, POSTGRES_USERNAME, POSTGRES_PASS
   dialect: 'postgres',
 });
 
-export const initDatabase = () => {
-  initUser(database);
-  initBooking(database);
-
-  associateUser();
-
-  User.sync({ force: true }).then(() => console.log('[Database] User table created'));
-  Booking.sync({ force: true }).then(() => console.log('[Database] Booking table created'));
-};
+export default database;

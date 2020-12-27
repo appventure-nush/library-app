@@ -3,7 +3,7 @@ import { actions } from './slice';
 import api from 'app/api';
 
 export function* loadDashboard() {
-  const bookings = yield call(api.booking.getOwnBookings);
+  const bookings = yield call(api.booking.getUpComingBookings);
   yield put(actions.saveBookings(bookings.data));
 }
 

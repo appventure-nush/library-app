@@ -2,7 +2,6 @@ import { Grid, Button, TextField } from '@material-ui/core';
 import { Formik } from 'formik';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router';
 import { actions } from '../slice';
 import * as yup from 'yup';
 
@@ -11,12 +10,10 @@ const validationSchema = yup.object().shape({
 });
 
 const LoginForm = () => {
-  const history = useHistory();
   const dispatch = useDispatch();
 
   const emailLogin = (email: String) => {
     dispatch(actions.loginRequest({ email: email }));
-    history.push('/');
   };
 
   return (
