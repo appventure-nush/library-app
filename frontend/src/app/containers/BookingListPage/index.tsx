@@ -12,20 +12,13 @@ import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 import { actions, reducer, sliceKey } from './slice';
 import { selectBookingListPage } from './selectors';
 import { bookingListPageSaga } from './saga';
-import { Table, Tag } from 'antd';
-import { Role, roleString } from 'types/User';
+import { Space, Table, Tag } from 'antd';
+import { Role, roleString, roleColor } from 'types/User';
 import { BookingListViewData } from 'types/Booking';
 import { DateTime } from 'luxon';
-import { getTimeString } from 'app/components/TimeSlotPicker/utils';
+import { Link } from 'react-router-dom';
 
 interface Props {}
-
-const roleColor: Record<Role, string> = {
-  1: 'green',
-  11: 'volcano',
-  12: 'geekblue',
-  100: 'gold',
-};
 
 const columns = [
   {
@@ -52,14 +45,47 @@ const columns = [
     key: 'roomname',
   },
   {
+    title: 'Date',
+    dataIndex: 'date',
+    key: 'date',
+    render: (time: DateTime) => (
+      <div>{`${time.toISODate()} (${time.weekdayShort})`}</div>
+    ),
+  },
+  {
     title: 'Start Time',
     dataIndex: 'startTime',
     key: 'startTime',
+    render: (time: DateTime) => (
+      <div>
+        {time.toISOTime({
+          suppressSeconds: true,
+          includeOffset: false,
+        })}
+      </div>
+    ),
   },
   {
     title: 'End Time',
     dataIndex: 'endTime',
     key: 'endTime',
+    render: (time: DateTime) => (
+      <div>
+        {time.toISOTime({
+          suppressSeconds: true,
+          includeOffset: false,
+        })}
+      </div>
+    ),
+  },
+  {
+    title: 'Action',
+    key: 'action',
+    render: (text, record) => (
+      <Space size="middle">
+        <Link to={`bookings/${record.id}`}>View</Link>
+      </Space>
+    ),
   },
 ];
 
@@ -77,7 +103,7 @@ export function BookingListPage(props: Props) {
   return (
     <>
       <Helmet>
-        <title>BookingListPage</title>
+        <title>Bookings</title>
         <meta name="description" content="Description of BookingListPage" />
       </Helmet>
       <div style={{ height: 400, width: '100%' }}>
@@ -91,8 +117,9 @@ export function BookingListPage(props: Props) {
                 username: booking.user.name,
                 role: booking.user.role,
                 roomname: booking.room.name,
-                startTime: getTimeString(DateTime.fromISO(booking.startTime)),
-                endTime: getTimeString(DateTime.fromISO(booking.endTime)),
+                date: DateTime.fromISO(booking.startTime),
+                startTime: DateTime.fromISO(booking.startTime),
+                endTime: DateTime.fromISO(booking.endTime),
               };
             },
           )}

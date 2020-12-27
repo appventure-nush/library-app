@@ -19,6 +19,10 @@ export interface BookingListViewData {
   endTime: string;
 }
 
+export interface BookingViewData extends BookingListViewData {
+  details: string;
+}
+
 export interface BookingCreateData {
   purpose: String;
   details: String;

@@ -29,4 +29,8 @@ export interface BookingListViewData {
   endTime: Date;
 }
 
+export interface BookingViewData extends BookingListViewData {
+  details: string;
+}
+
 export interface BookingCreationAttributes extends Optional<BookingAttributes, 'id'> {}

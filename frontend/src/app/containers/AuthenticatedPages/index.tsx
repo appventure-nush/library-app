@@ -19,7 +19,9 @@ import { NotFoundPage } from 'app/containers/NotFoundPage/Loadable';
 import api from 'app/api';
 import clsx from 'clsx';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import { deepPurple } from '@material-ui/core/colors';
 import {
+  CardHeader,
   Drawer,
   CssBaseline,
   useScrollTrigger,
@@ -33,14 +35,15 @@ import {
   ListItemText,
   Toolbar,
   Typography,
+  Avatar,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
+import DashboardIcon from '@material-ui/icons/Dashboard';
 import BookIcon from '@material-ui/icons/Book';
 import { toast } from 'react-toastify';
-import { Role } from 'types/User';
+import { Role, roleString } from 'types/User';
 import { BookingListPage } from '../BookingListPage';
+import { BookingDetailPage } from '../BookingDetailPage';
 
 type Props = RouteComponentProps;
 
@@ -101,6 +104,10 @@ const useStyles = makeStyles((theme: Theme) =>
         duration: theme.transitions.duration.enteringScreen,
       }),
       marginLeft: 0,
+    },
+    purple: {
+      color: theme.palette.getContrastText(deepPurple[500]),
+      backgroundColor: deepPurple[500],
     },
   }),
 );
@@ -195,32 +202,43 @@ const AuthenticatedPages: React.FC<Props> = props => {
           paper: classes.drawerPaper,
         }}
       >
+        <CardHeader
+          avatar={
+            <Avatar className={classes.purple}>
+              {currentUser.name.substring(0, 2)}
+            </Avatar>
+          }
+          title={currentUser.name}
+          subheader={roleString[currentUser.role]}
+          style={{ height: 64 }}
+        />
+        <Divider />
+        {currentUser.role >= Role.LIBRARIAN && (
+          <>
+            <List>
+              <ListItem button onClick={() => history.push('/')}>
+                <ListItemIcon>
+                  <DashboardIcon />
+                </ListItemIcon>
+                <ListItemText primary={'Dashboard'} />
+              </ListItem>
+              <ListItem button onClick={() => history.push('/bookings')}>
+                <ListItemIcon>
+                  <BookIcon />
+                </ListItemIcon>
+                <ListItemText primary={'Bookings'} />
+              </ListItem>
+            </List>
+            <Divider />
+          </>
+        )}
         <List>
-          <ListItem button onClick={() => history.push('/bookings')}>
+          <ListItem button onClick={() => history.push('/')}>
             <ListItemIcon>
               <BookIcon />
             </ListItemIcon>
-            <ListItemText primary={'All Bookings'} />
+            <ListItemText primary={'My Bookings'} />
           </ListItem>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
         </List>
       </Drawer>
       <main
@@ -241,11 +259,17 @@ const AuthenticatedPages: React.FC<Props> = props => {
             component={CreateBookingPage}
           />
           {currentUser.role >= Role.LIBRARIAN && (
-            <Route
-              exact
-              path={process.env.PUBLIC_URL + '/bookings'}
-              component={BookingListPage}
-            />
+            <>
+              <Route
+                exact
+                path={process.env.PUBLIC_URL + '/bookings'}
+                component={BookingListPage}
+              />
+              <Route
+                path={process.env.PUBLIC_URL + '/bookings/:id'}
+                component={BookingDetailPage}
+              />
+            </>
           )}
           <Route path={process.env.PUBLIC_URL + '/'} component={NotFoundPage} />
         </Switch>

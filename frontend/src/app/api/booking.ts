@@ -25,3 +25,9 @@ export async function getBookings(): Promise<
 > {
   return client.get(`${URL}`);
 }
+
+export async function getBooking(
+  id: String,
+): Promise<AxiosResponse<BookingListViewData[]>> {
+  return client.get(`${URL}/${id}`);
+}
