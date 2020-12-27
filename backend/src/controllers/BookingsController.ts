@@ -5,6 +5,7 @@ import { DestroyOptions, Op } from 'sequelize';
 import { AccessTokenSignedPayload } from 'types/tokens';
 import User from '../models/User';
 import Room from '../models/Room';
+import { Role } from '../types/User';
 
 export default class BookingsController {
   public async index(req: Request, res: Response) {
@@ -55,11 +56,18 @@ export default class BookingsController {
   }
 
   public async show(req: Request, res: Response) {
+    const payload = res.locals.payload as AccessTokenSignedPayload;
+    const { userId } = payload;
+    const currentUser = await User.findByPk<User>(userId);
     const bookingId: number = Number(req.params.id);
 
     Booking.findByPk<Booking>(bookingId)
       .then(async (booking: Booking | null) => {
         if (booking) {
+          if (currentUser.role <= Role.LIBRARIAN && currentUser.id !== booking.userId) {
+            res.sendStatus(401);
+            return;
+          }
           const user = await User.findByPk<User>(booking.userId);
           const room = await Room.findByPk<Room>(booking.roomId);
           const bookingViewData: BookingViewData = {
@@ -86,7 +94,42 @@ export default class BookingsController {
       .catch((err: Error) => res.status(500).json(err));
   }
 
-  public indexSelf(req: Request, res: Response) {
+  public async indexSelf(req: Request, res: Response) {
+    const payload = res.locals.payload as AccessTokenSignedPayload;
+    const { userId } = payload;
+
+    const bookings = await Booking.findAll<Booking>({
+      where: { userId: userId },
+      order: [['startTime', 'DESC']],
+    }).then((bookings: Array<Booking>) =>
+      bookings.map(async booking => {
+        const user = await User.findByPk<User>(booking.userId);
+        const room = await Room.findByPk<Room>(booking.roomId);
+        const bookingListViewData: BookingListViewData = {
+          id: booking.id,
+          user: {
+            id: user.id,
+            name: user.name,
+            role: user.role,
+          },
+          room: {
+            id: room.id,
+            name: room.name,
+          },
+          purpose: booking.purpose,
+          startTime: booking.startTime,
+          endTime: booking.endTime,
+        };
+        return bookingListViewData;
+      }),
+    );
+
+    Promise.all(bookings)
+      .then(bookings => res.status(201).json(bookings))
+      .catch((err: Error) => res.status(500).json(err));
+  }
+
+  public indexUpcoming(req: Request, res: Response) {
     const payload = res.locals.payload as AccessTokenSignedPayload;
     const { userId } = payload;
 

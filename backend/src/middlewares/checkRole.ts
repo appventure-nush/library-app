@@ -7,10 +7,9 @@ export const checkRole = (role: Role) => (req: Request, res: Response, next: Nex
   try {
     const payload = res.locals.payload as AccessTokenSignedPayload;
     const { userId } = payload;
-    User.findByPk<User>(userId).then(
-      (user: User | null) => !(!!user && user.role >= role) ?? res.sendStatus(401),
+    User.findByPk<User>(userId).then((user: User | null) =>
+      !!user && user.role >= role ? next() : res.sendStatus(401),
     );
-    next();
   } catch (error) {
     res.sendStatus(401);
     return;
