@@ -8,7 +8,7 @@ import {
   HasManyGetAssociationsMixin,
   HasManyHasAssociationMixin,
 } from 'sequelize';
-import database from '../config/database';
+import database from 'config/database';
 import { RoomAttributes, RoomCreationAttributes } from 'types/Room';
 import Booking from './Booking';
 

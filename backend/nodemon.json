@@ -1,0 +1,11 @@
+{
+  "ignore": [
+    "node_modules"
+  ],
+  "watch": [
+    "src",
+    "package-lock.json"
+  ],
+  "exec": "babel-node build/index.js",
+  "ext": "ts"
+}

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import User from '../models/User';
-import { UserCreationAttributes, UserUpdateData } from '../types/User';
+import User from 'models/User';
+import { UserCreationAttributes, UserUpdateData } from 'types/User';
 import { UpdateOptions, DestroyOptions } from 'sequelize';
 import { AccessTokenSignedPayload } from 'types/tokens';
 
