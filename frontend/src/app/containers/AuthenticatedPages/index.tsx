@@ -229,12 +229,6 @@ const AuthenticatedPages: React.FC<Props> = props => {
         {currentUser.role >= Role.LIBRARIAN && (
           <>
             <List>
-              <ListItem button onClick={() => history.push('/')}>
-                <ListItemIcon>
-                  <DashboardIcon />
-                </ListItemIcon>
-                <ListItemText primary={'Dashboard'} />
-              </ListItem>
               <ListItem button onClick={() => history.push('/bookings')}>
                 <ListItemIcon>
                   <BookIcon />
@@ -247,6 +241,12 @@ const AuthenticatedPages: React.FC<Props> = props => {
         )}
         <List>
           <ListItem button onClick={() => history.push('/')}>
+            <ListItemIcon>
+              <DashboardIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Dashboard'} />
+          </ListItem>
+          <ListItem button onClick={() => history.push('/mybookings')}>
             <ListItemIcon>
               <BookIcon />
             </ListItemIcon>
