@@ -1,11 +1,6 @@
 import { Request, Response } from 'express';
 import Booking from '../models/Booking';
-import {
-  BookingCreateData,
-  BookingCreationAttributes,
-  BookingListViewData,
-  BookingViewData,
-} from '../types/Booking';
+import { BookingCreateData, BookingListViewData, BookingViewData } from '../types/Booking';
 import { DestroyOptions, Op } from 'sequelize';
 import { AccessTokenSignedPayload } from 'types/tokens';
 import User from '../models/User';

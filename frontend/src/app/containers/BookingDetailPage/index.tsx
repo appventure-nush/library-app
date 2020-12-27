@@ -32,6 +32,7 @@ export function BookingDetailPage(props: Props) {
   useEffect(() => {
     dispatch(actions.loadBooking(id));
   }, [dispatch, id]);
+
   return (
     <>
       <Helmet>

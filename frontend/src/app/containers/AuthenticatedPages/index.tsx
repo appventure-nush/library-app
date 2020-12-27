@@ -13,8 +13,10 @@ import { loginPageSaga } from 'app/containers/LoginPage/saga';
 import { getCurrentUser } from 'app/containers/LoginPage/selectors';
 import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 
-import { CreateBookingPage } from 'app/containers/CreateBookingPage/Loadable';
-import { DashboardPage } from 'app/containers/DashboardPage/Loadable';
+import StudentRoutes from './StudentRoutes';
+import LibrarianRoutes from './LibrarianRoutes';
+import TeacherRoutes from './TeacherRoutes';
+import AdminRoutes from './AdminRoutes';
 import { NotFoundPage } from 'app/containers/NotFoundPage/Loadable';
 import api from 'app/api';
 import clsx from 'clsx';
@@ -42,8 +44,6 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 import BookIcon from '@material-ui/icons/Book';
 import { toast } from 'react-toastify';
 import { Role, roleString } from 'types/User';
-import { BookingListPage } from '../BookingListPage';
-import { BookingDetailPage } from '../BookingDetailPage';
 
 type Props = RouteComponentProps;
 
@@ -162,6 +162,19 @@ const AuthenticatedPages: React.FC<Props> = props => {
     return <></>;
   }
 
+  const RoleRoutes = () => {
+    switch (currentUser.role) {
+      case Role.STUDENT:
+        return StudentRoutes;
+      case Role.TEACHER:
+        return TeacherRoutes;
+      case Role.LIBRARIAN:
+        return LibrarianRoutes;
+      case Role.ADMIN:
+        return AdminRoutes;
+    }
+  };
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -248,29 +261,9 @@ const AuthenticatedPages: React.FC<Props> = props => {
       >
         <div className={classes.drawerHeader} />
         <Switch>
-          <Route
-            exact
-            path={process.env.PUBLIC_URL + '/'}
-            component={DashboardPage}
-          />
-          <Route
-            exact
-            path={process.env.PUBLIC_URL + '/newbooking'}
-            component={CreateBookingPage}
-          />
-          {currentUser.role >= Role.LIBRARIAN && (
-            <>
-              <Route
-                exact
-                path={process.env.PUBLIC_URL + '/bookings'}
-                component={BookingListPage}
-              />
-              <Route
-                path={process.env.PUBLIC_URL + '/bookings/:id'}
-                component={BookingDetailPage}
-              />
-            </>
-          )}
+          {RoleRoutes().map((RoleRoute, index) => (
+            <RoleRoute.type {...RoleRoute.props} key={index} />
+          ))}
           <Route path={process.env.PUBLIC_URL + '/'} component={NotFoundPage} />
         </Switch>
       </main>
