@@ -28,7 +28,7 @@ export const DashboardPage = memo((props: Props) => {
   return (
     <>
       <Helmet>
-        <title>Dashboard Page</title>
+        <title>Dashboard</title>
         <meta name="description" content="NUSH Library App Dashboard" />
       </Helmet>
       {dashboardPage.bookings.length !== 0 && (

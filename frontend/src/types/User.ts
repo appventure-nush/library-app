@@ -6,10 +6,17 @@ export enum Role {
 }
 
 export const roleString: Record<Role, string> = {
-  1: 'student',
-  11: 'teacher',
-  12: 'librarian',
-  100: 'admin',
+  1: 'Student',
+  11: 'Teacher',
+  12: 'Librarian',
+  100: 'Admin',
+};
+
+export const roleColor: Record<Role, string> = {
+  1: 'green',
+  11: 'volcano',
+  12: 'geekblue',
+  100: 'gold',
 };
 
 export interface UserListData {

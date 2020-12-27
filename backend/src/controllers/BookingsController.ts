@@ -4,6 +4,7 @@ import {
   BookingCreateData,
   BookingCreationAttributes,
   BookingListViewData,
+  BookingViewData,
 } from '../types/Booking';
 import { DestroyOptions, Op } from 'sequelize';
 import { AccessTokenSignedPayload } from 'types/tokens';
@@ -12,27 +13,28 @@ import Room from '../models/Room';
 
 export default class BookingsController {
   public async index(req: Request, res: Response) {
-    const bookings = await Booking.findAll<Booking>({}).then((bookings: Array<Booking>) =>
-      bookings.map(async booking => {
-        const user = await User.findByPk<User>(booking.userId);
-        const room = await Room.findByPk<Room>(booking.roomId);
-        const bookingListViewData: BookingListViewData = {
-          id: booking.id,
-          user: {
-            id: user.id,
-            name: user.name,
-            role: user.role,
-          },
-          room: {
-            id: room.id,
-            name: room.name,
-          },
-          purpose: booking.purpose,
-          startTime: booking.startTime,
-          endTime: booking.endTime,
-        };
-        return bookingListViewData;
-      }),
+    const bookings = await Booking.findAll<Booking>({ order: [['startTime', 'DESC']] }).then(
+      (bookings: Array<Booking>) =>
+        bookings.map(async booking => {
+          const user = await User.findByPk<User>(booking.userId);
+          const room = await Room.findByPk<Room>(booking.roomId);
+          const bookingListViewData: BookingListViewData = {
+            id: booking.id,
+            user: {
+              id: user.id,
+              name: user.name,
+              role: user.role,
+            },
+            room: {
+              id: room.id,
+              name: room.name,
+            },
+            purpose: booking.purpose,
+            startTime: booking.startTime,
+            endTime: booking.endTime,
+          };
+          return bookingListViewData;
+        }),
     );
     Promise.all(bookings)
       .then(bookings => res.status(201).json(bookings))
@@ -57,12 +59,36 @@ export default class BookingsController {
       .catch((err: Error) => res.status(500).json(err));
   }
 
-  public show(req: Request, res: Response) {
+  public async show(req: Request, res: Response) {
     const bookingId: number = Number(req.params.id);
 
-    Booking.findByPk<Booking>(bookingId).then((booking: Booking | null) =>
-      booking ? res.json(booking) : res.status(404).json({ errors: ['Booking not found'] }),
-    );
+    Booking.findByPk<Booking>(bookingId)
+      .then(async (booking: Booking | null) => {
+        if (booking) {
+          const user = await User.findByPk<User>(booking.userId);
+          const room = await Room.findByPk<Room>(booking.roomId);
+          const bookingViewData: BookingViewData = {
+            id: booking.id,
+            user: {
+              id: user.id,
+              name: user.name,
+              role: user.role,
+            },
+            room: {
+              id: room.id,
+              name: room.name,
+            },
+            purpose: booking.purpose,
+            startTime: booking.startTime,
+            endTime: booking.endTime,
+            details: booking.details,
+          };
+          res.status(201).json(bookingViewData);
+        } else {
+          res.sendStatus(404);
+        }
+      })
+      .catch((err: Error) => res.status(500).json(err));
   }
 
   public indexSelf(req: Request, res: Response) {
