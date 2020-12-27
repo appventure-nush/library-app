@@ -1,0 +1,17 @@
+{
+  "presets": [
+    "@babel/preset-env"
+  ],
+  "plugins": [
+    ["module-resolver", {
+      "root": ["./src"],
+      "alias": {
+        "types": "./build/types",
+        "middlewares": "./build/middlewares",
+        "controllers": "./build/controllers",
+        "models": "./build/models",
+        "config": "./build/config"
+      }
+    }]
+  ]
+}

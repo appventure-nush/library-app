@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import Booking from '../models/Booking';
-import { BookingCreateData, BookingListViewData, BookingViewData } from '../types/Booking';
+import Booking from 'models/Booking';
+import { BookingCreateData, BookingListViewData, BookingViewData } from 'types/Booking';
 import { DestroyOptions, Op } from 'sequelize';
 import { AccessTokenSignedPayload } from 'types/tokens';
-import User from '../models/User';
-import Room from '../models/Room';
-import { Role } from '../types/User';
+import User from 'models/User';
+import Room from 'models/Room';
+import { Role } from 'types/User';
 
 export default class BookingsController {
   public async index(req: Request, res: Response) {

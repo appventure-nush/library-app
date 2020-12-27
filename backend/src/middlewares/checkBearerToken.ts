@@ -5,7 +5,7 @@ import {
   isAccessTokenSignedPayload,
   isBearerToken,
   isRefreshTokenSignedPayload,
-} from '../types/tokens';
+} from 'types/tokens';
 
 export const checkBearerToken = (type: BearerTokenType) => (
   req: Request,

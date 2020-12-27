@@ -9,9 +9,9 @@ import {
   HasManyHasAssociationMixin,
   Association,
 } from 'sequelize';
-import database from '../config/database';
-import { BearerTokenType } from '../types/tokens';
-import { UserCreationAttributes, UserAttributes, Role } from '../types/User';
+import database from 'config/database';
+import { BearerTokenType } from 'types/tokens';
+import { UserCreationAttributes, UserAttributes, Role } from 'types/User';
 import Booking from './Booking';
 
 export default class User

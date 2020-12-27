@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
-import User from '../models/User';
-import { Role } from '../types/User';
-import { AccessTokenSignedPayload } from '../types/tokens';
+import User from 'models/User';
+import { Role } from 'types/User';
+import { AccessTokenSignedPayload } from 'types/tokens';
 
 export const checkRole = (role: Role) => (req: Request, res: Response, next: NextFunction) => {
   try {

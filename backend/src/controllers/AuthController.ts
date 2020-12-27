@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
 import { verify } from 'jsonwebtoken';
-import { Role, UserCreationAttributes } from '../types/User';
-import User from '../models/User';
-import { isRefreshTokenSignedPayload } from '../types/tokens';
+import User from 'models/User';
+import { isRefreshTokenSignedPayload } from 'types/tokens';
 
 export default class AuthController {
   // Temporary, to be removed after Office 365 OAuth
