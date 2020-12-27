@@ -17,15 +17,12 @@ export default class AuthController {
     // Find if user exists in the database
     // TODO: WARNING, DOESNT SUPPORT USERS WITH THE SAME NAME
     const name = email.split('@')[0];
-
-    User.findOrCreate<User>({
+    User.findOne<User>({
       where: { name: name },
-      defaults: {
-        name: name,
-        role: Role.ADMIN,
-      },
     })
-      .then((value: [User, boolean]) => res.status(201).json(value[0].createAuthenticationTokens()))
+      .then((user: User | null) =>
+        !!user ? res.status(201).json(user.createAuthenticationTokens()) : res.status(404).json(),
+      )
       .catch((err: Error) => res.status(500).json(err));
   }
 
@@ -49,9 +46,7 @@ export default class AuthController {
     const { userId } = payload;
 
     User.findByPk<User>(userId).then((user: User | null) =>
-      user
-        ? res.status(201).json(user.createAuthenticationTokens())
-        : res.status(404).json({ errors: ['User not found'] }),
+      user ? res.status(201).json(user.createAuthenticationTokens()) : res.sendStatus(404),
     );
   }
 }

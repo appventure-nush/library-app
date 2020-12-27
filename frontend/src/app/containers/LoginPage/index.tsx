@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Grid } from '@material-ui/core';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { Helmet } from 'react-helmet-async';
@@ -10,6 +10,7 @@ import { reducer, sliceKey } from './slice';
 import { selectLoginPage, isLoggedIn } from './selectors';
 import { loginPageSaga } from './saga';
 import LoginForm from './components/LoginForm';
+import { getRefreshToken } from 'app/localStorage';
 
 type Props = {};
 
@@ -35,9 +36,12 @@ export const LoginPage: React.FC<Props> = (props: Props) => {
   const dispatch = useDispatch();
 
   // redirect to homepage if logged in
-  if (loggedIn) {
-    history.push('/');
-  }
+  useEffect(() => {
+    const refreshToken = getRefreshToken();
+    if (loggedIn || refreshToken) {
+      history.push('/');
+    }
+  }, [loggedIn, history]);
 
   return (
     <>

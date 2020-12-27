@@ -18,7 +18,7 @@ export function* authorize(action: PayloadAction<{ email: string }>) {
       yield put(actions.loginSuccess(userData));
     }
   } catch (error) {
-    toast.error('Incorrect email');
+    toast.error('Login failed');
   }
 }
 

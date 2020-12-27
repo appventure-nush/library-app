@@ -13,6 +13,12 @@ export interface UserAttributes {
   role: Role;
 }
 
+export interface UserListData {
+  id: number;
+  name: string;
+  role: Role;
+}
+
 export interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
 
 export interface UserUpdateData extends Omit<UserAttributes, 'id'> {}
