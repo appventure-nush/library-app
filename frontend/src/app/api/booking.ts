@@ -14,16 +14,22 @@ export async function createBooking(
   return client.post(`${URL}`, bookingCreateData);
 }
 
-export async function getOwnBookings(): Promise<
+export async function getUpComingBookings(): Promise<
   AxiosResponse<Array<BookingListData>>
 > {
-  return client.get(`${URL}/self`);
+  return client.get(`${URL}/upComing`);
 }
 
 export async function getBookings(): Promise<
   AxiosResponse<BookingListViewData[]>
 > {
   return client.get(`${URL}`);
+}
+
+export async function getMyBookings(): Promise<
+  AxiosResponse<BookingListViewData[]>
+> {
+  return client.get(`${URL}/self`);
 }
 
 export async function getBooking(
