@@ -57,6 +57,10 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
+      type: {
+        type: Sequelize.SMALLINT,
+        allowNull: false,
+      },
       userId: {
         type: Sequelize.INTEGER,
         references: {

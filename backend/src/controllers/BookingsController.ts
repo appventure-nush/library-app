@@ -1,6 +1,11 @@
 import { Request, Response } from 'express';
 import Booking from 'models/Booking';
-import { BookingCreateData, BookingListViewData, BookingViewData } from 'types/Booking';
+import {
+  BookingCreateData,
+  BookingListViewData,
+  BookingType,
+  BookingViewData,
+} from 'types/Booking';
 import { DestroyOptions, Op } from 'sequelize';
 import { AccessTokenSignedPayload } from 'types/tokens';
 import User from 'models/User';
@@ -9,28 +14,30 @@ import { Role } from 'types/User';
 
 export default class BookingsController {
   public async index(req: Request, res: Response) {
-    const bookings = await Booking.findAll<Booking>({ order: [['startTime', 'DESC']] }).then(
-      (bookings: Array<Booking>) =>
-        bookings.map(async booking => {
-          const user = await User.findByPk<User>(booking.userId);
-          const room = await Room.findByPk<Room>(booking.roomId);
-          const bookingListViewData: BookingListViewData = {
-            id: booking.id,
-            user: {
-              id: user.id,
-              name: user.name,
-              role: user.role,
-            },
-            room: {
-              id: room.id,
-              name: room.name,
-            },
-            purpose: booking.purpose,
-            startTime: booking.startTime,
-            endTime: booking.endTime,
-          };
-          return bookingListViewData;
-        }),
+    const bookings = await Booking.findAll<Booking>({
+      where: { type: BookingType.BOOKING },
+      order: [['startTime', 'DESC']],
+    }).then((bookings: Array<Booking>) =>
+      bookings.map(async booking => {
+        const user = await User.findByPk<User>(booking.userId);
+        const room = await Room.findByPk<Room>(booking.roomId);
+        const bookingListViewData: BookingListViewData = {
+          id: booking.id,
+          user: {
+            id: user.id,
+            name: user.name,
+            role: user.role,
+          },
+          room: {
+            id: room.id,
+            name: room.name,
+          },
+          purpose: booking.purpose,
+          startTime: booking.startTime,
+          endTime: booking.endTime,
+        };
+        return bookingListViewData;
+      }),
     );
     Promise.all(bookings)
       .then(bookings => res.status(201).json(bookings))
@@ -41,18 +48,21 @@ export default class BookingsController {
     const payload = res.locals.payload as AccessTokenSignedPayload;
     const { userId } = payload;
     const params: BookingCreateData = req.body;
-
     const user = await User.findByPk<User>(userId);
     user
       .createBooking({
+        type: BookingType.BOOKING,
         userId: userId,
+        roomId: params.roomId,
         purpose: params.purpose,
         details: params.details,
         startTime: params.startTime,
         endTime: params.endTime,
       })
       .then((booking: Booking) => res.status(201).json(booking))
-      .catch((err: Error) => res.status(500).json(err));
+      .catch((err: Error) => {
+        res.status(500).json(err);
+      });
   }
 
   public async show(req: Request, res: Response) {
@@ -99,10 +109,10 @@ export default class BookingsController {
     const { userId } = payload;
 
     const bookings = await Booking.findAll<Booking>({
-      where: { userId: userId },
+      where: { userId: userId, type: BookingType.BOOKING.valueOf() },
       order: [['startTime', 'DESC']],
-    }).then((bookings: Array<Booking>) =>
-      bookings.map(async booking => {
+    }).then((bookings: Array<Booking>) => {
+      return bookings.map(async booking => {
         const user = await User.findByPk<User>(booking.userId);
         const room = await Room.findByPk<Room>(booking.roomId);
         const bookingListViewData: BookingListViewData = {
@@ -121,8 +131,8 @@ export default class BookingsController {
           endTime: booking.endTime,
         };
         return bookingListViewData;
-      }),
-    );
+      });
+    });
 
     Promise.all(bookings)
       .then(bookings => res.status(201).json(bookings))
@@ -134,7 +144,7 @@ export default class BookingsController {
     const { userId } = payload;
 
     Booking.findAll<Booking>({
-      where: { userId: userId, startTime: { [Op.gte]: new Date() } },
+      where: { userId: userId, type: BookingType.BOOKING, startTime: { [Op.gte]: new Date() } },
       order: [['startTime', 'ASC']],
     })
       .then((bookings: Array<Booking>) => res.json(bookings))

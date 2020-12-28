@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { checkBearerToken } from '../../middlewares/checkBearerToken';
-import { BearerTokenType } from '../../types/tokens';
-import UsersController from '../../controllers/UsersController';
+import { checkBearerToken } from 'middlewares/checkBearerToken';
+import { BearerTokenType } from 'types/tokens';
+import UsersController from 'controllers/UsersController';
 
 const controller = new UsersController();
 const router = Router();

@@ -2,8 +2,14 @@ import { Optional } from './common';
 import { RoomListData } from './Room';
 import { UserListData } from './User';
 
+export enum BookingType {
+  BOOKING = 1,
+  DISABLED = 2,
+}
+
 export interface BookingAttributes {
   id: number;
+  type: BookingType;
   userId: number;
   roomId: number;
   purpose: string;

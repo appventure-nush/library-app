@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { checkRole } from '../../middlewares/checkRole';
-import { Role } from '../../types/User';
-import BookingsController from '../../controllers/BookingsController';
+import { checkRole } from 'middlewares/checkRole';
+import { Role } from 'types/User';
+import BookingsController from 'controllers/BookingsController';
 
 const controller = new BookingsController();
 const router = Router();

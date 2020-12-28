@@ -6,6 +6,6 @@
     "src",
     "package-lock.json"
   ],
-  "exec": "babel-node build/index.js",
+  "exec": "tsc && babel-node build/index.js",
   "ext": "ts"
 }
