@@ -4,10 +4,12 @@ networks:
   primary:
     external:
       name: primary
+  internal:
+    internal: true
 
 services:
-  web:
-    image: registry.nush.app/library-app:latest
+  frontend:
+    image: registry.nush.app/library-app-frontend:latest
     restart: always
     networks:
     - primary
@@ -19,3 +21,39 @@ services:
     - "traefik.http.routers.library.entrypoints=https"
     - "traefik.http.routers.library.tls=true"
     - "traefik.http.routers.library.tls.certresolver=tlsresolver"
+
+  backend:
+    image: registry.nush.app/library-app-backend:latest
+    restart: always
+    networks:
+    - primary
+    - internal
+    environment:
+    - POSTGRES_USERNAME={same_as_below}
+    - POSTGRES_PASSWORD={same_as_below}
+    - POSTGRES_HOST=db
+    - POSTGRES_PORT=5432
+    - POSTGRES_DBNAME=library_app
+    - JWT_SECRET={please_change_this_in_portainer}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.libraryapi.rule=Host(`api.library.nush.app`)"
+      - "traefik.http.routers.libraryapi.entrypoints=https"
+      - "traefik.http.routers.libraryapi.tls=true"
+      - "traefik.http.routers.libraryapi.tls.certresolver=tlsresolver"
+    expose:
+    - "3001"
+    links:
+    - db
+
+  db:
+    image: postgres:13.0-alpine
+    restart: always
+    networks:
+    - internal
+    environment:
+    - POSTGRES_USER={please_change_this_in_portainer}
+    - POSTGRES_PASSWORD={please_change_this_in_portainer}
+    - POSTGRES_DB=library_app
+    expose:
+    - "5432"
