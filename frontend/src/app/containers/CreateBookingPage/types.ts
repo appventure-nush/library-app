@@ -1,4 +1,9 @@
+import { Slot } from 'types/Week';
+
 /* --- STATE --- */
-export interface CreateBookingPageState {}
+export interface CreateBookingPageState {
+  disabledSlots: Slot[];
+  bookedSlots: Slot[];
+}
 
 export type ContainerState = CreateBookingPageState;

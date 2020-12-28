@@ -24,6 +24,7 @@ export interface BookingViewData extends BookingListViewData {
 }
 
 export interface BookingCreateData {
+  roomId: number;
   purpose: String;
   details: String;
   startTime: Date;

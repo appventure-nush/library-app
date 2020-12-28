@@ -7,28 +7,22 @@ import {
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/CloseOutlined';
 import React from 'react';
-import {
-  TimeSlotIdx,
-  getDurationFromIdx,
-  HALF_AN_HOUR_IN_PIXELS,
-} from './utils';
+import { SlotIdx } from './types';
+import { getDurationFromIdx, HALF_AN_HOUR_IN_PIXELS } from './utils';
 
 export interface TimeSlotProps {
-  timeSlot: TimeSlotIdx;
+  slotIdx: SlotIdx;
   onDelete?: () => void;
   disabled?: Boolean;
 }
 
 const TimeSlot: React.FC<TimeSlotProps> = props => {
-  const { disabled, onDelete, timeSlot } = props;
+  const { disabled, onDelete, slotIdx } = props;
   const start =
-    (timeSlot.startIdx < timeSlot.endIdx
-      ? timeSlot.startIdx
-      : timeSlot.endIdx) * HALF_AN_HOUR_IN_PIXELS;
+    (slotIdx.startIdx < slotIdx.endIdx ? slotIdx.startIdx : slotIdx.endIdx) *
+    HALF_AN_HOUR_IN_PIXELS;
   const end =
-    (timeSlot.startIdx < timeSlot.endIdx
-      ? timeSlot.endIdx
-      : timeSlot.startIdx) *
+    (slotIdx.startIdx < slotIdx.endIdx ? slotIdx.endIdx : slotIdx.startIdx) *
       HALF_AN_HOUR_IN_PIXELS +
     HALF_AN_HOUR_IN_PIXELS;
   const theme = useTheme();
@@ -58,7 +52,7 @@ const TimeSlot: React.FC<TimeSlotProps> = props => {
         <Typography
           style={{ color: '#FFFFFF', padding: theme.spacing(1, 0, 0, 1) }}
         >
-          {getDurationFromIdx(timeSlot)}
+          {getDurationFromIdx(slotIdx)}
         </Typography>
         {!disabled && (
           <IconButton

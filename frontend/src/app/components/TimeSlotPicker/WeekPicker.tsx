@@ -10,7 +10,7 @@ import { DateTime } from 'luxon';
 
 export interface WeekPickerProps {
   currentWeekTitle: String;
-  startDate: DateTime;
+  referenceDate: DateTime;
   onChangeNextWeek: () => void;
   onChangePrevWeek: () => void;
   hasNext?: Boolean;
@@ -26,13 +26,13 @@ const useStyles = makeStyles(theme => ({
 const WeekPicker: React.FC<WeekPickerProps> = props => {
   const {
     currentWeekTitle,
-    startDate,
+    referenceDate,
     onChangeNextWeek,
     onChangePrevWeek,
     hasNext,
     hasPrev,
   } = props;
-  const endDate = startDate.endOf('weeks').minus({ days: 2 });
+  const endDate = referenceDate.endOf('weeks').minus({ days: 2 });
   const classes = useStyles();
   const isSmallScreen = useMediaQuery((theme: Theme) =>
     theme.breakpoints.down('xs'),
@@ -53,7 +53,7 @@ const WeekPicker: React.FC<WeekPickerProps> = props => {
           <Grid item>
             <IconButton
               aria-label="previous week"
-              disabled={!!hasPrev}
+              disabled={!hasPrev}
               onClick={onChangePrevWeek}
             >
               <NavigatePrevIcon />
@@ -61,7 +61,7 @@ const WeekPicker: React.FC<WeekPickerProps> = props => {
             <IconButton
               size={isSmallScreen ? 'small' : 'medium'}
               aria-label="next week"
-              disabled={!!hasNext}
+              disabled={!hasNext}
               onClick={onChangeNextWeek}
             >
               <NavigateNextIcon />
@@ -69,7 +69,7 @@ const WeekPicker: React.FC<WeekPickerProps> = props => {
           </Grid>
           <Grid item>
             <Typography variant="body1" display="inline">
-              {getDDMMM(startDate)} - {getDDMMM(endDate)} <CalendarIcon />
+              {getDDMMM(referenceDate)} - {getDDMMM(endDate)} <CalendarIcon />
             </Typography>
           </Grid>
         </Grid>

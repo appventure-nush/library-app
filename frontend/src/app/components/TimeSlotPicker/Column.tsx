@@ -1,66 +1,81 @@
-import React, { useState, useRef, useImperativeHandle, useEffect } from 'react';
+import React, { useState, useRef, useImperativeHandle, useMemo } from 'react';
 import { Grid } from '@material-ui/core';
 import Cell from './Cell';
 import TimeSlot from './TimeSlot';
-import { getRoundedPosIdx, getTimeSlotIdxFromTime, TimeSlotIdx } from './utils';
-import { useField } from 'formik';
-import { DateTime } from 'luxon';
+import { getRoundedPosIdx } from './utils';
+import { SlotIdx } from './types';
 
 export interface ColumnProps {
-  day: number; // 0 -> Monday, 4 -> Friday
-  disabledSlots: Array<TimeSlotIdx>;
-  onTimeSlotSelectStart: (day: number) => void;
-  onTimeSlotSelected: (day: number, timeSlot?: TimeSlotIdx) => void;
+  delta: number; // 0 -> Monday, 4 -> Friday
+  disabledSlotIdxes: SlotIdx[];
+  bookedSlotIdxes: SlotIdx[];
+  onSlotIdxSelectStart: (delta: number) => void;
+  onSlotIdxSelected: (delta: number, slotIdx?: SlotIdx) => void;
 }
 
 export interface ColumnCallables {
   removeSelectedTimeSlots: () => void;
 }
 
+const selectedColor = 'volcano';
+
 const Column = React.forwardRef<ColumnCallables, ColumnProps>((props, ref) => {
   const {
-    day,
-    disabledSlots,
-    onTimeSlotSelectStart,
-    onTimeSlotSelected,
+    delta,
+    disabledSlotIdxes,
+    bookedSlotIdxes,
+    onSlotIdxSelectStart,
+    onSlotIdxSelected,
   } = props;
-  const [selectedTimeSlots, setSelectedTimeSlots] = useState<
-    Array<TimeSlotIdx>
+  const [selectedSlotIndexes, setSelectedSlotIndexes] = useState<
+    Array<SlotIdx>
   >([]);
   const [isDragging, setIsDragging] = useState(false);
   const divRef = useRef<HTMLDivElement>(null);
-  const [field, ,] = useField<{ start: DateTime; end: DateTime } | undefined>(
-    'timeSlot',
-  );
 
   useImperativeHandle(ref, () => ({
     removeSelectedTimeSlots: () => {
-      selectedTimeSlots.length !== 0 && setSelectedTimeSlots([]);
+      selectedSlotIndexes.length !== 0 && setSelectedSlotIndexes([]);
     },
   }));
 
-  useEffect(() => {
-    field.value &&
-      field.value.start.weekday === day + 1 &&
-      setSelectedTimeSlots([getTimeSlotIdxFromTime(field.value)]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const processedSlots = useMemo(() => {
+    var resultSlots = Array.from(Array(20).keys()).map(() => false);
+    disabledSlotIdxes.forEach(disabledSlotIdx => {
+      for (
+        let disabledIndex = disabledSlotIdx.startIdx;
+        disabledIndex <= disabledSlotIdx.endIdx;
+        disabledIndex++
+      ) {
+        resultSlots[disabledIndex] = true;
+      }
+    });
+    return resultSlots;
+  }, [disabledSlotIdxes]);
 
   const cancelDrag = () => {
     if (!isDragging) return;
     setIsDragging(false);
-    onTimeSlotSelected(day, selectedTimeSlots[0]);
+    onSlotIdxSelected(
+      delta,
+      selectedSlotIndexes[selectedSlotIndexes.length - 1],
+    );
   };
   const isOverlapping = (posIdx: number): Boolean =>
-    !!disabledSlots.find(
+    !!disabledSlotIdxes.find(
+      slot => slot.startIdx <= posIdx && posIdx <= slot.endIdx,
+    ) ||
+    !!bookedSlotIdxes.find(
       slot => slot.startIdx <= posIdx && posIdx <= slot.endIdx,
     );
   const onDragStarted = (start: number) => {
-    if (!isOverlapping(start)) {
-      onTimeSlotSelectStart(day);
+    let posIdx = getRoundedPosIdx(start);
+    if (!isOverlapping(posIdx)) {
+      onSlotIdxSelectStart(delta);
       setIsDragging(true);
-      let posIdx = getRoundedPosIdx(start);
-      setSelectedTimeSlots([{ startIdx: posIdx, endIdx: posIdx }]);
+      setSelectedSlotIndexes([
+        { startIdx: posIdx, endIdx: posIdx, color: selectedColor },
+      ]);
     }
   };
   const onDragMoved = (newPos: number) => {
@@ -68,9 +83,16 @@ const Column = React.forwardRef<ColumnCallables, ColumnProps>((props, ref) => {
     let posIdx = getRoundedPosIdx(newPos);
     if (isOverlapping(posIdx)) {
       cancelDrag();
-    } else if (posIdx !== selectedTimeSlots[0].endIdx)
-      setSelectedTimeSlots([
-        { startIdx: selectedTimeSlots[0].startIdx, endIdx: posIdx },
+    } else if (
+      posIdx !== selectedSlotIndexes[selectedSlotIndexes.length - 1].endIdx
+    )
+      setSelectedSlotIndexes([
+        {
+          startIdx:
+            selectedSlotIndexes[selectedSlotIndexes.length - 1].startIdx,
+          endIdx: posIdx,
+          color: selectedColor,
+        },
       ]);
   };
 
@@ -120,18 +142,18 @@ const Column = React.forwardRef<ColumnCallables, ColumnProps>((props, ref) => {
       onTouchEnd={cancelDrag}
       ref={divRef}
     >
-      {selectedTimeSlots.map((timeSlot, key) => (
+      {selectedSlotIndexes.map((slotIdx, key) => (
         <TimeSlot
           key={key}
-          timeSlot={timeSlot}
+          slotIdx={slotIdx}
           onDelete={() => {
-            setSelectedTimeSlots([]);
-            onTimeSlotSelected(day, undefined);
+            setSelectedSlotIndexes([]);
+            onSlotIdxSelected(delta, undefined);
           }}
         />
       ))}
-      {disabledSlots.map((timeSlot, key) => (
-        <TimeSlot key={key} timeSlot={timeSlot} disabled />
+      {bookedSlotIdxes.map((slotIdx, key) => (
+        <TimeSlot key={key} slotIdx={slotIdx} disabled />
       ))}
       <Grid
         container
@@ -140,9 +162,9 @@ const Column = React.forwardRef<ColumnCallables, ColumnProps>((props, ref) => {
         alignItems="stretch"
         justify="space-around"
       >
-        {Array.from(Array(20).keys()).map(key => (
+        {processedSlots.map((disabled, key) => (
           <Grid item xs key={key}>
-            <Cell />
+            <Cell disabled={disabled} />
           </Grid>
         ))}
       </Grid>

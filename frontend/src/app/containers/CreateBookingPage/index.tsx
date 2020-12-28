@@ -1,10 +1,8 @@
 import React, { memo } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 import { createBookingPageSaga } from './saga';
-import { selectCreateBookingPage } from './selectors';
 import { reducer, sliceKey } from './slice';
 import { Form, Formik, FormikHelpers } from 'formik';
 import CreateBookingStepper from './components/CreateBookingStepper';
@@ -24,11 +22,6 @@ export const CreateBookingPage = memo((props: Props) => {
   useInjectReducer({ key: sliceKey, reducer: reducer });
   useInjectSaga({ key: sliceKey, saga: createBookingPageSaga });
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const dashboardPage = useSelector(selectCreateBookingPage);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const dispatch = useDispatch();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const history = useHistory();
 
   return (
@@ -53,6 +46,7 @@ export const CreateBookingPage = memo((props: Props) => {
 
           api.booking
             .createBooking({
+              roomId: 1,
               purpose: values.purpose,
               details: values.details,
               startTime: values.timeSlot.start.toJSDate(),
@@ -64,7 +58,7 @@ export const CreateBookingPage = memo((props: Props) => {
               history.push('/');
             })
             .catch(err => {
-              toast.error(err);
+              toast.error('Booking failed');
             });
         }}
       >

@@ -1,16 +1,18 @@
 import { Grid, Typography, Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useFormikContext } from 'formik';
-import React, { useState, useEffect, createRef } from 'react';
+import { DateTime } from 'luxon';
+import React, { useState, useEffect, createRef, useMemo } from 'react';
 import Column, { ColumnCallables } from './Column';
-import {
-  TimeSlotIdx,
-  getStartingDay,
-  getDayString,
-  getTimeFromTimeSlotIdx,
-} from './utils';
+import { Slot, SlotIdx } from './types';
+import { getDayString, mapToSlot, mapToSlotIdx } from './utils';
 
-export interface DayCalendarProps {}
+export interface WeekCalendarProps {
+  fieldName: string;
+  referenceDate: DateTime;
+  disabledSlots: Slot[];
+  bookedSlots: Slot[];
+}
 
 const useStyles = makeStyles(theme => ({
   header: {
@@ -29,7 +31,8 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const WeekCalendar: React.FC<DayCalendarProps> = props => {
+const WeekCalendar: React.FC<WeekCalendarProps> = props => {
+  const { fieldName, referenceDate, disabledSlots, bookedSlots } = props;
   const [columnRefs, setColumnRefs] = useState<
     Array<React.RefObject<ColumnCallables>>
   >([]);
@@ -42,6 +45,30 @@ const WeekCalendar: React.FC<DayCalendarProps> = props => {
     );
   }, []);
 
+  const processedDisabledSlots = useMemo(() => {
+    var disabledSlotIndexes: SlotIdx[][] = Array.from(
+      Array(5).keys(),
+    ).map(() => []);
+    disabledSlots.forEach(disabledSlot => {
+      disabledSlotIndexes[disabledSlot.startTime.weekday - 1].push(
+        mapToSlotIdx(disabledSlot),
+      );
+    });
+    return disabledSlotIndexes;
+  }, [disabledSlots]);
+
+  const processedBookedSlots = useMemo(() => {
+    var bookedSlotIndexes: SlotIdx[][] = Array.from(
+      Array(5).keys(),
+    ).map(() => []);
+    bookedSlots.forEach(bookedSlot => {
+      bookedSlotIndexes[bookedSlot.startTime.weekday - 1].push(
+        mapToSlotIdx(bookedSlot),
+      );
+    });
+    return bookedSlotIndexes;
+  }, [bookedSlots]);
+
   return (
     <>
       <Grid container className={classes.header}>
@@ -51,7 +78,7 @@ const WeekCalendar: React.FC<DayCalendarProps> = props => {
         {[0, 1, 2, 3, 4].map(delta => (
           <Grid item xs container justify="center" key={delta}>
             <Typography variant="body2">
-              {getDayString(getStartingDay(delta))}
+              {getDayString(referenceDate.plus({ days: delta }))}
             </Typography>
           </Grid>
         ))}
@@ -83,23 +110,28 @@ const WeekCalendar: React.FC<DayCalendarProps> = props => {
               <Grid item xs key={delta}>
                 <Column
                   ref={columnRefs[delta]}
-                  day={delta}
-                  disabledSlots={[]}
-                  onTimeSlotSelectStart={(day: number) => {
+                  delta={delta}
+                  disabledSlotIdxes={processedDisabledSlots[delta]}
+                  bookedSlotIdxes={processedBookedSlots[delta]}
+                  onSlotIdxSelectStart={(delta: number) => {
                     columnRefs.forEach((columnRef, i) => {
-                      day !== i &&
+                      delta !== i &&
                         columnRef.current &&
                         columnRef.current.removeSelectedTimeSlots();
                     });
                   }}
-                  onTimeSlotSelected={(day: number, timeSlot?: TimeSlotIdx) => {
-                    if (timeSlot) {
-                      setFieldValue(
-                        'timeSlot',
-                        getTimeFromTimeSlotIdx(timeSlot, day),
+                  onSlotIdxSelected={(delta: number, slotIdx?: SlotIdx) => {
+                    if (slotIdx) {
+                      const slot = mapToSlot(
+                        slotIdx,
+                        referenceDate.plus({ days: delta }),
                       );
+                      setFieldValue(fieldName, {
+                        start: slot.startTime,
+                        end: slot.endTime,
+                      });
                     } else {
-                      setFieldValue('timeSlot', undefined);
+                      setFieldValue(fieldName, undefined);
                     }
                   }}
                 />

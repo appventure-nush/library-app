@@ -9,6 +9,7 @@ module.exports = {
       'bookings',
       [
         {
+          type: 1,
           userId: 1,
           roomId: 1,
           purpose: 'Project',
@@ -31,6 +32,7 @@ module.exports = {
           updatedAt: new Date(),
         },
         {
+          type: 1,
           userId: 1,
           roomId: 2,
           purpose: 'Project',
@@ -53,6 +55,7 @@ module.exports = {
           updatedAt: new Date(),
         },
         {
+          type: 1,
           userId: 1,
           roomId: 3,
           purpose: 'Project',
@@ -75,6 +78,7 @@ module.exports = {
           updatedAt: new Date(),
         },
         {
+          type: 1,
           userId: 1,
           roomId: 4,
           purpose: 'Project',
