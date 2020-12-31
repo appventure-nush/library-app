@@ -14,7 +14,12 @@ const loginSlice = createSlice({
   name: 'login',
   initialState,
   reducers: {
-    loginRequest(state, action: PayloadAction<{ email: String }>) {
+    loginRequest(
+      state,
+      action: PayloadAction<{
+        azureAdIdToken: String;
+      }>,
+    ) {
       state.loading = true;
       state.error = null;
       state.user = null;

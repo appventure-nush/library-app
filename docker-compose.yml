@@ -13,6 +13,9 @@ services:
     restart: always
     networks:
     - primary
+    environment:
+    - TENANT_ID={Azure AD Tenant ID}
+    - CLIENT_ID={Azure AD Client ID (AppId)}
     expose:
     - "5000"
     labels:

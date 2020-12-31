@@ -18,7 +18,9 @@ export default class User
   extends Model<UserAttributes, UserCreationAttributes>
   implements UserAttributes {
   public id!: number;
+  public azureOid!: string;
   public name!: string;
+  public email!: string;
   public role!: Role;
 
   public readonly createdAt!: Date;
@@ -59,7 +61,15 @@ User.init(
       autoIncrement: true,
       primaryKey: true,
     },
+    azureOid: {
+      type: new DataTypes.STRING(128),
+      allowNull: false,
+    },
     name: {
+      type: new DataTypes.STRING(128),
+      allowNull: false,
+    },
+    email: {
       type: new DataTypes.STRING(128),
       allowNull: false,
     },

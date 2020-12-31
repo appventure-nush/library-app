@@ -1,85 +1,29 @@
-import { Grid, Button, TextField } from '@material-ui/core';
-import { Formik } from 'formik';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { actions } from '../slice';
-import * as yup from 'yup';
-
-const validationSchema = yup.object().shape({
-  email: yup.string().email().required(),
-});
+import MicrosoftLogin from 'react-microsoft-login';
 
 const LoginForm = () => {
   const dispatch = useDispatch();
 
-  const emailLogin = (email: String) => {
-    dispatch(actions.loginRequest({ email: email }));
+  const authHandler = (err, data) => {
+    dispatch(
+      actions.loginRequest({
+        azureAdIdToken: data.idToken.rawIdToken,
+      }),
+    );
   };
 
   return (
-    <Formik
-      validateOnBlur={false}
-      initialValues={{ email: '' }}
-      onSubmit={(values, { setSubmitting }) => {
-        emailLogin(values.email);
-        setSubmitting(false);
-      }}
-      validationSchema={validationSchema}
-    >
-      {props => {
-        const {
-          values,
-          touched,
-          errors,
-          isSubmitting,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-        } = props;
-
-        return (
-          <form onSubmit={handleSubmit}>
-            <Grid
-              container
-              direction="column"
-              justify="center"
-              alignItems="stretch"
-              id="SignInForm"
-              spacing={2}
-            >
-              <Grid item>
-                <TextField
-                  fullWidth
-                  required
-                  id="email"
-                  error={touched.email && !!errors.email}
-                  label="E-mail"
-                  name="email"
-                  autoComplete="email"
-                  autoFocus
-                  value={values.email}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  variant="outlined"
-                />
-              </Grid>
-
-              <Grid item>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  disabled={isSubmitting}
-                >
-                  Log In
-                </Button>
-              </Grid>
-            </Grid>
-          </form>
-        );
-      }}
-    </Formik>
+    <MicrosoftLogin
+      withUserData
+      clientId={process.env.CLIENT_ID ?? 'b2c54a7a-5231-4de6-b3b1-c603abbaed00'}
+      tenantUrl={`https://login.microsoftonline.com/${
+        process.env.TENANT_ID ?? 'd72a7172-d5f8-4889-9a85-d7424751592a'
+      }`}
+      redirectUri={`${window.location.origin}/login`}
+      authCallback={authHandler}
+    />
   );
 };
 
