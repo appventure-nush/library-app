@@ -5,7 +5,6 @@ const controller = new AuthController();
 const router = Router();
 
 router.post('/token', controller.tokenAuthentication);
-// TODO: Temporary route before Office 365 OAuth
-router.post('/email', controller.emailAuthentication);
+router.post('/email', controller.azureAdIdTokenAuthentication);
 
 export default router;

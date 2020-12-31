@@ -4,10 +4,14 @@ import { actions } from './slice';
 import { toast } from 'react-toastify';
 import api from 'app/api';
 
-export function* authorize(action: PayloadAction<{ email: string }>) {
+export function* authorize(
+  action: PayloadAction<{
+    azureAdIdToken: String;
+  }>,
+) {
   try {
-    const { email } = action.payload;
-    const loggedIn = yield call(api.auth.emailLogin, email);
+    const { azureAdIdToken } = action.payload;
+    const loggedIn = yield call(api.auth.emailLogin, azureAdIdToken);
 
     if (!loggedIn) {
       throw new Error('Incorrect email');

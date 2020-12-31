@@ -1,28 +1,46 @@
 import { Request, Response } from 'express';
-import { verify } from 'jsonwebtoken';
+import { verify as azureVerify, VerifyOptions } from 'azure-ad-verify-token';
+import { verify as jsonVerify } from 'jsonwebtoken';
 import User from 'models/User';
 import { isRefreshTokenSignedPayload } from 'types/tokens';
 
 export default class AuthController {
-  // Temporary, to be removed after Office 365 OAuth
-  public emailAuthentication(req: Request, res: Response) {
-    // Check whether a user has a password. If no password, send passwordless login email
-    const email = req.body.email;
-    if (!email) {
+  public async azureAdIdTokenAuthentication(req: Request, res: Response) {
+    const { azureAdIdToken } = req.body;
+    if (!azureAdIdToken) {
       res.sendStatus(400);
       return;
     }
 
-    // Find if user exists in the database
-    // TODO: WARNING, DOESNT SUPPORT USERS WITH THE SAME NAME
-    const name = email.split('@')[0];
-    User.findOne<User>({
-      where: { name: name },
-    })
-      .then((user: User | null) =>
-        !!user ? res.status(201).json(user.createAuthenticationTokens()) : res.status(404).json(),
-      )
-      .catch((err: Error) => res.status(500).json(err));
+    const options: VerifyOptions = {
+      jwksUri: 'https://login.microsoftonline.com/common/discovery/keys',
+      issuer: 'https://login.microsoftonline.com/d72a7172-d5f8-4889-9a85-d7424751592a/v2.0',
+      audience: 'b2c54a7a-5231-4de6-b3b1-c603abbaed00',
+    };
+
+    azureVerify(azureAdIdToken, options)
+      .then((decoded: any) => {
+        console.log(decoded);
+        // verified and decoded token
+        User.findOrCreate<User>({
+          where: {
+            azureOid: decoded.oid,
+          },
+          defaults: {
+            name: decoded.name,
+            email: decoded.preferred_username,
+            azureOid: decoded.oid,
+            role: 1,
+          },
+        })
+          .then(([user, isNew]) => res.status(201).json(user.createAuthenticationTokens()))
+          .catch(err => res.status(500).json(err));
+      })
+      .catch(error => {
+        // invalid token
+        console.error(error);
+        res.sendStatus(401);
+      });
   }
 
   public tokenAuthentication(req: Request, res: Response) {
@@ -37,7 +55,7 @@ export default class AuthController {
       throw new Error('No valid input');
     }
 
-    const payload = verify(token, process.env.JWT_SECRET!);
+    const payload = jsonVerify(token, process.env.JWT_SECRET!);
 
     if (!isRefreshTokenSignedPayload(payload)) {
       throw new Error('No valid input');

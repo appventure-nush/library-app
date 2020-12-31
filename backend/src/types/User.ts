@@ -9,7 +9,9 @@ export enum Role {
 
 export interface UserAttributes {
   id: number;
+  azureOid: string;
   name: string;
+  email: string;
   role: Role;
 }
 

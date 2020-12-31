@@ -20,13 +20,12 @@ export async function tokenLogin(token: string) {
 }
 
 /**
- * TEMPORARY METHOD BEFORE OFFICE 365 OAUTH
- * Attempts to login with only an email.
+ * Attempts to login with an email
  */
-export async function emailLogin(email: string) {
+export async function emailLogin(azureAdIdToken: String) {
   try {
     const { data } = await client.post<AuthenticationData>(`${URL}/email`, {
-      email,
+      azureAdIdToken,
     });
     setAuthenticationTokens(data);
     return true;
