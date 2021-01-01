@@ -11,6 +11,7 @@ export interface ColumnProps {
   bookedSlotIdxes: SlotIdx[];
   onSlotIdxSelectStart: (delta: number) => void;
   onSlotIdxSelected: (delta: number, slotIdx?: SlotIdx) => void;
+  maxSlotNumber?: number;
 }
 
 export interface ColumnCallables {
@@ -26,6 +27,7 @@ const Column = React.forwardRef<ColumnCallables, ColumnProps>((props, ref) => {
     bookedSlotIdxes,
     onSlotIdxSelectStart,
     onSlotIdxSelected,
+    maxSlotNumber,
   } = props;
   const [selectedSlotIndexes, setSelectedSlotIndexes] = useState<
     Array<SlotIdx>
@@ -68,6 +70,14 @@ const Column = React.forwardRef<ColumnCallables, ColumnProps>((props, ref) => {
     !!bookedSlotIdxes.find(
       slot => slot.startIdx <= posIdx && posIdx <= slot.endIdx,
     );
+  const exceededMaximumSlots = (posIdx: number): Boolean =>
+    !!(
+      maxSlotNumber &&
+      Math.abs(
+        posIdx - selectedSlotIndexes[selectedSlotIndexes.length - 1].startIdx,
+      ) >
+        maxSlotNumber - 1
+    );
   const onDragStarted = (start: number) => {
     let posIdx = getRoundedPosIdx(start);
     if (!isOverlapping(posIdx)) {
@@ -81,7 +91,7 @@ const Column = React.forwardRef<ColumnCallables, ColumnProps>((props, ref) => {
   const onDragMoved = (newPos: number) => {
     if (!isDragging) return;
     let posIdx = getRoundedPosIdx(newPos);
-    if (isOverlapping(posIdx)) {
+    if (isOverlapping(posIdx) || exceededMaximumSlots(posIdx)) {
       cancelDrag();
     } else if (
       posIdx !== selectedSlotIndexes[selectedSlotIndexes.length - 1].endIdx

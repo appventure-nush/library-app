@@ -22,8 +22,8 @@ export interface BookingCreateData {
   roomId: number;
   purpose: string;
   details: string;
-  startTime: Date;
-  endTime: Date;
+  startTime: string;
+  endTime: string;
 }
 
 export interface BookingListViewData {

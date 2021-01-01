@@ -12,6 +12,7 @@ import User from 'models/User';
 import Room from 'models/Room';
 import { Role } from 'types/User';
 import database from 'config/database';
+import { DateTime } from 'luxon';
 
 export default class BookingsController {
   public async index(req: Request, res: Response) {
@@ -56,6 +57,14 @@ export default class BookingsController {
     const t = await database.transaction();
     try {
       const user = await User.findByPk<User>(userId, { transaction: t });
+      if (
+        user.role === Role.STUDENT &&
+        DateTime.fromISO(params.endTime)
+          .diff(DateTime.fromISO(params.startTime), 'hours')
+          .toObject().hours > 2
+      ) {
+        throw Error('Booking duration exceeded');
+      }
       const hasOverlappingBooking = await database.query(
         `SELECT * FROM bookings WHERE tstzrange("startTime", "endTime", '()') && tstzrange(?, ?, '()')`,
         {

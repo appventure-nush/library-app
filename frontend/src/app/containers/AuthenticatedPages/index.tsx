@@ -8,10 +8,9 @@ import {
   useHistory,
 } from 'react-router-dom';
 import { getRefreshToken, setRefreshToken } from 'app/localStorage';
-import { actions, reducer, sliceKey } from 'app/containers/LoginPage/slice';
-import { loginPageSaga } from 'app/containers/LoginPage/saga';
-import { getCurrentUser } from 'app/containers/LoginPage/selectors';
-import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
+import { actions, reducer, sliceKey } from './slice';
+import { getCurrentUser } from 'app/containers/AuthenticatedPages/selectors';
+import { useInjectReducer } from 'utils/redux-injectors';
 
 import StudentRoutes from './StudentRoutes';
 import LibrarianRoutes from './LibrarianRoutes';
@@ -114,7 +113,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const AuthenticatedPages: React.FC<Props> = props => {
   useInjectReducer({ key: sliceKey, reducer: reducer });
-  useInjectSaga({ key: sliceKey, saga: loginPageSaga });
 
   const history = useHistory();
   const dispatch = useDispatch();

@@ -2,12 +2,12 @@ import React, { useEffect } from 'react';
 import { Grid } from '@material-ui/core';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { Helmet } from 'react-helmet-async';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 
-import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
-import { reducer, sliceKey } from './slice';
-import { selectLoginPage, isLoggedIn } from './selectors';
+import { useInjectSaga } from 'utils/redux-injectors';
+import { sliceKey } from '../AuthenticatedPages/slice';
+import { isLoggedIn } from '../AuthenticatedPages/selectors';
 import { loginPageSaga } from './saga';
 import LoginForm from './components/LoginForm';
 import { getRefreshToken } from 'app/localStorage';
@@ -24,16 +24,11 @@ const useStyles = makeStyles(() =>
 );
 
 export const LoginPage: React.FC<Props> = (props: Props) => {
-  useInjectReducer({ key: sliceKey, reducer: reducer });
   useInjectSaga({ key: sliceKey, saga: loginPageSaga });
   const classes = useStyles();
   const history = useHistory();
 
   const loggedIn = useSelector(isLoggedIn);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const loginPage = useSelector(selectLoginPage);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const dispatch = useDispatch();
 
   // redirect to homepage if logged in
   useEffect(() => {
