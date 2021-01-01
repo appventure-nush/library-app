@@ -19,6 +19,8 @@ const database = new Sequelize(POSTGRES_DBNAME, POSTGRES_USERNAME, POSTGRES_PASS
   host: POSTGRES_HOST,
   port: Number(POSTGRES_PORT),
   dialect: 'postgres',
+  timezone: 'Asia/Singapore',
+  logging: false,
 });
 
 export default database;
