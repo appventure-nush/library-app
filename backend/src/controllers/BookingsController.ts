@@ -6,11 +6,12 @@ import {
   BookingType,
   BookingViewData,
 } from 'types/Booking';
-import { DestroyOptions, Op } from 'sequelize';
+import { DestroyOptions, Op, QueryTypes } from 'sequelize';
 import { AccessTokenSignedPayload } from 'types/tokens';
 import User from 'models/User';
 import Room from 'models/Room';
 import { Role } from 'types/User';
+import database from 'config/database';
 
 export default class BookingsController {
   public async index(req: Request, res: Response) {
@@ -52,10 +53,22 @@ export default class BookingsController {
     const payload = res.locals.payload as AccessTokenSignedPayload;
     const { userId } = payload;
     const params: BookingCreateData = req.body;
+    const t = await database.transaction();
     try {
-      const user = await User.findByPk<User>(userId);
-      user
-        .createBooking({
+      const user = await User.findByPk<User>(userId, { transaction: t });
+      const hasOverlappingBooking = await database.query(
+        `SELECT * FROM bookings WHERE tstzrange("startTime", "endTime", '()') && tstzrange(?, ?, '()')`,
+        {
+          type: QueryTypes.SELECT,
+          replacements: [params.startTime, params.endTime],
+          transaction: t,
+        },
+      );
+      if (hasOverlappingBooking.length !== 0) {
+        throw Error('Slot already booked');
+      }
+      const newBooking = await user.createBooking(
+        {
           type: BookingType.BOOKING,
           userId: userId,
           roomId: params.roomId,
@@ -63,12 +76,13 @@ export default class BookingsController {
           details: params.details,
           startTime: params.startTime,
           endTime: params.endTime,
-        })
-        .then((booking: Booking) => res.status(201).json(booking))
-        .catch((err: Error) => {
-          res.status(500).json(err);
-        });
+        },
+        { transaction: t },
+      );
+      await t.commit();
+      res.status(201).json(newBooking);
     } catch (err) {
+      await t.rollback();
       res.status(500).json(err);
     }
   }

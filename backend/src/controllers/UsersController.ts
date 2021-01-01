@@ -11,19 +11,6 @@ export default class UsersController {
       .catch((err: Error) => res.status(500).json(err));
   }
 
-  public create(req: Request, res: Response) {
-    const params: UserCreationAttributes = req.body;
-
-    User.create<User>(params)
-      .then((user: User) =>
-        res.status(201).json({
-          user: user,
-          ...user.createAuthenticationTokens(),
-        }),
-      )
-      .catch((err: Error) => res.status(500).json(err));
-  }
-
   public show(req: Request, res: Response) {
     const userId: number = Number(req.params.id);
 
