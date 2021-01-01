@@ -11,27 +11,31 @@ export default class WeeksController {
     const startDate = now.startOf('weeks').startOf('day');
     const endDate = startDate.endOf('weeks').minus({ days: 2 });
 
-    const bookedSlotPromises = await WeeksController.getBookingSlots(
-      BookingType.BOOKING,
-      startDate.toJSDate(),
-      endDate.toJSDate(),
-    );
+    try {
+      const bookedSlotPromises = await WeeksController.getBookingSlots(
+        BookingType.BOOKING,
+        startDate.toJSDate(),
+        endDate.toJSDate(),
+      );
 
-    const disabledSlotPromises = await WeeksController.getBookingSlots(
-      BookingType.DISABLED,
-      startDate.toJSDate(),
-      endDate.toJSDate(),
-    );
+      const disabledSlotPromises = await WeeksController.getBookingSlots(
+        BookingType.DISABLED,
+        startDate.toJSDate(),
+        endDate.toJSDate(),
+      );
 
-    Promise.all([bookedSlotPromises, disabledSlotPromises])
-      .then(resultArray => {
-        const weekViewData: WeekViewData = {
-          bookedSlots: resultArray[0],
-          disabledSlots: resultArray[1],
-        };
-        res.status(201).json(weekViewData);
-      })
-      .catch((err: Error) => res.status(500).json(err));
+      Promise.all([bookedSlotPromises, disabledSlotPromises])
+        .then(resultArray => {
+          const weekViewData: WeekViewData = {
+            bookedSlots: resultArray[0],
+            disabledSlots: resultArray[1],
+          };
+          res.status(201).json(weekViewData);
+        })
+        .catch((err: Error) => res.status(500).json(err));
+    } catch (err) {
+      res.sendStatus(500);
+    }
   }
 
   private static async getBookingSlots(
