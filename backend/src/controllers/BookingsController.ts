@@ -14,73 +14,15 @@ import { Role } from 'types/User';
 
 export default class BookingsController {
   public async index(req: Request, res: Response) {
-    const bookings = await Booking.findAll<Booking>({
-      where: { type: BookingType.BOOKING },
-      order: [['startTime', 'DESC']],
-    }).then((bookings: Array<Booking>) =>
-      bookings.map(async booking => {
-        const user = await User.findByPk<User>(booking.userId);
-        const room = await Room.findByPk<Room>(booking.roomId);
-        const bookingListViewData: BookingListViewData = {
-          id: booking.id,
-          user: {
-            id: user.id,
-            name: user.name,
-            role: user.role,
-          },
-          room: {
-            id: room.id,
-            name: room.name,
-          },
-          purpose: booking.purpose,
-          startTime: booking.startTime,
-          endTime: booking.endTime,
-        };
-        return bookingListViewData;
-      }),
-    );
-    Promise.all(bookings)
-      .then(bookings => res.status(201).json(bookings))
-      .catch((err: Error) => res.status(500).json(err));
-  }
-
-  public async create(req: Request, res: Response) {
-    const payload = res.locals.payload as AccessTokenSignedPayload;
-    const { userId } = payload;
-    const params: BookingCreateData = req.body;
-    const user = await User.findByPk<User>(userId);
-    user
-      .createBooking({
-        type: BookingType.BOOKING,
-        userId: userId,
-        roomId: params.roomId,
-        purpose: params.purpose,
-        details: params.details,
-        startTime: params.startTime,
-        endTime: params.endTime,
-      })
-      .then((booking: Booking) => res.status(201).json(booking))
-      .catch((err: Error) => {
-        res.status(500).json(err);
-      });
-  }
-
-  public async show(req: Request, res: Response) {
-    const payload = res.locals.payload as AccessTokenSignedPayload;
-    const { userId } = payload;
-    const currentUser = await User.findByPk<User>(userId);
-    const bookingId: number = Number(req.params.id);
-
-    Booking.findByPk<Booking>(bookingId)
-      .then(async (booking: Booking | null) => {
-        if (booking) {
-          if (currentUser.role <= Role.LIBRARIAN && currentUser.id !== booking.userId) {
-            res.sendStatus(401);
-            return;
-          }
+    try {
+      const bookings = await Booking.findAll<Booking>({
+        where: { type: BookingType.BOOKING },
+        order: [['startTime', 'DESC']],
+      }).then((bookings: Array<Booking>) =>
+        bookings.map(async booking => {
           const user = await User.findByPk<User>(booking.userId);
           const room = await Room.findByPk<Room>(booking.roomId);
-          const bookingViewData: BookingViewData = {
+          const bookingListViewData: BookingListViewData = {
             id: booking.id,
             user: {
               id: user.id,
@@ -94,14 +36,76 @@ export default class BookingsController {
             purpose: booking.purpose,
             startTime: booking.startTime,
             endTime: booking.endTime,
-            details: booking.details,
           };
-          res.status(201).json(bookingViewData);
-        } else {
-          res.sendStatus(404);
-        }
-      })
-      .catch((err: Error) => res.status(500).json(err));
+          return bookingListViewData;
+        }),
+      );
+      Promise.all(bookings)
+        .then(bookings => res.status(201).json(bookings))
+        .catch((err: Error) => res.status(500).json(err));
+    } catch (err) {
+      res.sendStatus(500);
+    }
+  }
+
+  public async create(req: Request, res: Response) {
+    const payload = res.locals.payload as AccessTokenSignedPayload;
+    const { userId } = payload;
+    const params: BookingCreateData = req.body;
+    try {
+      const user = await User.findByPk<User>(userId);
+      user
+        .createBooking({
+          type: BookingType.BOOKING,
+          userId: userId,
+          roomId: params.roomId,
+          purpose: params.purpose,
+          details: params.details,
+          startTime: params.startTime,
+          endTime: params.endTime,
+        })
+        .then((booking: Booking) => res.status(201).json(booking))
+        .catch((err: Error) => {
+          res.status(500).json(err);
+        });
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  }
+
+  public async show(req: Request, res: Response) {
+    const payload = res.locals.payload as AccessTokenSignedPayload;
+    const { userId } = payload;
+    try {
+      const currentUser = await User.findByPk<User>(userId);
+      const bookingId: number = Number(req.params.id);
+      const booking = await Booking.findByPk<Booking>(bookingId);
+      if (currentUser.role <= Role.LIBRARIAN && currentUser.id !== booking.userId) {
+        res.sendStatus(401);
+        return;
+      }
+      const user = await User.findByPk<User>(booking.userId);
+      const room = await Room.findByPk<Room>(booking.roomId);
+      const bookingViewData: BookingViewData = {
+        id: booking.id,
+        user: {
+          id: user.id,
+          name: user.name,
+          role: user.role,
+        },
+        room: {
+          id: room.id,
+          name: room.name,
+        },
+        purpose: booking.purpose,
+        startTime: booking.startTime,
+        endTime: booking.endTime,
+        details: booking.details,
+      };
+      res.status(201).json(bookingViewData);
+    } catch (err) {
+      res.sendStatus(500);
+    }
   }
 
   public async indexSelf(req: Request, res: Response) {
@@ -109,7 +113,7 @@ export default class BookingsController {
     const { userId } = payload;
 
     const bookings = await Booking.findAll<Booking>({
-      where: { userId: userId, type: BookingType.BOOKING.valueOf() },
+      where: { userId: userId, type: BookingType.BOOKING },
       order: [['startTime', 'DESC']],
     }).then((bookings: Array<Booking>) => {
       return bookings.map(async booking => {
@@ -136,7 +140,10 @@ export default class BookingsController {
 
     Promise.all(bookings)
       .then(bookings => res.status(201).json(bookings))
-      .catch((err: Error) => res.status(500).json(err));
+      .catch((err: Error) => {
+        res.status(500).json(err);
+        console.log(err);
+      });
   }
 
   public indexUpcoming(req: Request, res: Response) {

@@ -20,7 +20,6 @@ export default class AuthController {
 
     azureVerify(azureAdIdToken, options)
       .then((decoded: any) => {
-        console.log(decoded);
         // verified and decoded token
         User.findOrCreate<User>({
           where: {
@@ -38,7 +37,6 @@ export default class AuthController {
       })
       .catch(error => {
         // invalid token
-        console.error(error);
         res.sendStatus(401);
       });
   }

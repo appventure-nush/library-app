@@ -81,10 +81,12 @@ module.exports = {
       },
       roomId: {
         type: Sequelize.INTEGER,
-        model: {
-          tableName: 'rooms',
+        references: {
+          model: {
+            tableName: 'rooms',
+          },
+          key: 'id',
         },
-        key: 'id',
         allowNull: false,
       },
       purpose: {
