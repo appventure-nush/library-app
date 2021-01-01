@@ -14,6 +14,7 @@ export interface TimeSlotPickerProps {
   hasPreviousWeek: Boolean;
   onChangeNextWeek: () => void;
   onChangePrevWeek: () => void;
+  maxSlotNumber?: number;
 }
 
 export const TimeSlotPicker: React.FC<TimeSlotPickerProps> = props => {
@@ -26,6 +27,7 @@ export const TimeSlotPicker: React.FC<TimeSlotPickerProps> = props => {
     hasNextWeek,
     onChangeNextWeek,
     onChangePrevWeek,
+    maxSlotNumber,
   } = props;
   const { title, weekYear, weekNumber } = currentWeek;
   const referenceDate = DateTime.fromObject({
@@ -49,6 +51,7 @@ export const TimeSlotPicker: React.FC<TimeSlotPickerProps> = props => {
         referenceDate={referenceDate}
         disabledSlots={disabledSlots}
         bookedSlots={bookedSlots}
+        maxSlotNumber={maxSlotNumber}
       />
     </Paper>
   );
