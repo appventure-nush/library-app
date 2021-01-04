@@ -12,6 +12,7 @@ export interface WeekCalendarProps {
   referenceDate: DateTime;
   disabledSlots: Slot[];
   bookedSlots: Slot[];
+  maxSlotNumber?: number;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -32,7 +33,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const WeekCalendar: React.FC<WeekCalendarProps> = props => {
-  const { fieldName, referenceDate, disabledSlots, bookedSlots } = props;
+  const {
+    fieldName,
+    referenceDate,
+    disabledSlots,
+    bookedSlots,
+    maxSlotNumber,
+  } = props;
   const [columnRefs, setColumnRefs] = useState<
     Array<React.RefObject<ColumnCallables>>
   >([]);
@@ -111,6 +118,7 @@ const WeekCalendar: React.FC<WeekCalendarProps> = props => {
                 <Column
                   ref={columnRefs[delta]}
                   delta={delta}
+                  maxSlotNumber={maxSlotNumber}
                   disabledSlotIdxes={processedDisabledSlots[delta]}
                   bookedSlotIdxes={processedBookedSlots[delta]}
                   onSlotIdxSelectStart={(delta: number) => {
