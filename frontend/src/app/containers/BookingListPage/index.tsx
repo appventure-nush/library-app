@@ -54,11 +54,13 @@ export function BookingListPage(props: Props) {
         okType: 'danger',
         cancelText: 'No',
         onOk: () => {
-          api.booking.cancelBooking(bookingId);
+          api.booking
+            .cancelBooking(bookingId)
+            .then(() => dispatch(actions.loadBookings()));
         },
       });
     },
-    [],
+    [dispatch],
   );
 
   const columns = [

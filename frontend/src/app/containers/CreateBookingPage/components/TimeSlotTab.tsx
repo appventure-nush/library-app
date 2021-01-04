@@ -79,12 +79,14 @@ const TimeSlotTab: React.FC<TimeSlotTabProps> = props => {
         dispatch(
           actions.saveCurrentWeekSlots({ bookedSlots: [], disabledSlots: [] }),
         );
+        setFieldValue('timeSlot', undefined);
       }}
       onChangePrevWeek={() => {
         setDeltaWeek(deltaWeek - 1);
         dispatch(
           actions.saveCurrentWeekSlots({ bookedSlots: [], disabledSlots: [] }),
         );
+        setFieldValue('timeSlot', undefined);
       }}
     />
   );
