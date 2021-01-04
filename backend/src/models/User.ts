@@ -17,7 +17,7 @@ import Booking from './Booking';
 export default class User
   extends Model<UserAttributes, UserCreationAttributes>
   implements UserAttributes {
-  public id!: number;
+  public id!: string;
   public azureOid!: string;
   public name!: string;
   public email!: string;
@@ -57,7 +57,8 @@ export default class User
 User.init(
   {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       autoIncrement: true,
       primaryKey: true,
     },

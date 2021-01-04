@@ -11,6 +11,7 @@ export function* loadCurrentWeekSlots(action: PayloadAction<number>) {
 export function* loadBookableRooms() {
   const rooms = yield call(api.room.getBookableRooms);
   yield put(actions.saveBookableRooms(rooms.data));
+  if (rooms.length !== 0) yield put(actions.updateCurrentRoom(0));
 }
 
 export function* createBookingPageSaga() {

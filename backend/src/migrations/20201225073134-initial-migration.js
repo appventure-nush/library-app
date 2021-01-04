@@ -3,8 +3,8 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('users', {
       id: {
-        type: Sequelize.INTEGER,
-        autoIncrement: true,
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
         primaryKey: true,
       },
       azureOid: {
@@ -69,8 +69,12 @@ module.exports = {
         type: Sequelize.SMALLINT,
         allowNull: false,
       },
+      status: {
+        type: Sequelize.SMALLINT,
+        allowNull: false,
+      },
       userId: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         references: {
           model: {
             tableName: 'users',

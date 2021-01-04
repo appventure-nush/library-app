@@ -15,12 +15,12 @@ type TokenLifespan = {
 };
 
 export type AccessTokenPayload = Payload<BearerTokenType.AccessToken> & {
-  userId: number;
+  userId: string;
 };
 export type AccessTokenSignedPayload = AccessTokenPayload & TokenLifespan;
 
 export type RefreshTokenPayload = Payload<BearerTokenType.RefreshToken> & {
-  userId: number;
+  userId: string;
 };
 export type RefreshTokenSignedPayload = RefreshTokenPayload & TokenLifespan;
 
@@ -43,7 +43,7 @@ function hasTokenLifespan(payload: any) {
 }
 
 export function isAccessTokenPayload(payload: any): payload is AccessTokenPayload {
-  return typeof payload.userId === 'number' && isPayload(payload, BearerTokenType.AccessToken);
+  return typeof payload.userId === 'string' && isPayload(payload, BearerTokenType.AccessToken);
 }
 
 export function isAccessTokenSignedPayload(payload: any): payload is AccessTokenSignedPayload {
@@ -51,7 +51,7 @@ export function isAccessTokenSignedPayload(payload: any): payload is AccessToken
 }
 
 export function isRefreshTokenPayload(payload: any): payload is RefreshTokenPayload {
-  return typeof payload.userId === 'number' && isPayload(payload, BearerTokenType.RefreshToken);
+  return typeof payload.userId === 'string' && isPayload(payload, BearerTokenType.RefreshToken);
 }
 
 export function isRefreshTokenSignedPayload(payload: any): payload is RefreshTokenSignedPayload {

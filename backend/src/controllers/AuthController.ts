@@ -43,25 +43,29 @@ export default class AuthController {
 
   public tokenAuthentication(req: Request, res: Response) {
     const authorization = req.headers.authorization;
-    if (!authorization) {
-      throw new Error('No valid input');
+    try {
+      if (!authorization) {
+        throw new Error('No valid input');
+      }
+
+      const [type, token] = authorization.split(' ');
+
+      if (type !== 'Bearer') {
+        throw new Error('No valid input');
+      }
+
+      const payload = jsonVerify(token, process.env.JWT_SECRET!);
+
+      if (!isRefreshTokenSignedPayload(payload)) {
+        throw new Error('No valid input');
+      }
+      const { userId } = payload;
+
+      User.findByPk<User>(userId).then((user: User | null) =>
+        user ? res.status(201).json(user.createAuthenticationTokens()) : res.sendStatus(404),
+      );
+    } catch (err) {
+      res.sendStatus(500);
     }
-
-    const [type, token] = authorization.split(' ');
-
-    if (type !== 'Bearer') {
-      throw new Error('No valid input');
-    }
-
-    const payload = jsonVerify(token, process.env.JWT_SECRET!);
-
-    if (!isRefreshTokenSignedPayload(payload)) {
-      throw new Error('No valid input');
-    }
-    const { userId } = payload;
-
-    User.findByPk<User>(userId).then((user: User | null) =>
-      user ? res.status(201).json(user.createAuthenticationTokens()) : res.sendStatus(404),
-    );
   }
 }
