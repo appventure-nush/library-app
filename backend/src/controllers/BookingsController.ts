@@ -66,10 +66,10 @@ export default class BookingsController {
         throw Error('Booking duration exceeded');
       }
       const hasOverlappingBooking = await database.query(
-        `SELECT * FROM bookings WHERE tstzrange("startTime", "endTime", '()') && tstzrange(?, ?, '()')`,
+        `SELECT * FROM bookings WHERE "roomId"=? AND tstzrange("startTime", "endTime", '()') && tstzrange(?, ?, '()')`,
         {
           type: QueryTypes.SELECT,
-          replacements: [params.startTime, params.endTime],
+          replacements: [params.roomId, params.startTime, params.endTime],
           transaction: t,
         },
       );

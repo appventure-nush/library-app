@@ -13,6 +13,7 @@ import { toast } from 'react-toastify';
 interface Props {}
 
 export interface BookingFormValues {
+  roomId: number;
   purpose: String;
   details: String;
   timeSlot?: { start: DateTime; end: DateTime };
@@ -32,6 +33,7 @@ export const CreateBookingPage = memo((props: Props) => {
       </Helmet>
       <Formik
         initialValues={{
+          roomId: 0,
           purpose: '',
           details: '',
         }}
@@ -46,7 +48,7 @@ export const CreateBookingPage = memo((props: Props) => {
 
           api.booking
             .createBooking({
-              roomId: 1,
+              roomId: values.roomId,
               purpose: values.purpose,
               details: values.details,
               startTime: values.timeSlot.start.toJSDate(),
