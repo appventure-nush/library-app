@@ -14,6 +14,10 @@ export async function createBooking(
   return client.post(`${URL}`, bookingCreateData);
 }
 
+export async function cancelBooking(id: number): Promise<AxiosResponse<any>> {
+  return client.patch(`${URL}/${id}/cancel`);
+}
+
 export async function getUpComingBookings(): Promise<
   AxiosResponse<Array<BookingListData>>
 > {

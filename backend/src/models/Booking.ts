@@ -1,12 +1,18 @@
 import { Model, DataTypes } from 'sequelize';
 import database from 'config/database';
-import { BookingAttributes, BookingCreationAttributes, BookingType } from 'types/Booking';
+import {
+  BookingAttributes,
+  BookingCreationAttributes,
+  BookingStatus,
+  BookingType,
+} from 'types/Booking';
 export default class Booking
   extends Model<BookingAttributes, BookingCreationAttributes>
   implements BookingAttributes {
   public id!: number;
   public type!: BookingType;
-  public userId!: number;
+  public status!: BookingStatus;
+  public userId!: string;
   public roomId!: number;
   public purpose!: string;
   public details!: string;
@@ -28,8 +34,13 @@ Booking.init(
       type: DataTypes.SMALLINT,
       allowNull: false,
     },
+    status: {
+      type: DataTypes.SMALLINT,
+      allowNull: false,
+    },
     userId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       allowNull: false,
     },
     roomId: {

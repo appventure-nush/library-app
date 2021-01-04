@@ -17,6 +17,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import { Breadcrumbs, Link, Typography } from '@material-ui/core';
 import { roleString, roleColor } from 'types/User';
+import { BookingStatusBadge, BookingStatusString } from 'types/Booking';
 
 interface Props {}
 
@@ -115,7 +116,10 @@ export function MyBookingDetailPage(props: Props) {
             span={2}
             labelStyle={{ backgroundColor: '#c9c9c9' }}
           >
-            <Badge status="processing" text="Confirmed" />
+            <Badge
+              status={BookingStatusBadge[booking.status]}
+              text={BookingStatusString[booking.status]}
+            />
           </Descriptions.Item>
           <Descriptions.Item
             label="Details"

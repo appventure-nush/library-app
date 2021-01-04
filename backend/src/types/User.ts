@@ -8,7 +8,7 @@ export enum Role {
 }
 
 export interface UserAttributes {
-  id: number;
+  id: string;
   azureOid: string;
   name: string;
   email: string;
@@ -16,7 +16,7 @@ export interface UserAttributes {
 }
 
 export interface UserListData {
-  id: number;
+  id: string;
   name: string;
   role: Role;
 }

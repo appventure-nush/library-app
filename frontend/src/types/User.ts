@@ -20,7 +20,7 @@ export const roleColor: Record<Role, string> = {
 };
 
 export interface UserListData {
-  id: number;
+  id: string;
   name: string;
   role: Role;
 }

@@ -7,10 +7,17 @@ export enum BookingType {
   DISABLED = 2,
 }
 
+export enum BookingStatus {
+  CONFIRMED = 1,
+  CANCELLED = 2,
+  DELETED = 3,
+}
+
 export interface BookingAttributes {
   id: number;
   type: BookingType;
-  userId: number;
+  status: BookingStatus;
+  userId: string;
   roomId: number;
   purpose: string;
   details: string;
@@ -28,6 +35,7 @@ export interface BookingCreateData {
 
 export interface BookingListViewData {
   id: number;
+  status: BookingStatus;
   user: UserListData;
   room: RoomListData;
   purpose: string;

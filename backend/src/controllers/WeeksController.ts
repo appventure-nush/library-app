@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import Booking from 'models/Booking';
-import { BookingType } from 'types/Booking';
+import { BookingStatus, BookingType } from 'types/Booking';
 import { Op } from 'sequelize';
 import { DateTime } from 'luxon';
 import { Slot, WeekViewData } from 'types/Week';
@@ -52,6 +52,7 @@ export default class WeeksController {
     return Booking.findAll<Booking>({
       where: {
         roomId: roomId,
+        status: BookingStatus.CONFIRMED,
         type: type,
         startTime: { [Op.between]: [startDate, endDate] },
       },

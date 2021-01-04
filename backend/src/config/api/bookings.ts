@@ -12,6 +12,7 @@ router.post('/', controller.create);
 router.get('/self', controller.indexSelf);
 router.get('/upcoming', controller.indexUpcoming);
 
+router.patch('/:id/cancel', controller.cancel);
 router.get('/:id', controller.show);
 router.delete('/:id', [checkRole(Role.LIBRARIAN)], controller.delete);
 
