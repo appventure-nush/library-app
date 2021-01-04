@@ -16,7 +16,10 @@ const createBookingPageSlice = createSlice({
   name: 'createBookingPage',
   initialState,
   reducers: {
-    loadCurrentWeekSlots(state, action: PayloadAction<number>) {},
+    loadCurrentWeekSlots(
+      state,
+      action: PayloadAction<{ roomId: number; delta: number }>,
+    ) {},
     saveCurrentWeekSlots(state, action: PayloadAction<WeekViewData>) {
       state.bookedSlots = action.payload.bookedSlots;
       state.disabledSlots = action.payload.disabledSlots;
