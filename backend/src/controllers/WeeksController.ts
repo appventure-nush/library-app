@@ -12,13 +12,16 @@ export default class WeeksController {
     const endDate = startDate.endOf('weeks').minus({ days: 2 });
 
     try {
+      const roomId = Number(req.query.roomId);
       const bookedSlotPromises = await WeeksController.getBookingSlots(
+        roomId,
         BookingType.BOOKING,
         startDate.toJSDate(),
         endDate.toJSDate(),
       );
 
       const disabledSlotPromises = await WeeksController.getBookingSlots(
+        roomId,
         BookingType.DISABLED,
         startDate.toJSDate(),
         endDate.toJSDate(),
@@ -32,19 +35,23 @@ export default class WeeksController {
           };
           res.status(201).json(weekViewData);
         })
-        .catch((err: Error) => res.status(500).json(err));
+        .catch((err: Error) => {
+          throw err;
+        });
     } catch (err) {
       res.sendStatus(500);
     }
   }
 
   private static async getBookingSlots(
+    roomId: number,
     type: BookingType,
     startDate: Date,
     endDate: Date,
   ): Promise<Slot[]> {
     return Booking.findAll<Booking>({
       where: {
+        roomId: roomId,
         type: type,
         startTime: { [Op.between]: [startDate, endDate] },
       },

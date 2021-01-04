@@ -1,15 +1,11 @@
-import { Button } from '@material-ui/core';
+import { Button, Paper, Tab, Tabs } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { TimeSlotPicker } from 'app/components/TimeSlotPicker';
-import { Slot } from 'app/components/TimeSlotPicker/types';
-import { getCurrentUser } from 'app/containers/AuthenticatedPages/selectors';
 import { useField } from 'formik';
-import { DateTime } from 'luxon';
 import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Role } from 'types/User';
-import { selectCreateBookingPage } from '../selectors';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectRooms } from '../selectors';
 import { actions } from '../slice';
+import TimeSlotTab from './TimeSlotTab';
 
 interface SelectTimeSlotStepProps {
   handleNext: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -29,44 +25,42 @@ const SelectTimeSlotStep: React.FC<SelectTimeSlotStepProps> = props => {
   const { handleNext } = props;
   const classes = useStyles();
   const timeSlot = useField('timeSlot');
+  const [tabValue, setTabValue] = React.useState(0);
 
-  const currentUser = useSelector(getCurrentUser);
-  const { bookedSlots, disabledSlots } = useSelector(selectCreateBookingPage);
+  const rooms = useSelector(selectRooms);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(actions.loadCurrentWeekSlots());
+    dispatch(actions.loadBookableRooms());
   }, [dispatch]);
+
+  const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+    setTabValue(newValue);
+    dispatch(actions.updateCurrentRoom(newValue));
+  };
 
   return (
     <div className={classes.actionsContainer}>
-      <TimeSlotPicker
-        fieldName="timeSlot"
-        maxSlotNumber={
-          currentUser && currentUser.role === Role.STUDENT ? 4 : undefined
-        }
-        currentWeek={{ title: 'Week 1', weekYear: 2020, weekNumber: 53 }}
-        disabledSlots={disabledSlots.map(slot => {
-          const pickerSlot: Slot = {
-            startTime: DateTime.fromISO(slot.startTime),
-            endTime: DateTime.fromISO(slot.endTime),
-            color: 'volcano',
-          };
-          return pickerSlot;
-        })}
-        bookedSlots={bookedSlots.map(slot => {
-          const pickerSlot: Slot = {
-            startTime: DateTime.fromISO(slot.startTime),
-            endTime: DateTime.fromISO(slot.endTime),
-            color: 'volcano',
-          };
-          return pickerSlot;
-        })}
-        hasNextWeek={false}
-        hasPreviousWeek={false}
-        onChangeNextWeek={() => {}}
-        onChangePrevWeek={() => {}}
-      />
+      <Paper square>
+        <Tabs
+          value={tabValue}
+          indicatorColor="primary"
+          textColor="primary"
+          onChange={handleTabChange}
+          aria-label="disabled tabs example"
+        >
+          {rooms.map(room => (
+            <Tab key={room.id} label={room.name} />
+          ))}
+        </Tabs>
+      </Paper>
+      <div
+        role="tabpanel"
+        id={`wrapped-tabpanel`}
+        aria-labelledby={`wrapped-tab`}
+      >
+        <TimeSlotTab />
+      </div>
       <div>
         <Button disabled className={classes.button}>
           Back
