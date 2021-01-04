@@ -4,15 +4,28 @@ import { BookingStatus, BookingType } from 'types/Booking';
 import { Op } from 'sequelize';
 import { DateTime } from 'luxon';
 import { Slot, WeekViewData } from 'types/Week';
+import { AccessTokenSignedPayload } from 'types/tokens';
+import User from 'models/User';
+import { Role } from 'types/User';
 
 export default class WeeksController {
   public async showCurrent(req: Request, res: Response) {
-    const now = DateTime.local();
-    const startDate = now.startOf('weeks').startOf('day');
-    const endDate = startDate.endOf('weeks').minus({ days: 2 });
-
     try {
+      const payload = res.locals.payload as AccessTokenSignedPayload;
+      const { userId } = payload;
+      const user = await User.findByPk<User>(userId);
+
       const roomId = Number(req.query.roomId);
+      const deltaWeek = Number(req.query.delta);
+
+      if (user.role === Role.STUDENT && deltaWeek > 2) {
+        res.sendStatus(401);
+        return;
+      }
+
+      const now = DateTime.local();
+      const startDate = now.startOf('weeks').startOf('day').plus({ weeks: deltaWeek });
+      const endDate = startDate.endOf('weeks').minus({ days: 2 });
       const bookedSlotPromises = await WeeksController.getBookingSlots(
         roomId,
         BookingType.BOOKING,

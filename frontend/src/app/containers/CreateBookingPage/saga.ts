@@ -3,8 +3,11 @@ import api from 'app/api';
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { actions } from './slice';
 
-export function* loadCurrentWeekSlots(action: PayloadAction<number>) {
-  const bookings = yield call(api.week.getCurrentWeekSlots, action.payload);
+export function* loadCurrentWeekSlots(
+  action: PayloadAction<{ roomId: number; delta: number }>,
+) {
+  const { roomId, delta } = action.payload;
+  const bookings = yield call(api.week.getCurrentWeekSlots, roomId, delta);
   yield put(actions.saveCurrentWeekSlots(bookings.data));
 }
 
