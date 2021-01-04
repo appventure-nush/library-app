@@ -1,6 +1,6 @@
 import { Grid, Typography, Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { useFormikContext } from 'formik';
+import { useField } from 'formik';
 import { DateTime } from 'luxon';
 import React, { useState, useEffect, createRef, useMemo } from 'react';
 import Column, { ColumnCallables } from './Column';
@@ -44,13 +44,21 @@ const WeekCalendar: React.FC<WeekCalendarProps> = props => {
     Array<React.RefObject<ColumnCallables>>
   >([]);
   const classes = useStyles();
-  const { setFieldValue } = useFormikContext();
+  const [field, , helpers] = useField(fieldName);
 
   useEffect(() => {
     setColumnRefs(columnRefs =>
       Array.from(Array(5).keys()).map(i => columnRefs[i] || createRef()),
     );
   }, []);
+
+  useEffect(() => {
+    if (field.value === undefined) {
+      columnRefs.forEach((columnRef, i) => {
+        columnRef.current && columnRef.current.removeSelectedTimeSlots();
+      });
+    }
+  }, [columnRefs, field.value]);
 
   const processedDisabledSlots = useMemo(() => {
     var disabledSlotIndexes: SlotIdx[][] = Array.from(
@@ -134,12 +142,12 @@ const WeekCalendar: React.FC<WeekCalendarProps> = props => {
                         slotIdx,
                         referenceDate.plus({ days: delta }),
                       );
-                      setFieldValue(fieldName, {
+                      helpers.setValue({
                         start: slot.startTime,
                         end: slot.endTime,
                       });
                     } else {
-                      setFieldValue(fieldName, undefined);
+                      helpers.setValue(undefined);
                     }
                   }}
                 />
