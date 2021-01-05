@@ -1,5 +1,6 @@
-import apiServer from './server';
 import { Settings } from 'luxon';
+
+import apiServer from './server';
 
 Settings.defaultZoneName = 'Asia/Singapore';
 

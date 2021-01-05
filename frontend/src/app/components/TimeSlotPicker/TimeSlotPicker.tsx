@@ -1,9 +1,11 @@
-import { Paper } from '@material-ui/core';
+import { DateTime } from 'luxon';
 import React from 'react';
+
+import { Paper } from '@material-ui/core';
+
+import { Slot, Week } from './types';
 import WeekCalendar from './WeekCalendar';
 import WeekPicker from './WeekPicker';
-import { Slot, Week } from './types';
-import { DateTime } from 'luxon';
 
 export interface TimeSlotPickerProps {
   fieldName: string;

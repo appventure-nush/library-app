@@ -1,5 +1,6 @@
 import { AxiosResponse } from 'axios';
 import { WeekViewData } from 'types/Week';
+
 import client from './client';
 
 const URL = '/weeks';

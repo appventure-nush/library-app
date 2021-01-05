@@ -4,20 +4,21 @@
  *
  */
 
+import { Badge, Descriptions, Space, Tag } from 'antd';
+import { DateTime } from 'luxon';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useSelector, useDispatch } from 'react-redux';
-
-import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
-import { actions, reducer, sliceKey } from '../BookingDetailPage/slice';
-import { selectBookingDetailPage } from '../BookingDetailPage/selectors';
-import { myBookingDetailPageSaga } from './saga';
-import { Descriptions, Badge, Space, Tag } from 'antd';
-import { useParams, useHistory } from 'react-router-dom';
-import { DateTime } from 'luxon';
-import { Breadcrumbs, Link, Typography } from '@material-ui/core';
-import { roleString, roleColor } from 'types/User';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, useParams } from 'react-router-dom';
 import { BookingStatusBadge, BookingStatusString } from 'types/Booking';
+import { roleColor, roleString } from 'types/User';
+import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
+
+import { Breadcrumbs, Link, Typography } from '@material-ui/core';
+
+import { selectBookingDetailPage } from '../BookingDetailPage/selectors';
+import { actions, reducer, sliceKey } from '../BookingDetailPage/slice';
+import { myBookingDetailPageSaga } from './saga';
 
 interface Props {}
 

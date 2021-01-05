@@ -1,16 +1,17 @@
+import { getRefreshToken } from 'app/localStorage';
 import React, { useEffect } from 'react';
-import { Grid } from '@material-ui/core';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { Helmet } from 'react-helmet-async';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
-
 import { useInjectSaga } from 'utils/redux-injectors';
-import { sliceKey } from '../AuthenticatedPages/slice';
+
+import { Grid } from '@material-ui/core';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
+
 import { isLoggedIn } from '../AuthenticatedPages/selectors';
-import { loginPageSaga } from './saga';
+import { sliceKey } from '../AuthenticatedPages/slice';
 import LoginForm from './components/LoginForm';
-import { getRefreshToken } from 'app/localStorage';
+import { loginPageSaga } from './saga';
 
 type Props = {};
 

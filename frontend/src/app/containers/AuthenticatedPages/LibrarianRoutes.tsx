@@ -1,8 +1,9 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
-import TeacherRoutes from './TeacherRoutes';
+
 import { BookingDetailPage } from '../BookingDetailPage';
 import { BookingListPage } from '../BookingListPage';
+import TeacherRoutes from './TeacherRoutes';
 
 const LibrarianRoutes = [
   <Route

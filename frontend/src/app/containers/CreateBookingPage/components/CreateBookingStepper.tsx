@@ -1,15 +1,17 @@
-import {
-  makeStyles,
-  Stepper,
-  Step,
-  StepLabel,
-  StepContent,
-} from '@material-ui/core';
 import { getTimeString } from 'app/components/TimeSlotPicker';
 import { useFormikContext } from 'formik';
 import { DateTime } from 'luxon';
 import React from 'react';
-import { BookingFormValues } from '..';
+
+import {
+  makeStyles,
+  Step,
+  StepContent,
+  StepLabel,
+  Stepper,
+} from '@material-ui/core';
+
+import { BookingFormValues } from '../';
 import BookingReasonStep from './BookingReasonStep';
 import SelectTimeSlotStep from './SelectTimeSlotStep';
 

@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import User from 'models/User';
-import { UserCreationAttributes, UserUpdateData } from 'types/User';
-import { UpdateOptions, DestroyOptions } from 'sequelize';
+import { DestroyOptions, UpdateOptions } from 'sequelize';
 import { AccessTokenSignedPayload } from 'types/tokens';
+import { UserCreationAttributes, UserUpdateData } from 'types/User';
 
 export default class UsersController {
   public index(req: Request, res: Response) {

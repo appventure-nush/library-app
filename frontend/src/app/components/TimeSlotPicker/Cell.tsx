@@ -1,8 +1,10 @@
+import clsx from 'clsx';
+import React from 'react';
+
 import { Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import React from 'react';
+
 import { HALF_AN_HOUR_IN_PIXELS } from './utils';
-import clsx from 'clsx';
 
 interface CellProps {
   disabled?: Boolean;

@@ -1,6 +1,8 @@
-import { PayloadAction } from '@reduxjs/toolkit';
 import api from 'app/api';
 import { call, put, takeLatest } from 'redux-saga/effects';
+
+import { PayloadAction } from '@reduxjs/toolkit';
+
 import { actions } from './slice';
 
 export function* loadCurrentWeekSlots(

@@ -7,21 +7,16 @@
 
 import 'react-app-polyfill/ie11';
 import 'react-app-polyfill/stable';
-
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import FontFaceObserver from 'fontfaceobserver';
-import * as serviceWorker from 'serviceWorker';
-
 import 'sanitize.css/sanitize.css';
 
 import { App } from 'app';
-
+import FontFaceObserver from 'fontfaceobserver';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import { HelmetProvider } from 'react-helmet-async';
-
+import { Provider } from 'react-redux';
+import * as serviceWorker from 'serviceWorker';
 import { configureAppStore } from 'store/configureStore';
-
 import { ThemeProvider } from 'styles/theme/ThemeProvider';
 
 // Observe loading of Inter (to remove 'Inter', remove the <link> tag in

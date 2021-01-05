@@ -1,7 +1,9 @@
-import { PayloadAction } from '@reduxjs/toolkit';
 import api from 'app/api';
 import { toast } from 'react-toastify';
 import { call, put, takeLatest } from 'redux-saga/effects';
+
+import { PayloadAction } from '@reduxjs/toolkit';
+
 import { actions } from '../BookingDetailPage/slice';
 
 export function* loadBooking(action: PayloadAction<String>) {

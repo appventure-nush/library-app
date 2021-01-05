@@ -1,6 +1,7 @@
 import api from 'app/api';
 import { toast } from 'react-toastify';
 import { call, put, takeLatest } from 'redux-saga/effects';
+
 import { actions } from '../BookingListPage/slice';
 
 export function* fetchBookings() {

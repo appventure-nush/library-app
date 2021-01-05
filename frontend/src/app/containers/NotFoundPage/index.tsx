@@ -1,9 +1,10 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Link as RouterLink } from 'react-router-dom';
 import styled from 'styled-components/macro';
-import { Link, Typography } from '@material-ui/core';
-import { Helmet } from 'react-helmet-async';
 import { StyleConstants } from 'styles/StyleConstants';
+
+import { Link, Typography } from '@material-ui/core';
 
 export function NotFoundPage() {
   return (

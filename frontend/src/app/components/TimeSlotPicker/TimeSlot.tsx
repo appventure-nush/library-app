@@ -1,3 +1,5 @@
+import React from 'react';
+
 import {
   Grid,
   IconButton,
@@ -6,7 +8,7 @@ import {
   useTheme,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/CloseOutlined';
-import React from 'react';
+
 import { SlotIdx } from './types';
 import { getDurationFromIdx, HALF_AN_HOUR_IN_PIXELS } from './utils';
 

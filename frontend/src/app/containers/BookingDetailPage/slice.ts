@@ -1,6 +1,8 @@
-import { PayloadAction } from '@reduxjs/toolkit';
 import { BookingViewData } from 'types/Booking';
 import { createSlice } from 'utils/@reduxjs/toolkit';
+
+import { PayloadAction } from '@reduxjs/toolkit';
+
 import { ContainerState } from './types';
 
 // The initial state of the BookingDetailPage container

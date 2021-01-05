@@ -1,5 +1,7 @@
-import { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from 'utils/@reduxjs/toolkit';
+
+import { PayloadAction } from '@reduxjs/toolkit';
+
 import { ContainerState } from './types';
 
 // The initial state of the UserDetailPage container

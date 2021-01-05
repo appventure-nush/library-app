@@ -4,26 +4,27 @@
  *
  */
 
+import { Badge, Button, Modal, Space, Table, Tag } from 'antd';
+import api from 'app/api';
+import { DateTime } from 'luxon';
 import React, { useCallback, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useSelector, useDispatch } from 'react-redux';
-
-import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
-import { actions, reducer, sliceKey } from './slice';
-import { selectBookingListPage } from './selectors';
-import { bookingListPageSaga } from './saga';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
-import { Badge, Modal, Space, Table, Tag, Button } from 'antd';
-import { Role, roleString, roleColor } from 'types/User';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import {
   BookingListViewData,
   BookingStatus,
   BookingStatusBadge,
   BookingStatusString,
 } from 'types/Booking';
-import { DateTime } from 'luxon';
-import { Link } from 'react-router-dom';
-import api from 'app/api';
+import { Role, roleColor, roleString } from 'types/User';
+import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
+
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+
+import { bookingListPageSaga } from './saga';
+import { selectBookingListPage } from './selectors';
+import { actions, reducer, sliceKey } from './slice';
 
 const { confirm } = Modal;
 

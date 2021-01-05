@@ -1,5 +1,6 @@
 import { AxiosResponse } from 'axios';
-import { UserData } from 'types/User';
+import { UserData, UserStatsListData } from 'types/User';
+
 import client from './client';
 
 const URL = '/users';
@@ -15,4 +16,8 @@ export async function getOwnUser(): Promise<UserData | null> {
   } catch (error) {
     return null;
   }
+}
+
+export async function getOwnUserStats(): Promise<UserStatsListData> {
+  return client.get(`${URL}/stats/self`);
 }

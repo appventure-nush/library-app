@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { AuthenticationData } from 'types/Auth';
+
 import {
   getRefreshToken,
   setAccessToken,

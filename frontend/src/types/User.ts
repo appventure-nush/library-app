@@ -25,4 +25,8 @@ export interface UserListData {
   role: Role;
 }
 
+export interface UserStatsListData {
+  bookedPerWeek: number;
+}
+
 export interface UserData extends UserListData {}

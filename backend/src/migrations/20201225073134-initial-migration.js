@@ -122,6 +122,40 @@ module.exports = {
         type: Sequelize.DATE,
       },
     });
+    await queryInterface.createTable('userStats', {
+      id: {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      userId: {
+        type: Sequelize.UUID,
+        references: {
+          model: {
+            tableName: 'users',
+          },
+          key: 'id',
+        },
+        allowNull: false,
+      },
+      bookedPerWeek: {
+        type: Sequelize.SMALLINT,
+        defaultValue: 0,
+        allowNull: false,
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+      deletedAt: {
+        allowNull: true,
+        type: Sequelize.DATE,
+      },
+    });
   },
   down: async (queryInterface, Sequelize) => {
     await queryInterface.dropAllTables();

@@ -6,12 +6,12 @@
 
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useSelector, useDispatch } from 'react-redux';
-
+import { useDispatch, useSelector } from 'react-redux';
 import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
-import { reducer, sliceKey } from './slice';
-import { selectUserDetailPage } from './selectors';
+
 import { userDetailPageSaga } from './saga';
+import { selectUserDetailPage } from './selectors';
+import { reducer, sliceKey } from './slice';
 
 interface Props {}
 
