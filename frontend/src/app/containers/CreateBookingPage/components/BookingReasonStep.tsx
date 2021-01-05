@@ -1,3 +1,6 @@
+import { useField } from 'formik';
+import React, { useEffect, useState } from 'react';
+
 import {
   Button,
   FormControl,
@@ -7,8 +10,6 @@ import {
   TextField,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import React, { useState, useEffect } from 'react';
-import { useField } from 'formik';
 
 interface BookingReasonStepProps {
   handleBack: (e: React.MouseEvent<HTMLButtonElement>) => void;

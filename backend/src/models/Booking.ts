@@ -1,11 +1,14 @@
-import { Model, DataTypes } from 'sequelize';
 import database from 'config/database';
+import { DataTypes, Model } from 'sequelize';
 import {
   BookingAttributes,
   BookingCreationAttributes,
   BookingStatus,
   BookingType,
 } from 'types/Booking';
+
+import UserStats from './UserStats';
+
 export default class Booking
   extends Model<BookingAttributes, BookingCreationAttributes>
   implements BookingAttributes {
@@ -21,6 +24,8 @@ export default class Booking
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+
+  static associate() {}
 }
 
 Booking.init(
@@ -40,7 +45,6 @@ Booking.init(
     },
     userId: {
       type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
       allowNull: false,
     },
     roomId: {
@@ -68,5 +72,14 @@ Booking.init(
     tableName: 'bookings',
     sequelize: database,
     paranoid: true,
+    hooks: {
+      beforeCreate: (booking, options) => {
+        if (booking.type === BookingType.BOOKING)
+          UserStats.increment<UserStats>('bookedPerWeek', {
+            ...options,
+            where: { userId: booking.userId },
+          });
+      },
+    },
   },
 );

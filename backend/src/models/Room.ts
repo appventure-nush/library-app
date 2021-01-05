@@ -1,15 +1,16 @@
+import database from 'config/database';
 import {
-  Model,
-  DataTypes,
   Association,
+  DataTypes,
   HasManyAddAssociationMixin,
   HasManyCountAssociationsMixin,
   HasManyCreateAssociationMixin,
   HasManyGetAssociationsMixin,
   HasManyHasAssociationMixin,
+  Model,
 } from 'sequelize';
-import database from 'config/database';
 import { RoomAttributes, RoomCreationAttributes } from 'types/Room';
+
 import Booking from './Booking';
 
 export default class Room
@@ -20,6 +21,17 @@ export default class Room
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+
+  static associate() {
+    Room.hasMany(Booking, {
+      sourceKey: 'id',
+      foreignKey: 'roomId',
+      as: {
+        singular: 'booking',
+        plural: 'bookings',
+      },
+    });
+  }
 
   public getBookings!: HasManyGetAssociationsMixin<Booking>;
   public addBooking!: HasManyAddAssociationMixin<Booking, number>;
@@ -52,12 +64,3 @@ Room.init(
     paranoid: true,
   },
 );
-
-Room.hasMany(Booking, {
-  sourceKey: 'id',
-  foreignKey: 'roomId',
-  as: {
-    singular: 'booking',
-    plural: 'bookings',
-  },
-});

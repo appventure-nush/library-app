@@ -1,12 +1,13 @@
-import React from 'react';
-import { Grid, IconButton, Typography } from '@material-ui/core';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import NavigatePrevIcon from '@material-ui/icons/NavigateBefore';
-import CalendarIcon from '@material-ui/icons/Today';
-import { makeStyles, Theme } from '@material-ui/core/styles';
-import { useMediaQuery } from '@material-ui/core';
-import { getDDMMM } from './utils';
 import { DateTime } from 'luxon';
+import React from 'react';
+
+import { Grid, IconButton, Typography, useMediaQuery } from '@material-ui/core';
+import { makeStyles, Theme } from '@material-ui/core/styles';
+import NavigatePrevIcon from '@material-ui/icons/NavigateBefore';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import CalendarIcon from '@material-ui/icons/Today';
+
+import { getDDMMM } from './utils';
 
 export interface WeekPickerProps {
   currentWeekTitle: String;

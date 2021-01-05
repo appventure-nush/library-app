@@ -1,18 +1,19 @@
 import { TimeSlotPicker } from 'app/components/TimeSlotPicker';
-import { getCurrentUser } from 'app/containers/AuthenticatedPages/selectors';
 import { Slot } from 'app/components/TimeSlotPicker/types';
+import { getCurrentUser } from 'app/containers/AuthenticatedPages/selectors';
+import { useFormikContext } from 'formik';
 import { DateTime } from 'luxon';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { Role } from 'types/User';
+
 import {
   selectBookedSlots,
   selectCurrentRoom,
   selectDisabledSlots,
 } from '../selectors';
 import { actions } from '../slice';
-import { useFormikContext } from 'formik';
-import { useHistory } from 'react-router-dom';
 
 export interface TimeSlotTabProps {}
 

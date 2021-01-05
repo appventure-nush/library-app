@@ -1,6 +1,7 @@
-import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import { createInjectorsEnhancer, forceReducerReload } from 'redux-injectors';
 import createSagaMiddleware from 'redux-saga';
+
+import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 
 import { createReducer } from './reducers';
 

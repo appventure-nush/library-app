@@ -1,5 +1,5 @@
-import { Router } from 'express';
 import WeeksController from 'controllers/WeeksController';
+import { Router } from 'express';
 
 const controller = new WeeksController();
 const router = Router();

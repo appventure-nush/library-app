@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
-import Booking from 'models/Booking';
-import { BookingStatus, BookingType } from 'types/Booking';
-import { Op } from 'sequelize';
 import { DateTime } from 'luxon';
-import { Slot, WeekViewData } from 'types/Week';
-import { AccessTokenSignedPayload } from 'types/tokens';
+import Booking from 'models/Booking';
 import User from 'models/User';
+import { Op } from 'sequelize';
+import { BookingStatus, BookingType } from 'types/Booking';
+import { AccessTokenSignedPayload } from 'types/tokens';
 import { Role } from 'types/User';
+import { Slot, WeekViewData } from 'types/Week';
 
 export default class WeeksController {
   public async showCurrent(req: Request, res: Response) {

@@ -1,9 +1,11 @@
-import React, { useState, useRef, useImperativeHandle, useMemo } from 'react';
+import React, { useImperativeHandle, useMemo, useRef, useState } from 'react';
+
 import { Grid } from '@material-ui/core';
+
 import Cell from './Cell';
 import TimeSlot from './TimeSlot';
-import { getRoundedPosIdx } from './utils';
 import { SlotIdx } from './types';
+import { getRoundedPosIdx } from './utils';
 
 export interface ColumnProps {
   delta: number; // 0 -> Monday, 4 -> Friday

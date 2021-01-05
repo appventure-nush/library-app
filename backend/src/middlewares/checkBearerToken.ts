@@ -1,10 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import {
-  BearerTokenType,
-  isAccessTokenSignedPayload,
-  isBearerToken,
-  isRefreshTokenSignedPayload,
+    BearerTokenType, isAccessTokenSignedPayload, isBearerToken, isRefreshTokenSignedPayload
 } from 'types/tokens';
 
 export const checkBearerToken = (type: BearerTokenType) => (

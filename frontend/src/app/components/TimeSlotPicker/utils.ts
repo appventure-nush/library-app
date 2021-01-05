@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon';
+
 import { Slot, SlotIdx } from './types';
 
 export const getDayString = (date: DateTime) =>

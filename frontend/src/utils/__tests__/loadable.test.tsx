@@ -1,6 +1,7 @@
 import React from 'react';
-import { render } from '@testing-library/react';
 import { lazyLoad } from 'utils/loadable';
+
+import { render } from '@testing-library/react';
 
 const LoadingIndicator = () => <div>Loading</div>;
 

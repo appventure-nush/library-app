@@ -1,7 +1,9 @@
-import { Request, Response } from 'express';
 import { verify as azureVerify, VerifyOptions } from 'azure-ad-verify-token';
+import database from 'config/database';
+import { Request, Response } from 'express';
 import { verify as jsonVerify } from 'jsonwebtoken';
 import User from 'models/User';
+import UserStats from 'models/UserStats';
 import { isRefreshTokenSignedPayload } from 'types/tokens';
 
 export default class AuthController {
@@ -18,27 +20,36 @@ export default class AuthController {
       audience: 'b2c54a7a-5231-4de6-b3b1-c603abbaed00',
     };
 
-    azureVerify(azureAdIdToken, options)
-      .then((decoded: any) => {
-        // verified and decoded token
-        User.findOrCreate<User>({
-          where: {
-            azureOid: decoded.oid,
-          },
-          defaults: {
-            name: decoded.name,
-            email: decoded.preferred_username,
-            azureOid: decoded.oid,
-            role: 1,
-          },
-        })
-          .then(([user, isNew]) => res.status(201).json(user.createAuthenticationTokens()))
-          .catch(err => res.status(500).json(err));
-      })
-      .catch(error => {
-        // invalid token
-        res.sendStatus(401);
+    const t = await database.transaction();
+    try {
+      const decoded: any = await azureVerify(azureAdIdToken, options);
+      const [user, isNew] = await User.findOrCreate<User>({
+        where: {
+          azureOid: decoded.oid,
+        },
+        defaults: {
+          name: decoded.name,
+          email: decoded.preferred_username,
+          azureOid: decoded.oid,
+          role: 1,
+        },
+        transaction: t,
       });
+      if (isNew) {
+        await UserStats.create<UserStats>(
+          {
+            userId: user.id,
+            bookedPerWeek: 0,
+          },
+          { transaction: t },
+        );
+      }
+      await t.commit();
+      res.status(201).json(user.createAuthenticationTokens());
+    } catch (err) {
+      await t.rollback();
+      res.status(500).json(err);
+    }
   }
 
   public tokenAuthentication(req: Request, res: Response) {

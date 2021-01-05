@@ -1,18 +1,20 @@
+import database from 'config/database';
 import { sign } from 'jsonwebtoken';
 import {
-  Model,
+  Association,
   DataTypes,
-  HasManyGetAssociationsMixin,
   HasManyAddAssociationMixin,
   HasManyCountAssociationsMixin,
   HasManyCreateAssociationMixin,
+  HasManyGetAssociationsMixin,
   HasManyHasAssociationMixin,
-  Association,
+  Model,
 } from 'sequelize';
-import database from 'config/database';
 import { BearerTokenType } from 'types/tokens';
-import { UserCreationAttributes, UserAttributes, Role } from 'types/User';
+import { Role, UserAttributes, UserCreationAttributes } from 'types/User';
+
 import Booking from './Booking';
+import UserStats from './UserStats';
 
 export default class User
   extends Model<UserAttributes, UserCreationAttributes>
@@ -25,6 +27,28 @@ export default class User
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+
+  static associate() {
+    User.hasMany(Booking, {
+      sourceKey: 'id',
+      foreignKey: 'userId',
+      as: {
+        singular: 'booking',
+        plural: 'bookings',
+      },
+      onDelete: 'CASCADE',
+    });
+
+    User.hasOne(UserStats, {
+      sourceKey: 'id',
+      foreignKey: 'userId',
+      as: {
+        singular: 'userStats',
+        plural: 'userStats',
+      },
+      onDelete: 'CASCADE',
+    });
+  }
 
   public getBookings!: HasManyGetAssociationsMixin<Booking>;
   public addBooking!: HasManyAddAssociationMixin<Booking, number>;
@@ -85,12 +109,3 @@ User.init(
     paranoid: true,
   },
 );
-
-User.hasMany(Booking, {
-  sourceKey: 'id',
-  foreignKey: 'userId',
-  as: {
-    singular: 'booking',
-    plural: 'bookings',
-  },
-});

@@ -1,5 +1,11 @@
+import database from 'config/database';
 import { Request, Response } from 'express';
+import { DateTime } from 'luxon';
 import Booking from 'models/Booking';
+import Room from 'models/Room';
+import User from 'models/User';
+import UserStats from 'models/UserStats';
+import { DestroyOptions, Op, QueryTypes } from 'sequelize';
 import {
   BookingCreateData,
   BookingListViewData,
@@ -7,13 +13,8 @@ import {
   BookingType,
   BookingViewData,
 } from 'types/Booking';
-import { DestroyOptions, Op, QueryTypes } from 'sequelize';
 import { AccessTokenSignedPayload } from 'types/tokens';
-import User from 'models/User';
-import Room from 'models/Room';
 import { Role } from 'types/User';
-import database from 'config/database';
-import { DateTime } from 'luxon';
 
 export default class BookingsController {
   public async index(req: Request, res: Response) {
@@ -61,14 +62,22 @@ export default class BookingsController {
     const t = await database.transaction();
     try {
       const user = await User.findByPk<User>(userId, { transaction: t });
-      if (
-        user.role === Role.STUDENT &&
-        DateTime.fromISO(params.endTime)
-          .diff(DateTime.fromISO(params.startTime), 'hours')
-          .toObject().hours > 2
-      ) {
-        throw Error('Booking duration exceeded');
+      const userStats = await UserStats.findOne<UserStats>({
+        where: { userId: userId },
+      });
+      if (user.role === Role.STUDENT) {
+        // Check if student has exceeded number of bookings per week
+        if (userStats.bookedPerWeek >= 2) throw Error('Number of bookings per week exceeded');
+        // Check if booking duration is less than 2hrs for Students
+        if (
+          DateTime.fromISO(params.endTime)
+            .diff(DateTime.fromISO(params.startTime), 'hours')
+            .toObject().hours > 2
+        )
+          throw Error('Booking duration exceeded');
       }
+
+      // Check if this booking overlaps with another booking
       const hasOverlappingBooking = await database.query(
         `SELECT * FROM bookings WHERE "roomId"=? AND tstzrange("startTime", "endTime", '()') && tstzrange(?, ?, '()')`,
         {

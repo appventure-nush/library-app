@@ -10,7 +10,8 @@
         "middlewares": "./build/middlewares",
         "controllers": "./build/controllers",
         "models": "./build/models",
-        "config": "./build/config"
+        "config": "./build/config",
+        "crons": "./build/crons"
       }
     }]
   ]

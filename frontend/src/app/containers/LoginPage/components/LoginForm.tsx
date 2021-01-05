@@ -1,7 +1,7 @@
-import React from 'react';
-import { useDispatch } from 'react-redux';
 import { actions } from 'app/containers/AuthenticatedPages/slice';
+import React from 'react';
 import MicrosoftLogin from 'react-microsoft-login';
+import { useDispatch } from 'react-redux';
 
 const LoginForm = () => {
   const dispatch = useDispatch();

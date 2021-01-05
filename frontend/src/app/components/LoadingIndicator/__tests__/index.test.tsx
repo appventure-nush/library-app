@@ -1,9 +1,10 @@
 import React from 'react';
+import { DefaultTheme, ThemeProvider } from 'styled-components';
+import { themes } from 'styles/theme/themes';
+
 import { render } from '@testing-library/react';
 
 import { LoadingIndicator } from '../index';
-import { themes } from 'styles/theme/themes';
-import { DefaultTheme, ThemeProvider } from 'styled-components';
 
 const renderWithTheme = (
   props: Parameters<typeof LoadingIndicator>[number] = {},

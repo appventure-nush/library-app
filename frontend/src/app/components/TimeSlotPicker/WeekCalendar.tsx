@@ -1,8 +1,10 @@
-import { Grid, Typography, Box } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import { useField } from 'formik';
 import { DateTime } from 'luxon';
-import React, { useState, useEffect, createRef, useMemo } from 'react';
+import React, { createRef, useEffect, useMemo, useState } from 'react';
+
+import { Box, Grid, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+
 import Column, { ColumnCallables } from './Column';
 import { Slot, SlotIdx } from './types';
 import { getDayString, mapToSlot, mapToSlotIdx } from './utils';

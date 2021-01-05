@@ -1,4 +1,5 @@
 import { AuthenticationData } from 'types/Auth';
+
 import client, { setAuthenticationTokens } from './client';
 
 const URL = '/auth';

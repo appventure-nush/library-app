@@ -1,11 +1,12 @@
 import { Router } from 'express';
 import { checkBearerToken } from 'middlewares/checkBearerToken';
 import { BearerTokenType } from 'types/tokens';
+
 import auth from './auth';
 import bookings from './bookings';
-import weeks from './weeks';
-import users from './users';
 import rooms from './rooms';
+import users from './users';
+import weeks from './weeks';
 
 const routes = Router();
 

@@ -1,8 +1,10 @@
-import { takeLatest, put, call } from 'redux-saga/effects';
-import { PayloadAction } from '@reduxjs/toolkit';
-import { actions } from '../AuthenticatedPages/slice';
-import { toast } from 'react-toastify';
 import api from 'app/api';
+import { toast } from 'react-toastify';
+import { call, put, takeLatest } from 'redux-saga/effects';
+
+import { PayloadAction } from '@reduxjs/toolkit';
+
+import { actions } from '../AuthenticatedPages/slice';
 
 export function* authorize(
   action: PayloadAction<{

@@ -4,6 +4,7 @@ import {
   BookingListData,
   BookingListViewData,
 } from 'types/Booking';
+
 import client from './client';
 
 const URL = '/bookings';

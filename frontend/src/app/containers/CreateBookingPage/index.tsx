@@ -1,14 +1,15 @@
+import api from 'app/api';
+import { Form, Formik, FormikHelpers } from 'formik';
+import { DateTime } from 'luxon';
 import React, { memo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useHistory } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
+
+import CreateBookingStepper from './components/CreateBookingStepper';
 import { createBookingPageSaga } from './saga';
 import { reducer, sliceKey } from './slice';
-import { Form, Formik, FormikHelpers } from 'formik';
-import CreateBookingStepper from './components/CreateBookingStepper';
-import { DateTime } from 'luxon';
-import api from 'app/api';
-import { toast } from 'react-toastify';
 
 interface Props {}
 

@@ -1,48 +1,49 @@
-import React, { useEffect, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import api from 'app/api';
+import { getCurrentUser } from 'app/containers/AuthenticatedPages/selectors';
+import { NotFoundPage } from 'app/containers/NotFoundPage/Loadable';
+import { getRefreshToken, setRefreshToken } from 'app/localStorage';
+import clsx from 'clsx';
+import React, { useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Route,
   RouteComponentProps,
   Switch,
-  withRouter,
   useHistory,
+  withRouter,
 } from 'react-router-dom';
-import { getRefreshToken, setRefreshToken } from 'app/localStorage';
-import { actions, reducer, sliceKey } from './slice';
-import { getCurrentUser } from 'app/containers/AuthenticatedPages/selectors';
+import { toast } from 'react-toastify';
+import { Role, roleString } from 'types/User';
 import { useInjectReducer } from 'utils/redux-injectors';
 
-import StudentRoutes from './StudentRoutes';
-import LibrarianRoutes from './LibrarianRoutes';
-import TeacherRoutes from './TeacherRoutes';
-import AdminRoutes from './AdminRoutes';
-import { NotFoundPage } from 'app/containers/NotFoundPage/Loadable';
-import api from 'app/api';
-import clsx from 'clsx';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import { deepPurple } from '@material-ui/core/colors';
 import {
-  CardHeader,
-  Drawer,
-  CssBaseline,
-  useScrollTrigger,
-  Slide,
   AppBar,
+  Avatar,
+  CardHeader,
+  CssBaseline,
   Divider,
+  Drawer,
   IconButton,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
+  Slide,
   Toolbar,
   Typography,
-  Avatar,
+  useScrollTrigger,
 } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
-import DashboardIcon from '@material-ui/icons/Dashboard';
+import { deepPurple } from '@material-ui/core/colors';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import BookIcon from '@material-ui/icons/Book';
-import { toast } from 'react-toastify';
-import { Role, roleString } from 'types/User';
+import DashboardIcon from '@material-ui/icons/Dashboard';
+import MenuIcon from '@material-ui/icons/Menu';
+
+import AdminRoutes from './AdminRoutes';
+import LibrarianRoutes from './LibrarianRoutes';
+import { actions, reducer, sliceKey } from './slice';
+import StudentRoutes from './StudentRoutes';
+import TeacherRoutes from './TeacherRoutes';
 
 type Props = RouteComponentProps;
 
