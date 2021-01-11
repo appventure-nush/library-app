@@ -10,3 +10,7 @@ export async function getBookableRooms(): Promise<
 > {
   return client.get(`${URL}/bookables`);
 }
+
+export async function getRoomPin(id: String): Promise<AxiosResponse<String>> {
+  return client.get(`${URL}/${id}/pin`);
+}

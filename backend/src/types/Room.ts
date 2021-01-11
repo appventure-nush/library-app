@@ -3,6 +3,7 @@ import { Optional } from './common';
 export interface RoomAttributes {
   id: number;
   name: string;
+  checkInPin: string | null;
 }
 
 export interface RoomListData {

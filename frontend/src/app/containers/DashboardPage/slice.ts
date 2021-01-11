@@ -1,4 +1,4 @@
-import { BookingListData } from 'types/Booking';
+import { BookingListViewData } from 'types/Booking';
 import { UserStatsListData } from 'types/User';
 import { createSlice } from 'utils/@reduxjs/toolkit';
 
@@ -17,7 +17,7 @@ const dashboardPageSlice = createSlice({
   initialState,
   reducers: {
     dashboardRequest() {},
-    saveBookings(state, action: PayloadAction<Array<BookingListData>>) {
+    saveBookings(state, action: PayloadAction<Array<BookingListViewData>>) {
       state.bookings = action.payload;
     },
     loadOwnUserStats() {},
