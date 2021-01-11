@@ -18,4 +18,17 @@ export default class RoomsController {
       )
       .catch((err: Error) => res.status(500).json(err));
   }
+
+  public async showPin(req: Request, res: Response) {
+    try {
+      const roomId: number = Number(req.params.id);
+      const room = await Room.findByPk<Room>(roomId);
+      if (room === null) {
+        throw new Error('Room not found');
+      }
+      res.status(201).json(room.checkInPin);
+    } catch (err) {
+      res.sendStatus(500);
+    }
+  }
 }

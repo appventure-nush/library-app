@@ -7,6 +7,7 @@ import { BookingStatus, BookingType } from 'types/Booking';
 import { AccessTokenSignedPayload } from 'types/tokens';
 import { Role } from 'types/User';
 import { Slot, WeekViewData } from 'types/Week';
+import BookingsController from './BookingsController';
 
 export default class WeeksController {
   public async showCurrent(req: Request, res: Response) {
@@ -24,7 +25,10 @@ export default class WeeksController {
       }
 
       const now = DateTime.local();
-      const startDate = now.startOf('weeks').startOf('day').plus({ weeks: deltaWeek });
+      var startDate = now.startOf('day').plus({ weeks: deltaWeek });
+      if (deltaWeek !== 0) {
+        startDate = startDate.startOf('weeks');
+      }
       const endDate = startDate.endOf('weeks').minus({ days: 2 });
       const bookedSlotPromises = await WeeksController.getBookingSlots(
         roomId,
@@ -42,9 +46,26 @@ export default class WeeksController {
 
       Promise.all([bookedSlotPromises, disabledSlotPromises])
         .then(resultArray => {
+          var moreDisabledSlots: Slot[] = [];
+          if (deltaWeek === 0) {
+            for (let weekDay = 1; weekDay < Math.min(now.weekday, 6); weekDay++) {
+              const morning8 = now
+                .startOf('weeks')
+                .startOf('days')
+                .plus({ days: weekDay - 1, hours: 8 });
+              const evening6 = now
+                .startOf('weeks')
+                .startOf('days')
+                .plus({ days: weekDay - 1, hours: 18 });
+              moreDisabledSlots.push({
+                startTime: morning8.toJSDate(),
+                endTime: evening6.toJSDate(),
+              });
+            }
+          }
           const weekViewData: WeekViewData = {
             bookedSlots: resultArray[0],
-            disabledSlots: resultArray[1],
+            disabledSlots: [...resultArray[1], ...moreDisabledSlots],
           };
           res.status(201).json(weekViewData);
         })
@@ -65,7 +86,7 @@ export default class WeeksController {
     return Booking.findAll<Booking>({
       where: {
         roomId: roomId,
-        status: BookingStatus.CONFIRMED,
+        status: { [Op.in]: [BookingStatus.CONFIRMED, BookingStatus.CHECKEDIN] },
         type: type,
         startTime: { [Op.between]: [startDate, endDate] },
       },

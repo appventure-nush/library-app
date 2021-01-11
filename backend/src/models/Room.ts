@@ -18,6 +18,7 @@ export default class Room
   implements RoomAttributes {
   public id!: number;
   public name!: string;
+  public checkInPin: string | null;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -56,6 +57,10 @@ Room.init(
     name: {
       type: new DataTypes.STRING(128),
       allowNull: false,
+    },
+    checkInPin: {
+      type: new DataTypes.STRING(128),
+      allowNull: true,
     },
   },
   {

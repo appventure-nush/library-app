@@ -1,9 +1,9 @@
-import { BookingListData } from 'types/Booking';
+import { BookingListViewData } from 'types/Booking';
 import { UserStatsListData } from 'types/User';
 
 /* --- STATE --- */
 export interface DashboardPageState {
-  bookings: Array<BookingListData>;
+  bookings: Array<BookingListViewData>;
   userStats: UserStatsListData | null;
 }
 

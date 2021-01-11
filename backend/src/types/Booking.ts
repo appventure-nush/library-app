@@ -11,6 +11,9 @@ export enum BookingStatus {
   CONFIRMED = 1,
   CANCELLED = 2,
   DELETED = 3,
+  CHECKEDIN = 4,
+  CHECKEDOUT = 5,
+  AUTOCANCELLED = 6,
 }
 
 export interface BookingAttributes {

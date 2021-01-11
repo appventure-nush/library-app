@@ -49,7 +49,7 @@ export const DashboardPage = memo((props: Props) => {
         </Typography>
       )}
       {dashboardPage.bookings.map(booking => (
-        <DashboardCard key={booking.id} {...booking} />
+        <DashboardCard key={booking.id} booking={booking} />
       ))}
       {(dashboardPage.userStats === null ||
         dashboardPage.userStats.bookedPerWeek < 2) && (
