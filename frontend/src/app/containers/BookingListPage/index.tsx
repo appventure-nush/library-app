@@ -23,7 +23,7 @@ import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 import { bookingListPageSaga } from './saga';
-import { selectBookingListPage } from './selectors';
+import { selectBookingList } from './selectors';
 import { actions, reducer, sliceKey } from './slice';
 
 const { confirm } = Modal;
@@ -34,10 +34,12 @@ export function BookingListPage(props: Props) {
   useInjectReducer({ key: sliceKey, reducer: reducer });
   useInjectSaga({ key: sliceKey, saga: bookingListPageSaga });
 
-  const bookingListPage = useSelector(selectBookingListPage);
+  const bookingList = useSelector(selectBookingList);
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(actions.saveBookings([]));
+    console.log("Admin");
     dispatch(actions.loadBookings());
   }, [dispatch]);
 
@@ -174,7 +176,7 @@ export function BookingListPage(props: Props) {
       <div style={{ height: 400, width: '100%' }}>
         <Table
           columns={columns}
-          dataSource={bookingListPage.bookings.map(
+          dataSource={bookingList.map(
             (booking: BookingListViewData, index: number) => {
               return {
                 key: index,
