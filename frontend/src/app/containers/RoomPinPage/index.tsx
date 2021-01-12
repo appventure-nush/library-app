@@ -26,6 +26,7 @@ export function RoomPinPage(props: Props) {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(actions.loadRoomPin(id));
     const interval = setInterval(() => {
       dispatch(actions.loadRoomPin(id));
     }, 10000);

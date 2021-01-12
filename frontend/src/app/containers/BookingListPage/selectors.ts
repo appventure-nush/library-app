@@ -11,3 +11,8 @@ export const selectBookingListPage = createSelector(
   [selectDomain],
   bookingListPageState => bookingListPageState,
 );
+
+export const selectBookingList = createSelector(
+  [selectDomain],
+  bookingListPageState => bookingListPageState.bookings,
+);
