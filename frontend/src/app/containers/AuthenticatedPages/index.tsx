@@ -194,8 +194,13 @@ const AuthenticatedPages: React.FC<Props> = props => {
             >
               <MenuIcon />
             </IconButton>
+            <Avatar
+              style={{ marginRight: '0.5rem' }}
+              alt="AppVenture Logo"
+              src="/favicon.ico"
+            />
             <Typography
-              style={{ cursor: 'pointer' }}
+              style={{ cursor: 'pointer', color: '#FFFFFF' }}
               variant="h6"
               onClick={() => history.push('/')}
               noWrap
