@@ -102,6 +102,9 @@ export default class BookingsController {
       if (hasOverlappingBooking.length !== 0) {
         throw Error('Slot already booked');
       }
+      if (DateTime.fromISO(params.endTime).diffNow('minutes').minutes < 0) {
+        throw Error('EndTime has passed');
+      }
       const newBooking = await user.createBooking(
         {
           type: BookingType.BOOKING,
@@ -228,9 +231,6 @@ export default class BookingsController {
     const payload = res.locals.payload as AccessTokenSignedPayload;
     const { userId } = payload;
 
-    var now = new Date();
-    now.setMinutes(now.getMinutes() - 15);
-
     const bookings = await Booking.findAll<Booking>({
       where: {
         [Op.or]: [
@@ -238,7 +238,7 @@ export default class BookingsController {
             userId: userId,
             type: BookingType.BOOKING,
             status: BookingStatus.CONFIRMED,
-            startTime: { [Op.gte]: now },
+            endTime: { [Op.gte]: new Date() },
           },
           {
             userId: userId,
