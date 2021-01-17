@@ -2,7 +2,7 @@ import { Optional } from './common';
 
 export enum Role {
   STUDENT = 1,
-  TEACHER = 11,
+  STAFF = 11,
   LIBRARIAN = 12,
   ADMIN = 100,
 }
@@ -13,6 +13,9 @@ export interface UserAttributes {
   name: string;
   email: string;
   role: Role;
+
+  bannedReason: string | null;
+  bannedEndTime: Date | null;
 }
 
 export interface UserListData {

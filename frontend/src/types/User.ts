@@ -1,13 +1,13 @@
 export enum Role {
   STUDENT = 1,
-  TEACHER = 11,
+  STAFF = 11,
   LIBRARIAN = 12,
   ADMIN = 100,
 }
 
 export const roleString: Record<Role, string> = {
   1: 'Student',
-  11: 'Teacher',
+  11: 'Staff',
   12: 'Librarian',
   100: 'Admin',
 };
@@ -29,4 +29,7 @@ export interface UserStatsListData {
   bookedPerWeek: number;
 }
 
-export interface UserData extends UserListData {}
+export interface UserData extends UserListData {
+  bannedReason: string | null;
+  bannedEndTime: Date | null;
+}

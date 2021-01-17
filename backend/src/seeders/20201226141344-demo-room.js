@@ -6,22 +6,22 @@ module.exports = {
       'rooms',
       [
         {
-          name: 'Room A',
+          name: 'Lary 0',
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: 'Room B',
+          name: 'Lary 1',
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: 'Room C',
+          name: 'Lemma 2',
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: 'Room D',
+          name: 'Lemma 3',
           createdAt: new Date(),
           updatedAt: new Date(),
         },

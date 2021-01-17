@@ -45,6 +45,17 @@ const TimeSlotTab: React.FC<TimeSlotTabProps> = props => {
     return <></>;
   }
 
+  const hasNextWeek = (role: Role): Boolean => {
+    switch (role) {
+      case Role.STUDENT:
+        return deltaWeek < 1;
+      case Role.STAFF:
+        return deltaWeek < 4;
+      default:
+        return true;
+    }
+  };
+
   const currentWeek = DateTime.local().startOf('weeks').startOf('days');
   return (
     <TimeSlotPicker
@@ -71,9 +82,7 @@ const TimeSlotTab: React.FC<TimeSlotTabProps> = props => {
         };
         return pickerSlot;
       })}
-      hasNextWeek={
-        currentUser.role === Role.STUDENT && deltaWeek > 1 ? false : true
-      }
+      hasNextWeek={hasNextWeek(currentUser.role)}
       hasPreviousWeek={deltaWeek > 0}
       onChangeNextWeek={() => {
         setDeltaWeek(deltaWeek + 1);

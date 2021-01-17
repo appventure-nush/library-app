@@ -4,7 +4,7 @@ import { Route } from 'react-router-dom';
 import { BookingDetailPage } from '../BookingDetailPage';
 import { BookingListPage } from '../BookingListPage';
 import { RoomPinPage } from '../RoomPinPage';
-import TeacherRoutes from './TeacherRoutes';
+import StaffRoutes from './StaffRoutes';
 
 const LibrarianRoutes = [
   <Route
@@ -20,6 +20,6 @@ const LibrarianRoutes = [
     path={process.env.PUBLIC_URL + '/rooms/:id/pin'}
     component={RoomPinPage}
   />,
-].concat(TeacherRoutes);
+].concat(StaffRoutes);
 
 export default LibrarianRoutes;

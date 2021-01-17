@@ -32,6 +32,8 @@ export default class AuthController {
           email: decoded.preferred_username,
           azureOid: decoded.oid,
           role: 1,
+          bannedEndTime: null,
+          bannedReason: null,
         },
         transaction: t,
       });
@@ -40,6 +42,7 @@ export default class AuthController {
           {
             userId: user.id,
             bookedPerWeek: 0,
+            bookingMissed: 0,
           },
           { transaction: t },
         );
@@ -47,6 +50,7 @@ export default class AuthController {
       await t.commit();
       res.status(201).json(user.createAuthenticationTokens());
     } catch (err) {
+      console.log(err);
       await t.rollback();
       res.status(500).json(err);
     }

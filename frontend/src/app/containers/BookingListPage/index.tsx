@@ -39,7 +39,7 @@ export function BookingListPage(props: Props) {
 
   useEffect(() => {
     dispatch(actions.saveBookings([]));
-    console.log("Admin");
+    console.log('Admin');
     dispatch(actions.loadBookings());
   }, [dispatch]);
 
@@ -82,6 +82,13 @@ export function BookingListPage(props: Props) {
           text={BookingStatusString[status]}
         />
       ),
+      filters: [
+        {
+          text: 'Auto-cancelled',
+          value: BookingStatus.AUTOCANCELLED,
+        },
+      ],
+      onFilter: (value, record) => record.status === value,
     },
     {
       title: 'Username',
@@ -95,11 +102,49 @@ export function BookingListPage(props: Props) {
       render: (role: Role) => (
         <Tag color={roleColor[role]}>{roleString[role]}</Tag>
       ),
+      filters: [
+        {
+          text: 'Student',
+          value: Role.STUDENT,
+        },
+        {
+          text: 'Staff',
+          value: Role.STAFF,
+        },
+        {
+          text: 'Librarian',
+          value: Role.LIBRARIAN,
+        },
+        {
+          text: 'Admin',
+          value: Role.ADMIN,
+        },
+      ],
+      onFilter: (value, record) => record.role === value,
     },
     {
       title: 'Room',
       dataIndex: 'roomname',
       key: 'roomname',
+      filters: [
+        {
+          text: 'Lary 0',
+          value: 'Lary 0',
+        },
+        {
+          text: 'Lary 1',
+          value: 'Lary 1',
+        },
+        {
+          text: 'Lemma 2',
+          value: 'Lemma 2',
+        },
+        {
+          text: 'Lemma 3',
+          value: 'Lemma 3',
+        },
+      ],
+      onFilter: (value, record) => record.roomname === value,
     },
     {
       title: 'Date',

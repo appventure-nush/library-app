@@ -44,7 +44,7 @@ const Column = React.forwardRef<ColumnCallables, ColumnProps>((props, ref) => {
   }));
 
   const processedSlots = useMemo(() => {
-    var resultSlots = Array.from(Array(20).keys()).map(() => false);
+    var resultSlots = Array.from(Array(16).keys()).map(() => false);
     disabledSlotIdxes.forEach(disabledSlotIdx => {
       for (
         let disabledIndex = disabledSlotIdx.startIdx;
