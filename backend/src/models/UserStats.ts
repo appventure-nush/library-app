@@ -10,7 +10,7 @@ export default class UserStats
   public id!: number;
   public userId!: string;
   public bookedPerWeek!: number;
-  public bookingMissed!: number;
+  public infringement!: number;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -36,7 +36,7 @@ UserStats.init(
       defaultValue: 0,
       allowNull: false,
     },
-    bookingMissed: {
+    infringement: {
       type: DataTypes.SMALLINT,
       defaultValue: 0,
       allowNull: false,

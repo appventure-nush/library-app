@@ -157,7 +157,7 @@ module.exports = {
         defaultValue: 0,
         allowNull: false,
       },
-      bookingMissed: {
+      infringement: {
         type: Sequelize.SMALLINT,
         defaultValue: 0,
         allowNull: false,

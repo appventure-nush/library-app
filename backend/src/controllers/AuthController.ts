@@ -42,7 +42,7 @@ export default class AuthController {
           {
             userId: user.id,
             bookedPerWeek: 0,
-            bookingMissed: 0,
+            infringement: 0,
           },
           { transaction: t },
         );

@@ -11,7 +11,7 @@ import { DateTime } from 'luxon';
 
 export const startCronJobs = () => {
   resetBookedPerWeek.start();
-  resetBookingMissed.start();
+  resetInfringement.start();
   refreshCheckInPin.start();
   autoReleaseRoom15.start();
   autoReleaseRoom45.start();
@@ -64,12 +64,12 @@ const autoReleaseRoom = () => {
       console.log(`[Crons] Bookings auto-cancelled: ${count}`);
       bookings.forEach(async booking => {
         const user = await User.findByPk(booking.userId);
-        await UserStats.increment('bookingMissed', { where: { userId: user.id } });
+        await UserStats.increment('infringement', { where: { userId: user.id } });
 
         if (user.role === Role.STUDENT) {
           const userStats = await UserStats.findOne({ where: { userId: user.id } });
           const oneMonthLater = DateTime.local().endOf('days').plus({ months: 1 });
-          if (userStats.bookingMissed >= 2) {
+          if (userStats.infringement >= 2) {
             await user.update('bannedEndTime', oneMonthLater.toJSDate(), {
               where: { id: user.id },
             });
@@ -135,10 +135,10 @@ const autoUnbanUsers = new CronJob(
   'Asia/Singapore',
 );
 
-const resetBookingMissed = new CronJob(
+const resetInfringement = new CronJob(
   '0 0 1 */4 *',
   () => {
-    UserStats.update<UserStats>({ bookingMissed: 0 }, { where: {} })
+    UserStats.update<UserStats>({ infringement: 0 }, { where: {} })
       .then(([count, users]) =>
         console.log(`[Crons] Reset number of missed bookings for all users`),
       )
