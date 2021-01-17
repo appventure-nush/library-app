@@ -4,6 +4,7 @@ export interface UserStatsAttributes {
   id: number;
   userId: string;
   bookedPerWeek: number;
+  bookingMissed: number;
 }
 
 export interface UserStatsListData {

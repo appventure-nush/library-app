@@ -65,16 +65,26 @@ export default class BookingsController {
       const userStats = await UserStats.findOne<UserStats>({
         where: { userId: userId },
       });
-      if (user.role === Role.STUDENT) {
-        // Check if student has exceeded number of bookings per week
-        if (userStats.bookedPerWeek >= 2) throw Error('Number of bookings per week exceeded');
-        // Check if booking duration is less than 2hrs for Students
-        if (
-          DateTime.fromISO(params.endTime)
-            .diff(DateTime.fromISO(params.startTime), 'hours')
-            .toObject().hours > 2
-        )
-          throw Error('Booking duration exceeded');
+      switch (user.role) {
+        case Role.STUDENT:
+          // Check if user has exceeded number of bookings per week
+          if (userStats.bookedPerWeek >= 2) throw Error('Number of bookings per week exceeded');
+          // Check if booking duration is less than 2hrs for Students
+          if (
+            DateTime.fromISO(params.endTime)
+              .diff(DateTime.fromISO(params.startTime), 'hours')
+              .toObject().hours > 2
+          )
+            throw Error('Booking duration exceeded');
+          if (DateTime.fromISO(params.startTime).diffNow('weeks').toObject().weeks > 1)
+            throw Error('Impossible Starting Time');
+          break;
+        case Role.STAFF:
+          if (DateTime.fromISO(params.startTime).diffNow('weeks').toObject().weeks > 4)
+            throw Error('Impossible Starting Time');
+          break;
+        default:
+          break;
       }
 
       // Check if this booking overlaps with another booking

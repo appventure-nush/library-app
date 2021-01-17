@@ -1,10 +1,12 @@
 import { CronJob } from 'cron';
 import Booking from 'models/Booking';
 import Room from 'models/Room';
+import User from 'models/User';
 import UserStats from 'models/UserStats';
 import { generatePinSync } from 'secure-pin';
 import { Op } from 'sequelize';
 import { BookingStatus } from 'types/Booking';
+import { Role } from 'types/User';
 
 export const startCronJobs = () => {
   resetBookedPerWeek.start();
@@ -49,19 +51,39 @@ const refreshCheckInPin = new CronJob(
   'Asia/Singapore',
 );
 
+const autoReleaseRoom = () => {
+  const now = new Date();
+  Booking.update<Booking>(
+    { status: BookingStatus.AUTOCANCELLED },
+    { where: { startTime: { [Op.lt]: now }, status: BookingStatus.CONFIRMED }, returning: true },
+  )
+    .then(([count, bookings]) => {
+      console.log(`[Crons] Bookings auto-cancelled: ${count}`);
+      bookings.forEach(async booking => {
+        const user = await User.findByPk(booking.userId);
+        await UserStats.increment('bookingMissed', { where: { userId: user.id } });
+
+        if (user.role === Role.STUDENT) {
+          const userStats = await UserStats.findOne({ where: { userId: user.id } });
+          var oneMonthLater = now;
+          oneMonthLater.setMonth(now.getMonth() + 1);
+          if (userStats.bookingMissed >= 2) {
+            await user.update('bannedEndTime', oneMonthLater, { where: { id: user.id } });
+            await user.update('bannedReason', 'Failing to attend booked session twice', {
+              where: { id: user.id },
+            });
+          }
+        }
+      });
+    })
+    .catch(err =>
+      console.log(`[Crons] Error encountered when auto-cancelling bookings: ${err.message}`),
+    );
+};
+
 const autoReleaseRoom15 = new CronJob(
   '15 8-18 * * *',
-  () => {
-    const now = new Date();
-    Booking.update<Booking>(
-      { status: BookingStatus.AUTOCANCELLED },
-      { where: { startTime: { [Op.lt]: now }, status: BookingStatus.CONFIRMED } },
-    )
-      .then(([count, bookings]) => console.log(`[Crons] Bookings auto-cancelled: ${count}`))
-      .catch(err =>
-        console.log(`[Conrs] Error encountered when auto-cancelling bookings: ${err.message}`),
-      );
-  },
+  autoReleaseRoom,
   null,
   false,
   'Asia/Singapore',
@@ -69,17 +91,7 @@ const autoReleaseRoom15 = new CronJob(
 
 const autoReleaseRoom45 = new CronJob(
   '45 8-18 * * *',
-  () => {
-    const now = new Date();
-    Booking.update<Booking>(
-      { status: BookingStatus.AUTOCANCELLED },
-      { where: { startTime: { [Op.lt]: now }, status: BookingStatus.CONFIRMED } },
-    )
-      .then(([count, bookings]) => console.log(`[Crons] Bookings auto-cancelled: ${count}`))
-      .catch(err =>
-        console.log(`[Conrs] Error encountered when auto-cancelling bookings: ${err.message}`),
-      );
-  },
+  autoReleaseRoom,
   null,
   false,
   'Asia/Singapore',

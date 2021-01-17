@@ -43,7 +43,7 @@ import AdminRoutes from './AdminRoutes';
 import LibrarianRoutes from './LibrarianRoutes';
 import { actions, reducer, sliceKey } from './slice';
 import StudentRoutes from './StudentRoutes';
-import TeacherRoutes from './TeacherRoutes';
+import StaffRoutes from './StaffRoutes';
 
 type Props = RouteComponentProps;
 
@@ -165,8 +165,8 @@ const AuthenticatedPages: React.FC<Props> = props => {
     switch (currentUser.role) {
       case Role.STUDENT:
         return StudentRoutes;
-      case Role.TEACHER:
-        return TeacherRoutes;
+      case Role.STAFF:
+        return StaffRoutes;
       case Role.LIBRARIAN:
         return LibrarianRoutes;
       case Role.ADMIN:

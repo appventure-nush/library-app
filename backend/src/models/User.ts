@@ -25,6 +25,9 @@ export default class User
   public email!: string;
   public role!: Role;
 
+  public bannedReason: string | null;
+  public bannedEndTime: Date | null;
+
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
@@ -101,6 +104,14 @@ User.init(
     role: {
       type: DataTypes.SMALLINT,
       allowNull: false,
+    },
+    bannedReason: {
+      type: new DataTypes.TEXT(),
+      allowNull: true,
+    },
+    bannedEndTime: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
   },
   {

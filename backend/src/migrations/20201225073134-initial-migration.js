@@ -23,6 +23,16 @@ module.exports = {
         type: Sequelize.SMALLINT,
         allowNull: false,
       },
+      bannedReason: {
+        type: Sequelize.TEXT,
+        defaultValue: null,
+        allowNull: true,
+      },
+      bannedEndTime: {
+        type: Sequelize.DATE,
+        defaultValue: null,
+        allowNull: true,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
@@ -143,6 +153,11 @@ module.exports = {
         allowNull: false,
       },
       bookedPerWeek: {
+        type: Sequelize.SMALLINT,
+        defaultValue: 0,
+        allowNull: false,
+      },
+      bookingMissed: {
         type: Sequelize.SMALLINT,
         defaultValue: 0,
         allowNull: false,

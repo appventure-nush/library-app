@@ -110,13 +110,15 @@ const WeekCalendar: React.FC<WeekCalendarProps> = props => {
             justify="space-around"
             alignItems="flex-start"
           >
-            {Array.from(Array(10).keys()).map(key => (
+            {Array.from(Array(17).keys()).map(key => (
               <Grid item xs key={key}>
-                <Box border={1} borderColor="#00000000">
-                  <Typography variant="body2">
-                    {(8 + key).toString().padStart(2, '0')}
-                  </Typography>
-                </Box>
+                {key % 2 === 0 && (
+                  <Box border={1} borderColor="#00000000">
+                    <Typography variant="body2">
+                      {(8 + key / 2).toString().padStart(2, '0')}
+                    </Typography>
+                  </Box>
+                )}
               </Grid>
             ))}
           </Grid>

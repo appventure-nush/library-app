@@ -53,13 +53,13 @@ export default class WeeksController {
                 .startOf('weeks')
                 .startOf('days')
                 .plus({ days: weekDay - 1, hours: 8 });
-              const evening6 = now
+              const evening430 = now
                 .startOf('weeks')
                 .startOf('days')
-                .plus({ days: weekDay - 1, hours: 18 });
+                .plus({ days: weekDay - 1, hours: 16, minutes: 30 });
               moreDisabledSlots.push({
                 startTime: morning8.toJSDate(),
-                endTime: evening6.toJSDate(),
+                endTime: evening430.toJSDate(),
               });
             }
           }
