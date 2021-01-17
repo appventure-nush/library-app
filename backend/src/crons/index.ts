@@ -7,13 +7,16 @@ import { generatePinSync } from 'secure-pin';
 import { Op } from 'sequelize';
 import { BookingStatus } from 'types/Booking';
 import { Role } from 'types/User';
+import { DateTime } from 'luxon';
 
 export const startCronJobs = () => {
   resetBookedPerWeek.start();
+  resetBookingMissed.start();
   refreshCheckInPin.start();
   autoReleaseRoom15.start();
   autoReleaseRoom45.start();
   autoCheckoutBookings.start();
+  autoUnbanUsers.start();
 };
 
 const resetBookedPerWeek = new CronJob(
@@ -22,7 +25,7 @@ const resetBookedPerWeek = new CronJob(
     UserStats.update<UserStats>({ bookedPerWeek: 0 }, { where: {} })
       .then(() => console.log('[Crons] BookedPerWeek updated'))
       .catch(err =>
-        console.log(`[Conrs] Error encountered when reseting BookedPerWeek : ${err.message}`),
+        console.log(`[Crons] Error encountered when reseting BookedPerWeek : ${err.message}`),
       );
   },
   null,
@@ -43,7 +46,7 @@ const refreshCheckInPin = new CronJob(
       })
       .then(() => console.log('[Crons] Pin refreshed'))
       .catch(err =>
-        console.log(`[Conrs] Error encountered when refreshing check-in PIN : ${err.message}`),
+        console.log(`[Crons] Error encountered when refreshing check-in PIN : ${err.message}`),
       );
   },
   null,
@@ -65,11 +68,12 @@ const autoReleaseRoom = () => {
 
         if (user.role === Role.STUDENT) {
           const userStats = await UserStats.findOne({ where: { userId: user.id } });
-          var oneMonthLater = now;
-          oneMonthLater.setMonth(now.getMonth() + 1);
+          const oneMonthLater = DateTime.local().endOf('days').plus({ months: 1 });
           if (userStats.bookingMissed >= 2) {
-            await user.update('bannedEndTime', oneMonthLater, { where: { id: user.id } });
-            await user.update('bannedReason', 'Failing to attend booked session twice', {
+            await user.update('bannedEndTime', oneMonthLater.toJSDate(), {
+              where: { id: user.id },
+            });
+            await user.update('bannedReason', 'Failed to attend booked session twice', {
               where: { id: user.id },
             });
           }
@@ -106,7 +110,40 @@ const autoCheckoutBookings = new CronJob(
     )
       .then(([count, bookings]) => console.log(`[Crons] Bookings auto-checked-out: ${count}`))
       .catch(err =>
-        console.log(`[Conrs] Error encountered when auto-checking out bookings: ${err.message}`),
+        console.log(`[Crons] Error encountered when auto-checking out bookings: ${err.message}`),
+      );
+  },
+  null,
+  false,
+  'Asia/Singapore',
+);
+
+const autoUnbanUsers = new CronJob(
+  '1 0 * * *',
+  () => {
+    User.update<User>(
+      { bannedEndTime: null, bannedReason: null },
+      { where: { bannedEndTime: { [Op.lte]: DateTime.local().toJSDate() } }, returning: true },
+    )
+      .then(([count, users]) =>
+        users.forEach(user => console.log(`[Crons] User unbanned: ${user.name}`)),
+      )
+      .catch(err => console.log(`[Crons] Error encountered when unbanning users: ${err.message}`));
+  },
+  null,
+  false,
+  'Asia/Singapore',
+);
+
+const resetBookingMissed = new CronJob(
+  '0 0 1 */4 *',
+  () => {
+    UserStats.update<UserStats>({ bookingMissed: 0 }, { where: {} })
+      .then(([count, users]) =>
+        console.log(`[Crons] Reset number of missed bookings for all users`),
+      )
+      .catch(err =>
+        console.log(`[Crons] Error encountered when resetting missed bookings: ${err.message}`),
       );
   },
   null,
