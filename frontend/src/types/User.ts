@@ -31,5 +31,5 @@ export interface UserStatsListData {
 
 export interface UserData extends UserListData {
   bannedReason: string | null;
-  bannedEndTime: Date | null;
+  bannedEndTime: string | null;
 }

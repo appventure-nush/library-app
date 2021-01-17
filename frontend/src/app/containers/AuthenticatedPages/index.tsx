@@ -40,6 +40,7 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 import MenuIcon from '@material-ui/icons/Menu';
 
 import AdminRoutes from './AdminRoutes';
+import BannedRoutes from './BannedRoutes';
 import LibrarianRoutes from './LibrarianRoutes';
 import { actions, reducer, sliceKey } from './slice';
 import StudentRoutes from './StudentRoutes';
@@ -162,6 +163,9 @@ const AuthenticatedPages: React.FC<Props> = props => {
   }
 
   const RoleRoutes = () => {
+    if (currentUser.bannedEndTime) {
+      return BannedRoutes;
+    }
     switch (currentUser.role) {
       case Role.STUDENT:
         return StudentRoutes;
