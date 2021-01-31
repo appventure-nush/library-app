@@ -4,7 +4,6 @@ export interface UserStatsAttributes {
   id: number;
   userId: string;
   bookedPerWeek: number;
-  infringement: number;
 }
 
 export interface UserStatsListData {

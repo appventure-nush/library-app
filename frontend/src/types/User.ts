@@ -1,3 +1,21 @@
+import { PresetStatusColorType } from 'antd/lib/_util/colors';
+import { InfringmentData } from './Infringement';
+
+export enum UserStatus {
+  ACTIVE = 1,
+  BANNED = 100,
+}
+
+export const UserStatusString: Record<UserStatus, String> = {
+  1: 'Active',
+  100: 'Banned',
+};
+
+export const UserStatusBadge: Record<UserStatus, PresetStatusColorType> = {
+  1: 'success',
+  100: 'warning',
+};
+
 export enum Role {
   STUDENT = 1,
   STAFF = 11,
@@ -23,6 +41,21 @@ export interface UserListData {
   id: string;
   name: string;
   role: Role;
+}
+
+export interface UserListViewData {
+  id: string;
+  name: string;
+  role: Role;
+  email: string;
+  status: UserStatus;
+}
+
+export interface UserViewData extends UserListViewData {
+  bannedReason: string | null;
+  bannedEndTime: string | null;
+  bookedPerWeek: number;
+  infringementThisTerm: InfringmentData[];
 }
 
 export interface UserStatsListData {

@@ -9,7 +9,7 @@ import api from 'app/api';
 import { DateTime } from 'luxon';
 import React, { useCallback, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
   BookingListViewData,
@@ -34,12 +34,11 @@ export function BookingListPage(props: Props) {
   useInjectReducer({ key: sliceKey, reducer: reducer });
   useInjectSaga({ key: sliceKey, saga: bookingListPageSaga });
 
-  const bookingList = useSelector(selectBookingList);
+  const bookingList = useSelector(selectBookingList, shallowEqual);
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(actions.saveBookings([]));
-    console.log('Admin');
     dispatch(actions.loadBookings());
   }, [dispatch]);
 

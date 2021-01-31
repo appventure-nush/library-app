@@ -1,5 +1,10 @@
 import { AxiosResponse } from 'axios';
-import { BookingCreateData, BookingListViewData } from 'types/Booking';
+import {
+  BookingCreateData,
+  BookingListViewData,
+  BookingStatus,
+  BookingViewData,
+} from 'types/Booking';
 
 import client from './client';
 
@@ -48,6 +53,13 @@ export async function getMyBookings(): Promise<
 
 export async function getBooking(
   id: String,
-): Promise<AxiosResponse<BookingListViewData[]>> {
+): Promise<AxiosResponse<BookingViewData>> {
   return client.get(`${URL}/${id}`);
+}
+
+export async function updateBookingStatus(
+  id: String,
+  status: BookingStatus,
+): Promise<AxiosResponse> {
+  return client.patch(`${URL}/${id}/status`, { status });
 }

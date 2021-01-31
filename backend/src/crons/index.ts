@@ -8,6 +8,7 @@ import { Op } from 'sequelize';
 import { BookingStatus } from 'types/Booking';
 import { Role } from 'types/User';
 import { DateTime } from 'luxon';
+import Infringement from 'models/Infringement';
 
 export const startCronJobs = () => {
   resetBookedPerWeek.start();
@@ -64,16 +65,19 @@ const autoReleaseRoom = () => {
       console.log(`[Crons] Bookings auto-cancelled: ${count}`);
       bookings.forEach(async booking => {
         const user = await User.findByPk(booking.userId);
-        await UserStats.increment('infringement', { where: { userId: user.id } });
+        await Infringement.create({
+          userId: user.id,
+          details: 'Failed to attend booked session',
+        });
 
         if (user.role === Role.STUDENT) {
-          const userStats = await UserStats.findOne({ where: { userId: user.id } });
+          const infringements = await Infringement.findAll({ where: { userId: user.id } });
           const oneMonthLater = DateTime.local().endOf('days').plus({ months: 1 });
-          if (userStats.infringement >= 2) {
+          if (infringements.length >= 2) {
             await user.update('bannedEndTime', oneMonthLater.toJSDate(), {
               where: { id: user.id },
             });
-            await user.update('bannedReason', 'Failed to attend booked session twice', {
+            await user.update('bannedReason', 'Infringed library rules twice in this term', {
               where: { id: user.id },
             });
           }
@@ -138,12 +142,10 @@ const autoUnbanUsers = new CronJob(
 const resetInfringement = new CronJob(
   '0 0 1 */4 *',
   () => {
-    UserStats.update<UserStats>({ infringement: 0 }, { where: {} })
-      .then(([count, users]) =>
-        console.log(`[Crons] Reset number of missed bookings for all users`),
-      )
+    Infringement.destroy({ where: {}, truncate: true })
+      .then(count => console.log(`[Crons] Clear infringements for all users`))
       .catch(err =>
-        console.log(`[Crons] Error encountered when resetting missed bookings: ${err.message}`),
+        console.log(`[Crons] Error encountered when clearing infringements: ${err.message}`),
       );
   },
   null,

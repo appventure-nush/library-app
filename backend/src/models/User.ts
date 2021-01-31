@@ -14,6 +14,7 @@ import { BearerTokenType } from 'types/tokens';
 import { Role, UserAttributes, UserCreationAttributes } from 'types/User';
 
 import Booking from './Booking';
+import Infringement from './Infringement';
 import UserStats from './UserStats';
 
 export default class User
@@ -32,6 +33,16 @@ export default class User
   public readonly updatedAt!: Date;
 
   static associate() {
+    User.hasMany(Infringement, {
+      sourceKey: 'id',
+      foreignKey: 'userId',
+      as: {
+        singular: 'infringement',
+        plural: 'infringements',
+      },
+      onDelete: 'CASCADE',
+    });
+
     User.hasMany(Booking, {
       sourceKey: 'id',
       foreignKey: 'userId',
@@ -59,10 +70,18 @@ export default class User
   public countBookings!: HasManyCountAssociationsMixin;
   public createBooking!: HasManyCreateAssociationMixin<Booking>;
 
+  public getInfringements!: HasManyGetAssociationsMixin<Infringement>;
+  public addInfringement!: HasManyAddAssociationMixin<Infringement, number>;
+  public hasInfringement!: HasManyHasAssociationMixin<Infringement, number>;
+  public countInfringements!: HasManyCountAssociationsMixin;
+  public createInfringement!: HasManyCreateAssociationMixin<Infringement>;
+
   public readonly bookings?: Booking[];
+  public readonly infringements?: Infringement[];
 
   public static associations: {
     bookings: Association<User, Booking>;
+    infringements: Association<User, Infringement>;
   };
 
   private createBearerToken = (tokenType: BearerTokenType, expiresIn: string) => {

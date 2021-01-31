@@ -38,6 +38,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import BookIcon from '@material-ui/icons/Book';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import MenuIcon from '@material-ui/icons/Menu';
+import AccountBox from '@material-ui/icons/AccountBox';
 
 import AdminRoutes from './AdminRoutes';
 import BannedRoutes from './BannedRoutes';
@@ -237,6 +238,14 @@ const AuthenticatedPages: React.FC<Props> = props => {
         {currentUser.role >= Role.LIBRARIAN && (
           <>
             <List>
+              {currentUser.role >= Role.ADMIN && (
+                <ListItem button onClick={() => history.push('/users')}>
+                  <ListItemIcon>
+                    <AccountBox />
+                  </ListItemIcon>
+                  <ListItemText primary={'Users'} />
+                </ListItem>
+              )}
               <ListItem button onClick={() => history.push('/bookings')}>
                 <ListItemIcon>
                   <BookIcon />

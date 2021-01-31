@@ -1,8 +1,20 @@
-// import { take, call, put, select, takeLatest } from 'redux-saga/effects';
-// import { actions } from './slice';
+import api from 'app/api';
+import { toast } from 'react-toastify';
+import { call, put, takeLatest } from 'redux-saga/effects';
 
-// export function* doSomething() {}
+import { PayloadAction } from '@reduxjs/toolkit';
+
+import { actions } from './slice';
+
+export function* loadUser(action: PayloadAction<String>) {
+  try {
+    const user = yield call(api.users.getUser, action.payload);
+    yield put(actions.saveUser(user.data));
+  } catch (err) {
+    toast.error('Failed to load user');
+  }
+}
 
 export function* userDetailPageSaga() {
-  // yield takeLatest(actions.someAction.type, doSomething);
+  yield takeLatest(actions.loadUser.type, loadUser);
 }

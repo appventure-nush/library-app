@@ -7,6 +7,7 @@ import { UserDetailPageState } from 'app/containers/UserDetailPage/types';
 import { ThemeState } from 'styles/theme/types';
 
 import { RoomPinPageState } from 'app/containers/RoomPinPage/types';
+import { UserListPageState } from 'app/containers/UserListPage/types';
 // [IMPORT NEW CONTAINERSTATE ABOVE] < Needed for generating containers seamlessly
 
 /*
@@ -24,5 +25,6 @@ export interface RootState {
   userDetailPage?: UserDetailPageState;
   bookingDetailPage?: BookingDetailPageState;
   roomPinPage?: RoomPinPageState;
+  userListPage?: UserListPageState;
   // [INSERT NEW REDUCER KEY ABOVE] < Needed for generating containers seamlessly
 }

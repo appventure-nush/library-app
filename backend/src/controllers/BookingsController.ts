@@ -356,4 +356,31 @@ export default class BookingsController {
       res.sendStatus(500);
     }
   }
+
+  public async updateStatus(req: Request, res: Response) {
+    const payload = res.locals.payload as AccessTokenSignedPayload;
+    const { userId } = payload;
+    try {
+      const currentUser = await User.findByPk<User>(userId);
+      const targetBookingId = req.params.id;
+      const status: BookingStatus = req.body.status;
+      if (currentUser.role < Role.LIBRARIAN) {
+        res.sendStatus(401);
+        return;
+      }
+      await Booking.update(
+        {
+          status: status,
+        },
+        {
+          where: { id: targetBookingId },
+          limit: 1,
+        },
+      );
+      res.sendStatus(202);
+    } catch (err) {
+      console.log(err.message);
+      res.sendStatus(500);
+    }
+  }
 }
