@@ -11,7 +11,7 @@ export function* loadBooking(action: PayloadAction<String>) {
     const booking = yield call(api.booking.getBooking, action.payload);
     yield put(actions.saveBooking(booking.data));
   } catch (err) {
-    toast.error('Failed to load bookings');
+    toast.error('Failed to load booking');
   }
 }
 

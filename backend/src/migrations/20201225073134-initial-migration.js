@@ -175,6 +175,39 @@ module.exports = {
         type: Sequelize.DATE,
       },
     });
+    await queryInterface.createTable('infringements', {
+      id: {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      userId: {
+        type: Sequelize.UUID,
+        references: {
+          model: {
+            tableName: 'users',
+          },
+          key: 'id',
+        },
+        allowNull: false,
+      },
+      details: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+      deletedAt: {
+        allowNull: true,
+        type: Sequelize.DATE,
+      },
+    });
   },
   down: async (queryInterface, Sequelize) => {
     await queryInterface.dropAllTables();

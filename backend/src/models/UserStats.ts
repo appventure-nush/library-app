@@ -10,7 +10,6 @@ export default class UserStats
   public id!: number;
   public userId!: string;
   public bookedPerWeek!: number;
-  public infringement!: number;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -32,11 +31,6 @@ UserStats.init(
       allowNull: false,
     },
     bookedPerWeek: {
-      type: DataTypes.SMALLINT,
-      defaultValue: 0,
-      allowNull: false,
-    },
-    infringement: {
       type: DataTypes.SMALLINT,
       defaultValue: 0,
       allowNull: false,

@@ -15,6 +15,7 @@ router.get('/upcoming', controller.indexUpcoming);
 router.patch('/:id/cancel', controller.cancel);
 router.post('/:id/checkin', controller.checkIn);
 router.post('/:id/checkout', controller.checkOut);
+router.patch('/:id/status', [checkRole(Role.LIBRARIAN)], controller.updateStatus);
 router.get('/:id', controller.show);
 router.delete('/:id', [checkRole(Role.LIBRARIAN)], controller.delete);
 
