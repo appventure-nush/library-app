@@ -111,6 +111,7 @@ User.init(
     azureOid: {
       type: new DataTypes.STRING(128),
       allowNull: false,
+      unique: true,
     },
     name: {
       type: new DataTypes.STRING(128),

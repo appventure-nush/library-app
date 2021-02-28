@@ -38,6 +38,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import BookIcon from '@material-ui/icons/Book';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import MenuIcon from '@material-ui/icons/Menu';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import AccountBox from '@material-ui/icons/AccountBox';
 
 import AdminRoutes from './AdminRoutes';
@@ -53,6 +54,9 @@ const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    grow: {
+      flexGrow: 1,
+    },
     root: {
       display: 'flex',
     },
@@ -159,6 +163,10 @@ const AuthenticatedPages: React.FC<Props> = props => {
 
   const trigger = useScrollTrigger();
 
+  const handleLogout = () => {
+    dispatch(actions.logout());
+  };
+
   if (!!!currentUser) {
     return <></>;
   }
@@ -212,6 +220,10 @@ const AuthenticatedPages: React.FC<Props> = props => {
             >
               NUSH Library App
             </Typography>
+            <div className={classes.grow} />
+            <IconButton onClick={handleLogout} color="inherit">
+              <ExitToAppIcon />
+            </IconButton>
           </Toolbar>
         </AppBar>
       </Slide>

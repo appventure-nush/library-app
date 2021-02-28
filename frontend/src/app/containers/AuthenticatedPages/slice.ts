@@ -4,6 +4,7 @@ import { createSlice } from 'utils/@reduxjs/toolkit';
 import { PayloadAction } from '@reduxjs/toolkit';
 
 import { ContainerState, LoginErrorType } from './types';
+import { setAccessToken, setRefreshToken } from 'app/localStorage';
 
 // The initial state of the LoginPage container
 export const initialState: ContainerState = {
@@ -32,6 +33,11 @@ const loginSlice = createSlice({
     },
     loginSuccess(state, action: PayloadAction<UserData>) {
       state.user = action.payload;
+    },
+    logout(state, action: PayloadAction) {
+      state.user = null;
+      setAccessToken(null);
+      setRefreshToken(null);
     },
   },
 });
