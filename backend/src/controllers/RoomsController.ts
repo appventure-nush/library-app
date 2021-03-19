@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import Room from 'models/Room';
-import { RoomListData } from 'types/Room';
+import { RoomListData, RoomPinData } from 'types/Room';
 
 export default class RoomsController {
   public index(req: Request, res: Response) {
@@ -27,6 +27,23 @@ export default class RoomsController {
         throw new Error('Room not found');
       }
       res.status(201).json(room.checkInPin);
+    } catch (err) {
+      res.sendStatus(500);
+    }
+  }
+
+  public async showPins(req: Request, res: Response) {
+    try {
+      const rooms = await Room.findAll<Room>();
+      res.status(201).json(
+        rooms.map(room => {
+          const roomPinData: RoomPinData = {
+            name: room.name,
+            checkInPin: room.checkInPin,
+          };
+          return roomPinData;
+        }),
+      );
     } catch (err) {
       res.sendStatus(500);
     }
