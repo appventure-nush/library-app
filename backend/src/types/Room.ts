@@ -11,4 +11,9 @@ export interface RoomListData {
   name: string;
 }
 
+export interface RoomPinData {
+  name: string;
+  checkInPin: string;
+}
+
 export interface RoomCreationAttributes extends Optional<RoomAttributes, 'id'> {}

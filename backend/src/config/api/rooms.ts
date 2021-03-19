@@ -8,5 +8,6 @@ const router = Router();
 
 router.get('/bookables', controller.index);
 router.get('/:id/pin', [checkRole(Role.LIBRARIAN)], controller.showPin);
+router.get('/pins', [checkRole(Role.LIBRARIAN)], controller.showPins);
 
 export default router;
