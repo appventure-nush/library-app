@@ -6,6 +6,7 @@ import { Role } from 'types/User';
 const controller = new RoomsController();
 const router = Router();
 
+router.post('/', [checkRole(Role.ADMIN)], controller.create);
 router.get('/bookables', controller.index);
 router.get('/:id/pin', [checkRole(Role.LIBRARIAN)], controller.showPin);
 router.get('/pins', [checkRole(Role.LIBRARIAN)], controller.showPins);

@@ -64,9 +64,12 @@ export default class BookingsController {
       const user = await User.findByPk<User>(userId, { transaction: t });
       const userStats = await UserStats.findOne<UserStats>({
         where: { userId: userId },
+        transaction: t,
       });
+      const room = await Room.findByPk<Room>(params.roomId, { transaction: t });
       switch (user.role) {
         case Role.STUDENT:
+          if (room.staffOnly) throw Error('The booking of this room is staff-only');
           // Check if user has exceeded number of bookings per week
           if (userStats.bookedPerWeek >= 2) throw Error('Number of bookings per week exceeded');
           // Check if booking duration is less than 2hrs for Students
