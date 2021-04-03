@@ -23,6 +23,7 @@ export default class AuthController {
     const t = await database.transaction();
     try {
       const decoded: any = await azureVerify(azureAdIdToken, options);
+      const isStaff = decoded.preferred_username.substring(0, 3) === 'nhs';
       const [user, isNew] = await User.findOrCreate<User>({
         where: {
           azureOid: decoded.oid,
@@ -31,7 +32,7 @@ export default class AuthController {
           name: decoded.name,
           email: decoded.preferred_username,
           azureOid: decoded.oid,
-          role: 1,
+          role: isStaff ? 11 : 1,
           bannedEndTime: null,
           bannedReason: null,
         },
