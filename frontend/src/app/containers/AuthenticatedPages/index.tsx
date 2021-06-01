@@ -1,6 +1,6 @@
 import api from 'app/api';
 import { getCurrentUser } from 'app/containers/AuthenticatedPages/selectors';
-import { NotFoundPage } from 'app/containers/NotFoundPage/Loadable';
+import { NotFoundPage } from 'app/containers/NotFoundPage';
 import { getRefreshToken, setRefreshToken } from 'app/localStorage';
 import clsx from 'clsx';
 import React, { useCallback, useEffect } from 'react';

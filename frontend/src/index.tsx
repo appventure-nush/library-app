@@ -7,7 +7,6 @@
 
 import 'react-app-polyfill/ie11';
 import 'react-app-polyfill/stable';
-import 'sanitize.css/sanitize.css';
 
 import { App } from 'app';
 import FontFaceObserver from 'fontfaceobserver';
@@ -17,7 +16,6 @@ import { HelmetProvider } from 'react-helmet-async';
 import { Provider } from 'react-redux';
 import * as serviceWorker from 'serviceWorker';
 import { configureAppStore } from 'store/configureStore';
-import { ThemeProvider } from 'styles/theme/ThemeProvider';
 
 // Observe loading of Inter (to remove 'Inter', remove the <link> tag in
 // the index.html file and this observer)
@@ -36,11 +34,9 @@ interface Props {
 }
 const ConnectedApp = ({ Component }: Props) => (
   <Provider store={store}>
-    <ThemeProvider>
-      <HelmetProvider>
-        <Component />
-      </HelmetProvider>
-    </ThemeProvider>
+    <HelmetProvider>
+      <Component />
+    </HelmetProvider>
   </Provider>
 );
 

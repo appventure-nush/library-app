@@ -10,7 +10,7 @@ import { toast } from 'react-toastify';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
 
 import AuthenticatedPages from './containers/AuthenticatedPages';
-import { LoginPage } from './containers/LoginPage/Loadable';
+import { LoginPage } from './containers/LoginPage';
 
 Settings.defaultZoneName = 'Asia/Singapore';
 

@@ -4,7 +4,6 @@ import { BookingListPageState } from 'app/containers/BookingListPage/types';
 import { CreateBookingPageState } from 'app/containers/CreateBookingPage/types';
 import { DashboardPageState } from 'app/containers/DashboardPage/types';
 import { UserDetailPageState } from 'app/containers/UserDetailPage/types';
-import { ThemeState } from 'styles/theme/types';
 
 import { RoomPinPageState } from 'app/containers/RoomPinPage/types';
 import { UserListPageState } from 'app/containers/UserListPage/types';
@@ -18,7 +17,6 @@ import { ConsolidatedRoomPinPageState } from 'app/containers/ConsolidatedRoomPin
   So, not available always
 */
 export interface RootState {
-  theme?: ThemeState;
   dashboardPage?: DashboardPageState;
   createBookingPage?: CreateBookingPageState;
   login: LoginState;
