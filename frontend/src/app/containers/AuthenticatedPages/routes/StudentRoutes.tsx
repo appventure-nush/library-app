@@ -1,10 +1,10 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 
-import { CreateBookingPage } from '../CreateBookingPage';
-import { DashboardPage } from '../DashboardPage';
-import { MyBookingDetailPage } from '../MyBookingDetailPage';
-import { MyBookingListPage } from '../MyBookingListPage';
+import { CreateBookingPage } from '../../CreateBookingPage';
+import { DashboardPage } from '../../DashboardPage';
+import { MyBookingDetailPage } from '../../MyBookingDetailPage';
+import { MyBookingListPage } from '../../MyBookingListPage';
 
 const StudentRoutes = [
   <Route exact path={process.env.PUBLIC_URL + '/'} component={DashboardPage} />,

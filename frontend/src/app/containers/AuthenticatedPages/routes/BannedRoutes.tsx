@@ -1,9 +1,9 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 
-import { BannedPage } from '../BannedPage';
-import { MyBookingDetailPage } from '../MyBookingDetailPage';
-import { MyBookingListPage } from '../MyBookingListPage';
+import { BannedPage } from '../../BannedPage';
+import { MyBookingDetailPage } from '../../MyBookingDetailPage';
+import { MyBookingListPage } from '../../MyBookingListPage';
 
 const StudentRoutes = [
   <Route exact path={process.env.PUBLIC_URL + '/'} component={BannedPage} />,

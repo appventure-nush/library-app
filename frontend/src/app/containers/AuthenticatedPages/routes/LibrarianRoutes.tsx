@@ -1,12 +1,12 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 
-import { BookingDetailPage } from '../BookingDetailPage';
-import { BookingListPage } from '../BookingListPage';
-import { RoomPinPage } from '../RoomPinPage';
-import { ConsolidatedRoomPinPage } from '../ConsolidatedRoomPinPage';
-import { UserDetailPage } from '../UserDetailPage';
-import { UserListPage } from '../UserListPage';
+import { BookingDetailPage } from '../../BookingDetailPage';
+import { BookingListPage } from '../../BookingListPage';
+import { RoomPinPage } from '../../RoomPinPage';
+import { ConsolidatedRoomPinPage } from '../../ConsolidatedRoomPinPage';
+import { UserDetailPage } from '../../UserDetailPage';
+import { UserListPage } from '../../UserListPage';
 import StaffRoutes from './StaffRoutes';
 
 const LibrarianRoutes = [

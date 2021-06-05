@@ -1,132 +1,41 @@
+/* This example requires Tailwind CSS v2.0+ */
+import React, { Fragment, useState, useCallback, useEffect } from 'react';
+import { Dialog, Transition } from '@headlessui/react';
+import {
+  BookmarkIcon,
+  HomeIcon,
+  MenuIcon,
+  XIcon,
+  LogoutIcon,
+} from '@heroicons/react/outline';
+import { useLocation, withRouter } from 'react-router';
 import api from 'app/api';
-import { getCurrentUser } from 'app/containers/AuthenticatedPages/selectors';
-import { NotFoundPage } from 'app/containers/NotFoundPage';
 import { getRefreshToken, setRefreshToken } from 'app/localStorage';
-import clsx from 'clsx';
-import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Route,
-  RouteComponentProps,
-  Switch,
-  useHistory,
-  withRouter,
-} from 'react-router-dom';
+import { Route, Switch, useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Role, roleString } from 'types/User';
 import { useInjectReducer } from 'utils/redux-injectors';
+import { sliceKey, reducer, actions } from './slice';
+import { getCurrentUser } from './selectors';
+import { Role, roleString } from 'types/User';
+import { NotFoundPage } from '../NotFoundPage';
+import AdminRoutes from './routes/AdminRoutes';
+import BannedRoutes from './routes/BannedRoutes';
+import LibrarianRoutes from './routes/LibrarianRoutes';
+import StaffRoutes from './routes/StaffRoutes';
+import StudentRoutes from './routes/StudentRoutes';
 
-import {
-  AppBar,
-  Avatar,
-  CardHeader,
-  CssBaseline,
-  Divider,
-  Drawer,
-  IconButton,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Slide,
-  Toolbar,
-  Typography,
-  useScrollTrigger,
-} from '@material-ui/core';
-import { deepPurple } from '@material-ui/core/colors';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import BookIcon from '@material-ui/icons/Book';
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import MenuIcon from '@material-ui/icons/Menu';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import AccountBox from '@material-ui/icons/AccountBox';
+function classNames(...classes) {
+  return classes.filter(Boolean).join(' ');
+}
 
-import AdminRoutes from './AdminRoutes';
-import BannedRoutes from './BannedRoutes';
-import LibrarianRoutes from './LibrarianRoutes';
-import { actions, reducer, sliceKey } from './slice';
-import StudentRoutes from './StudentRoutes';
-import StaffRoutes from './StaffRoutes';
-
-type Props = RouteComponentProps;
-
-const drawerWidth = 240;
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    grow: {
-      flexGrow: 1,
-    },
-    root: {
-      display: 'flex',
-    },
-    appBar: {
-      transition: theme.transitions.create(['margin', 'width'], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-      }),
-    },
-    appBarShift: {
-      width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth,
-      transition: theme.transitions.create(['margin', 'width'], {
-        easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
-    },
-    menuButton: {
-      marginRight: theme.spacing(2),
-    },
-    hide: {
-      display: 'none',
-    },
-    drawer: {
-      width: drawerWidth,
-      flexShrink: 0,
-    },
-    drawerPaper: {
-      width: drawerWidth,
-    },
-    drawerHeader: {
-      display: 'flex',
-      alignItems: 'center',
-      padding: theme.spacing(0, 1),
-      // necessary for content to be below app bar
-      ...theme.mixins.toolbar,
-      justifyContent: 'flex-end',
-    },
-    content: {
-      flexGrow: 1,
-      padding: theme.spacing(3),
-      transition: theme.transitions.create('margin', {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-      }),
-      marginLeft: -drawerWidth,
-    },
-    contentShift: {
-      transition: theme.transitions.create('margin', {
-        easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
-      marginLeft: 0,
-    },
-    purple: {
-      color: theme.palette.getContrastText(deepPurple[500]),
-      backgroundColor: deepPurple[500],
-    },
-  }),
-);
-
-const AuthenticatedPages: React.FC<Props> = props => {
+const AuthenticatedPages: React.FC = () => {
   useInjectReducer({ key: sliceKey, reducer: reducer });
+  const currentUser = useSelector(getCurrentUser);
 
+  const location = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
-  const currentUser = useSelector(getCurrentUser);
-  const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
-
   const tokenLogin = useCallback(async () => {
     const refreshToken = getRefreshToken();
     if (!refreshToken) {
@@ -157,15 +66,19 @@ const AuthenticatedPages: React.FC<Props> = props => {
     tokenLogin();
   }, [currentUser, tokenLogin]);
 
-  const toggleDrawerOpen = () => {
-    setOpen(!open);
-  };
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const trigger = useScrollTrigger();
+  const navOnClick = useCallback(
+    (to: string) => () => {
+      history.push(to);
+      setSidebarOpen(false);
+    },
+    [history],
+  );
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     dispatch(actions.logout());
-  };
+  }, [dispatch]);
 
   if (!!!currentUser) {
     return <></>;
@@ -188,114 +101,296 @@ const AuthenticatedPages: React.FC<Props> = props => {
   };
 
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <Slide appear={false} direction="down" in={open || !trigger}>
-        <AppBar
-          position="fixed"
-          className={clsx(classes.appBar, {
-            [classes.appBarShift]: open,
-          })}
+    <div className="h-screen flex overflow-hidden bg-gray-100 dark:bg-gray-900">
+      <Transition.Root show={sidebarOpen} as={Fragment}>
+        <Dialog
+          as="div"
+          static
+          className="fixed inset-0 flex z-40 md:hidden"
+          open={sidebarOpen}
+          onClose={setSidebarOpen}
         >
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={toggleDrawerOpen}
-              edge="start"
-              className={classes.menuButton}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Avatar
-              style={{ marginRight: '0.5rem' }}
-              alt="AppVenture Logo"
-              src="/favicon.ico"
-            />
-            <Typography
-              style={{ cursor: 'pointer', color: '#FFFFFF' }}
-              variant="h6"
-              onClick={() => history.push('/')}
-              noWrap
-            >
-              NUSH Library App
-            </Typography>
-            <div className={classes.grow} />
-            <IconButton onClick={handleLogout} color="inherit">
-              <ExitToAppIcon />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-      </Slide>
-      <Drawer
-        className={classes.drawer}
-        variant="persistent"
-        anchor="left"
-        open={open}
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-      >
-        <CardHeader
-          avatar={
-            <Avatar className={classes.purple}>
-              {currentUser.name.substring(0, 2)}
-            </Avatar>
-          }
-          title={currentUser.name}
-          subheader={roleString[currentUser.role]}
-          style={{ height: 64 }}
-        />
-        <Divider />
-        {currentUser.role >= Role.LIBRARIAN && (
-          <>
-            <List>
-              {currentUser.role >= Role.ADMIN && (
-                <ListItem button onClick={() => history.push('/users')}>
-                  <ListItemIcon>
-                    <AccountBox />
-                  </ListItemIcon>
-                  <ListItemText primary={'Users'} />
-                </ListItem>
-              )}
-              <ListItem button onClick={() => history.push('/bookings')}>
-                <ListItemIcon>
-                  <BookIcon />
-                </ListItemIcon>
-                <ListItemText primary={'Bookings'} />
-              </ListItem>
-            </List>
-            <Divider />
-          </>
-        )}
-        <List>
-          <ListItem button onClick={() => history.push('/')}>
-            <ListItemIcon>
-              <DashboardIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Dashboard'} />
-          </ListItem>
-          <ListItem button onClick={() => history.push('/mybookings')}>
-            <ListItemIcon>
-              <BookIcon />
-            </ListItemIcon>
-            <ListItemText primary={'My Bookings'} />
-          </ListItem>
-        </List>
-      </Drawer>
-      <main
-        className={clsx(classes.content, {
-          [classes.contentShift]: open,
-        })}
-      >
-        <div className={classes.drawerHeader} />
-        <Switch>
-          {RoleRoutes().map((RoleRoute, index) => (
-            <RoleRoute.type {...RoleRoute.props} key={index} />
-          ))}
-          <Route path={process.env.PUBLIC_URL + '/'} component={NotFoundPage} />
-        </Switch>
-      </main>
+          <Transition.Child
+            as={Fragment}
+            enter="transition-opacity ease-linear duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="transition-opacity ease-linear duration-300"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <Dialog.Overlay className="fixed inset-0 bg-gray-600 bg-opacity-75" />
+          </Transition.Child>
+          <Transition.Child
+            as={Fragment}
+            enter="transition ease-in-out duration-300 transform"
+            enterFrom="-translate-x-full"
+            enterTo="translate-x-0"
+            leave="transition ease-in-out duration-300 transform"
+            leaveFrom="translate-x-0"
+            leaveTo="-translate-x-full"
+          >
+            <div className="relative flex-1 flex flex-col max-w-xs w-full bg-teal-600">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-in-out duration-300"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leave="ease-in-out duration-300"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <div className="absolute top-0 right-0 -mr-12 pt-2">
+                  <button
+                    className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                    onClick={() => setSidebarOpen(false)}
+                  >
+                    <span className="sr-only">Close sidebar</span>
+                    <XIcon className="h-6 w-6 text-white" aria-hidden="true" />
+                  </button>
+                </div>
+              </Transition.Child>
+              <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
+                <div className="flex-shrink-0 flex items-center px-4">
+                  <img
+                    className="h-8 w-auto"
+                    src="/favicon.ico"
+                    alt="AppVenture Logo"
+                  />
+                  <span className="text-white font-sans font-medium ml-2 text-lg">
+                    The Node
+                  </span>
+                </div>
+                <nav className="mt-5 px-2 space-y-1">
+                  <button
+                    className={classNames(
+                      location.pathname === '/'
+                        ? 'bg-teal-700 text-white'
+                        : 'text-white hover:bg-teal-500 hover:bg-opacity-75',
+                      'group w-full focus:outline-none flex items-center px-2 py-2 text-base font-medium rounded-md',
+                    )}
+                    onClick={navOnClick('/')}
+                  >
+                    <HomeIcon
+                      className="mr-3 flex-shrink-0 h-6 w-6 text-teal-200"
+                      aria-hidden="true"
+                    />
+                    Dashboard
+                  </button>
+                  <button
+                    className={classNames(
+                      location.pathname.startsWith('/mybookings')
+                        ? 'bg-teal-700 text-white'
+                        : 'text-white hover:bg-teal-500 hover:bg-opacity-75',
+                      'group w-full focus:outline-none flex items-center px-2 py-2 text-base font-medium rounded-md',
+                    )}
+                    onClick={navOnClick('/mybookings')}
+                  >
+                    <BookmarkIcon
+                      className="mr-3 flex-shrink-0 h-6 w-6 text-teal-200"
+                      aria-hidden="true"
+                    />
+                    My Bookings
+                  </button>
+                  {currentUser.role >= Role.LIBRARIAN && (
+                    <button
+                      className={classNames(
+                        location.pathname.startsWith('/bookings')
+                          ? 'bg-teal-700 text-white'
+                          : 'text-white hover:bg-teal-500 hover:bg-opacity-75',
+                        'group w-full focus:outline-none flex items-center px-2 py-2 text-base font-medium rounded-md',
+                      )}
+                      onClick={navOnClick('/bookings')}
+                    >
+                      <BookmarkIcon
+                        className="mr-3 flex-shrink-0 h-6 w-6 text-teal-200"
+                        aria-hidden="true"
+                      />
+                      All Bookings
+                    </button>
+                  )}
+                  {currentUser.role >= Role.ADMIN && (
+                    <button
+                      className={classNames(
+                        location.pathname.startsWith('/users')
+                          ? 'bg-teal-700 text-white'
+                          : 'text-white hover:bg-teal-500 hover:bg-opacity-75',
+                        'group w-full focus:outline-none flex items-center px-2 py-2 text-base font-medium rounded-md',
+                      )}
+                      onClick={navOnClick('/users')}
+                    >
+                      <BookmarkIcon
+                        className="mr-3 flex-shrink-0 h-6 w-6 text-teal-200"
+                        aria-hidden="true"
+                      />
+                      Manage Users
+                    </button>
+                  )}
+                </nav>
+              </div>
+              <div className="flex-shrink-0 flex justify-between items-center border-t border-teal-700 p-4">
+                <button className="flex-shrink-0 group block focus:outline-none">
+                  <span>
+                    <div className="flex items-center">
+                      <div className="flex flex-col items-start ml-1">
+                        <p className="text-base font-medium text-white">
+                          {currentUser.name}
+                        </p>
+                        <p className="text-sm font-medium text-teal-100 group-hover:text-white">
+                          {roleString[currentUser.role]}
+                        </p>
+                      </div>
+                    </div>
+                  </span>
+                </button>
+                <LogoutIcon
+                  className="mr-4 flex-shrink-0 h-6 w-6 text-teal-200 hover:text-white"
+                  aria-hidden="true"
+                />
+              </div>
+            </div>
+          </Transition.Child>
+          <div className="flex-shrink-0 w-14" aria-hidden="true">
+            {/* Force sidebar to shrink to fit close icon */}
+          </div>
+        </Dialog>
+      </Transition.Root>
+
+      {/* Static sidebar for desktop */}
+      <div className="hidden bg-teal-600 md:flex md:flex-shrink-0">
+        <div className="flex flex-col w-64">
+          {/* Sidebar component, swap this element with another sidebar if you like */}
+          <div className="flex flex-col h-0 flex-1">
+            <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
+              <div className="flex items-center flex-shrink-0 px-4">
+                <img
+                  className="h-8 w-auto"
+                  src="/favicon.ico"
+                  alt="AppVenture Logo"
+                />
+                <span className="text-white font-sans font-medium ml-2 text-lg">
+                  The Node
+                </span>
+              </div>
+              <nav className="mt-5 flex-1 px-2 space-y-1">
+                <button
+                  className={classNames(
+                    location.pathname === '/'
+                      ? 'bg-teal-700 text-white'
+                      : 'text-white hover:bg-teal-500 hover:bg-opacity-75',
+                    'group w-full focus:outline-none flex items-center px-2 py-2 text-base font-medium rounded-md',
+                  )}
+                  onClick={navOnClick('/')}
+                >
+                  <HomeIcon
+                    className="mr-3 flex-shrink-0 h-6 w-6 text-teal-200"
+                    aria-hidden="true"
+                  />
+                  Dashboard
+                </button>
+                <button
+                  className={classNames(
+                    location.pathname.startsWith('/mybookings')
+                      ? 'bg-teal-700 text-white'
+                      : 'text-white hover:bg-teal-500 hover:bg-opacity-75',
+                    'group w-full focus:outline-none flex items-center px-2 py-2 text-base font-medium rounded-md',
+                  )}
+                  onClick={navOnClick('/mybookings')}
+                >
+                  <BookmarkIcon
+                    className="mr-3 flex-shrink-0 h-6 w-6 text-teal-200"
+                    aria-hidden="true"
+                  />
+                  My Bookings
+                </button>
+                {currentUser.role >= Role.LIBRARIAN && (
+                  <button
+                    className={classNames(
+                      location.pathname.startsWith('/bookings')
+                        ? 'bg-teal-700 text-white'
+                        : 'text-white hover:bg-teal-500 hover:bg-opacity-75',
+                      'group w-full focus:outline-none flex items-center px-2 py-2 text-base font-medium rounded-md',
+                    )}
+                    onClick={navOnClick('/bookings')}
+                  >
+                    <BookmarkIcon
+                      className="mr-3 flex-shrink-0 h-6 w-6 text-teal-200"
+                      aria-hidden="true"
+                    />
+                    All Bookings
+                  </button>
+                )}
+                {currentUser.role >= Role.ADMIN && (
+                  <button
+                    className={classNames(
+                      location.pathname.startsWith('/users')
+                        ? 'bg-teal-700 text-white'
+                        : 'text-white hover:bg-teal-500 hover:bg-opacity-75',
+                      'group w-full focus:outline-none flex items-center px-2 py-2 text-base font-medium rounded-md',
+                    )}
+                    onClick={navOnClick('/users')}
+                  >
+                    <BookmarkIcon
+                      className="mr-3 flex-shrink-0 h-6 w-6 text-teal-200"
+                      aria-hidden="true"
+                    />
+                    Manage Users
+                  </button>
+                )}
+              </nav>
+            </div>
+            <div className="flex-shrink-0 flex border-t border-teal-700 p-4">
+              <div className="flex-shrink-0 flex justify-between items-center w-full">
+                <button className="group block focus:outline-none">
+                  <div className="flex items-center">
+                    <div className="flex flex-col items-start ml-1">
+                      <p className="text-sm font-medium text-white">
+                        {currentUser.name}
+                      </p>
+                      <p className="text-xs font-medium text-teal-100 group-hover:text-white">
+                        {roleString[currentUser.role]}
+                      </p>
+                    </div>
+                  </div>
+                </button>
+                <button className="focus:outline-none" onClick={handleLogout}>
+                  <LogoutIcon
+                    className="mr-4 flex-shrink-0 h-6 w-6 text-teal-200 hover:text-white"
+                    aria-hidden="true"
+                  />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-col w-0 flex-1 overflow-hidden">
+        <div className="md:hidden pl-1 pt-1 sm:pl-3 sm:pt-3">
+          <button
+            className="-ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-teal-500"
+            onClick={() => setSidebarOpen(true)}
+          >
+            <span className="sr-only">Open sidebar</span>
+            <MenuIcon className="h-6 w-6" aria-hidden="true" />
+          </button>
+        </div>
+        <main className="bg-white dark:bg-gray-900 flex-1 relative z-0 overflow-y-auto focus:outline-none">
+          <div className="py-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+              <Switch>
+                {RoleRoutes().map((RoleRoute, index) => (
+                  // eslint-disable-next-line
+                  <RoleRoute.type {...RoleRoute.props} key={index} />
+                ))}
+                <Route
+                  path={process.env.PUBLIC_URL + '/'}
+                  component={NotFoundPage}
+                />
+              </Switch>
+            </div>
+          </div>
+        </main>
+      </div>
     </div>
   );
 };
