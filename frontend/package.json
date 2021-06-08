@@ -1,129 +1,129 @@
 {
-  "name": "library-app",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@craco/craco": "6.1.2",
-    "@headlessui/react": "1.2.0",
-    "@heroicons/react": "1.0.1",
-    "@material-ui/core": "4.11.0",
-    "@material-ui/icons": "4.9.1",
-    "@reduxjs/toolkit": "1.3.2",
-    "@tailwindcss/forms": "0.3.3",
-    "@testing-library/jest-dom": "5.1.1",
-    "@testing-library/react": "10.0.1",
-    "@types/fontfaceobserver": "0.0.6",
-    "@types/jest": "25.1.4",
-    "@types/luxon": "1.25.0",
-    "@types/node": "13.9.3",
-    "@types/react": "16.9.25",
-    "@types/react-dom": "16.9.3",
-    "@types/react-helmet": "5.0.15",
-    "@types/react-redux": "7.1.7",
-    "@types/react-router-dom": "5.1.3",
-    "@types/react-test-renderer": "16.9.2",
-    "@types/testing-library__jest-dom": "5.0.2",
-    "@types/webpack-env": "1.15.1",
-    "@types/yup": "0.29.4",
-    "antd": "4.9.4",
-    "axios": "0.21.0",
-    "cross-env": "7.0.2",
-    "eslint-config-prettier": "6.10.1",
-    "eslint-plugin-prettier": "3.1.2",
-    "fontfaceobserver": "2.1.0",
-    "formik": "2.2.5",
-    "husky": "4.2.3",
-    "lint-staged": "10.0.8",
-    "luxon": "1.25.0",
-    "node-plop": "0.25.0",
-    "plop": "2.6.0",
-    "prettier": "2.0.1",
-    "react": "16.13.0",
-    "react-app-polyfill": "1.0.6",
-    "react-dom": "16.13.0",
-    "react-helmet-async": "1.0.4",
-    "react-microsoft-login": "1.12.1",
-    "react-redux": "7.2.0",
-    "react-router-dom": "5.1.2",
-    "react-scripts": "^4.0.3",
-    "react-test-renderer": "16.13.0",
-    "react-toastify": "6.1.0",
-    "redux-injectors": "1.3.0",
-    "redux-saga": "1.1.3",
-    "replace-in-file": "6.0.0",
-    "serve": "11.3.0",
-    "shelljs": "0.8.3",
-    "tailwindcss-scrollbar": "0.1.0",
-    "ts-node": "8.8.2",
-    "typescript": "3.8.2",
-    "yup": "0.29.3"
-  },
-  "scripts": {
-    "start": "craco start",
-    "build": "craco build",
-    "test": "craco test",
-    "eject": "react-scripts eject",
-    "start:prod": "yarn build && serve -s build",
-    "checkTs": "tsc --noEmit",
-    "eslint": "eslint --ext js,ts,tsx",
-    "lint": "yarn eslint -- src",
-    "lint:fix": "yarn eslint -- --fix src",
-    "prettify": "prettier --write"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "engines": {
-    "npm": ">=6.4.1",
-    "node": ">=10.13.0"
-  },
-  "lint-staged": {
-    "*.{ts,tsx,js,jsx}": [
-      "npm run eslint -- --fix"
-    ],
-    "*.{md,json}": [
-      "prettier --write"
-    ]
-  },
-  "husky(remove-everything-in-these-parentheses.See-the-issue-#29)": {
-    "hooks": {
-      "pre-commit": "npm run checkTs && lint-staged"
+    "name": "library-app",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "@craco/craco": "6.1.2",
+        "@headlessui/react": "1.2.0",
+        "@heroicons/react": "1.0.1",
+        "@material-ui/core": "4.11.0",
+        "@material-ui/icons": "4.9.1",
+        "@reduxjs/toolkit": "1.3.2",
+        "@tailwindcss/forms": "0.3.3",
+        "@testing-library/jest-dom": "5.1.1",
+        "@testing-library/react": "10.0.1",
+        "@types/fontfaceobserver": "0.0.6",
+        "@types/jest": "25.1.4",
+        "@types/luxon": "1.25.0",
+        "@types/node": "13.9.3",
+        "@types/react": "16.9.25",
+        "@types/react-dom": "16.9.3",
+        "@types/react-helmet": "5.0.15",
+        "@types/react-redux": "7.1.7",
+        "@types/react-router-dom": "5.1.3",
+        "@types/react-test-renderer": "16.9.2",
+        "@types/testing-library__jest-dom": "5.0.2",
+        "@types/webpack-env": "1.15.1",
+        "@types/yup": "0.29.4",
+        "antd": "4.9.4",
+        "axios": "0.21.0",
+        "cross-env": "7.0.2",
+        "eslint-config-prettier": "6.10.1",
+        "eslint-plugin-prettier": "3.1.2",
+        "fontfaceobserver": "2.1.0",
+        "formik": "2.2.5",
+        "husky": "4.2.3",
+        "lint-staged": "10.0.8",
+        "luxon": "1.25.0",
+        "node-plop": "0.25.0",
+        "plop": "2.6.0",
+        "prettier": "2.0.1",
+        "react": "16.13.0",
+        "react-app-polyfill": "1.0.6",
+        "react-dom": "16.13.0",
+        "react-helmet-async": "1.0.4",
+        "react-microsoft-login": "1.12.1",
+        "react-redux": "7.2.0",
+        "react-router-dom": "5.1.2",
+        "react-scripts": "^4.0.3",
+        "react-test-renderer": "16.13.0",
+        "react-toastify": "6.1.0",
+        "redux-injectors": "1.3.0",
+        "redux-saga": "1.1.3",
+        "replace-in-file": "6.0.0",
+        "serve": "11.3.0",
+        "shelljs": "0.8.3",
+        "tailwindcss-scrollbar": "0.1.0",
+        "ts-node": "8.8.2",
+        "typescript": "3.8.2",
+        "yup": "0.29.3"
+    },
+    "scripts": {
+        "start": "craco start",
+        "build": "craco build",
+        "test": "craco test",
+        "eject": "react-scripts eject",
+        "start:prod": "yarn build && serve -s build",
+        "checkTs": "tsc --noEmit",
+        "eslint": "eslint --ext js,ts,tsx",
+        "lint": "yarn eslint -- src",
+        "lint:fix": "yarn eslint -- --fix src",
+        "prettify": "prettier --write"
+    },
+    "eslintConfig": {
+        "extends": "react-app"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "engines": {
+        "npm": ">=6.4.1",
+        "node": ">=10.13.0"
+    },
+    "lint-staged": {
+        "*.{ts,tsx,js,jsx}": [
+            "npm run eslint -- --fix"
+        ],
+        "*.{md,json}": [
+            "prettier --write"
+        ]
+    },
+    "husky(remove-everything-in-these-parentheses.See-the-issue-#29)": {
+        "hooks": {
+            "pre-commit": "npm run checkTs && lint-staged"
+        }
+    },
+    "jest": {
+        "collectCoverageFrom": [
+            "src/**/*.{js,jsx,ts,tsx}",
+            "!src/**/*/*.d.ts",
+            "!src/**/*/Loadable.{js,jsx,ts,tsx}",
+            "!src/**/*/types.ts",
+            "!src/index.tsx",
+            "!src/serviceWorker.ts"
+        ],
+        "coverageThreshold": {
+            "global": {
+                "branches": 90,
+                "functions": 90,
+                "lines": 90,
+                "statements": 90
+            }
+        }
+    },
+    "devDependencies": {
+        "autoprefixer": "^9",
+        "postcss": "^7",
+        "tailwindcss": "npm:@tailwindcss/postcss7-compat",
+        "tailwindcss-scroll-snap": "1.1.0"
     }
-  },
-  "jest": {
-    "collectCoverageFrom": [
-      "src/**/*.{js,jsx,ts,tsx}",
-      "!src/**/*/*.d.ts",
-      "!src/**/*/Loadable.{js,jsx,ts,tsx}",
-      "!src/**/*/types.ts",
-      "!src/index.tsx",
-      "!src/serviceWorker.ts"
-    ],
-    "coverageThreshold": {
-      "global": {
-        "branches": 90,
-        "functions": 90,
-        "lines": 90,
-        "statements": 90
-      }
-    }
-  },
-  "devDependencies": {
-    "autoprefixer": "^9",
-    "postcss": "^7",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat",
-    "tailwindcss-scroll-snap": "1.1.0"
-  }
 }
