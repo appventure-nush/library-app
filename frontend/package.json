@@ -53,6 +53,7 @@
     "replace-in-file": "6.0.0",
     "serve": "11.3.0",
     "shelljs": "0.8.3",
+    "tailwindcss-scrollbar": "0.1.0",
     "ts-node": "8.8.2",
     "typescript": "3.8.2",
     "yup": "0.29.3"
@@ -122,6 +123,7 @@
   "devDependencies": {
     "autoprefixer": "^9",
     "postcss": "^7",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat"
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat",
+    "tailwindcss-scroll-snap": "1.1.0"
   }
 }

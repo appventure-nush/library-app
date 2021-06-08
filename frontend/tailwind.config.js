@@ -7,14 +7,17 @@ module.exports = {
     extend: {
       colors: {
         teal: colors.teal,
-        "light-blue": colors.lightBlue,
+        'light-blue': colors.lightBlue,
       },
     },
   },
   variants: {
+    scrollSnapType: ['responsive'],
     extend: {},
   },
   plugins: [
-    require('@tailwindcss/forms')
+    require('tailwindcss-scrollbar'),
+    require('@tailwindcss/forms'),
+    require('tailwindcss-scroll-snap'),
   ],
-}
+};

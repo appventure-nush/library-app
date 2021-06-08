@@ -66,8 +66,8 @@ const CreateBookingStepper: React.FC<CreateBookingStepperProps> = props => {
       >
         <Step>
           <StepLabel>
-            {values.timeSlot
-              ? `You have selected ${getSelectedTimeString(values.timeSlot)}`
+            {values.selection
+              ? `You have selected ${getSelectedTimeString(values.selection)}`
               : 'Please select a time slot'}
           </StepLabel>
           <StepContent>
