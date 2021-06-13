@@ -12,7 +12,7 @@ import { csrfToken } from './helpers/server-context';
 const client = axios.create({
   baseURL:
     process.env.NODE_ENV === 'production'
-      ? 'https://api.library.nush.app/v1'
+      ? `https://${process.env.REACT_APP_API_HOST}/v1`
       : 'http://localhost:3001/v1',
   timeout: 30000,
   headers: {
