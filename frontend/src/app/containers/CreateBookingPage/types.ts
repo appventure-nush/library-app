@@ -1,10 +1,10 @@
 import { RoomListData } from 'types/Room';
-import { Slot } from 'types/Week';
+import { RawDisabledSlot, RawOccupiedSlot } from 'types/Week';
 
 /* --- STATE --- */
 export interface CreateBookingPageState {
-  disabledSlots: Slot[];
-  bookedSlots: Slot[];
+  disabledSlots: RawDisabledSlot[];
+  occupiedSlots: RawOccupiedSlot[];
   rooms: RoomListData[];
   currentRoom: number | null;
 }

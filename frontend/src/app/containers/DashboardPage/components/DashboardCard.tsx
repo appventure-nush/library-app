@@ -40,7 +40,6 @@ const DashboardCard: React.FC<DashboardCardProps> = props => {
 
   const handleCancel = () => {
     setIsSubmitting(true);
-    console.log(roomPinRef.current?.value);
     api.booking.cancelBooking(id).then(() => {
       setOpenCancelDialog(false);
       dispatch(actions.dashboardRequest());
@@ -83,22 +82,22 @@ const DashboardCard: React.FC<DashboardCardProps> = props => {
   return (
     <li>
       <div className="block hover:bg-gray-50 dark:hover:bg-gray-700">
-        <div className="px-4 py-4 flex items-center sm:px-6">
+        <div className="px-2 py-4 flex items-center sm:px-6">
           <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
             <div className="text-gray-400 truncate">
-              <p className="text-lg">
+              <p className="text-sm md:text-lg">
                 {`${getTimeString(startTime)} - ${getTimeString(endTime)}`}
               </p>
-              <p className="text-sm">
+              <p className="text-xs md:text-sm">
                 {`${startTime.day} ${startTime.monthShort} (${startTime.weekdayShort})`}
               </p>
             </div>
           </div>
 
-          <div className="truncate text-lg text-black dark:text-white w-20">
+          <div className="truncate text-sm md:text-lg text-black dark:text-white">
             {room.name}
           </div>
-          <div className="ml-3 w-24 sm:w-32">
+          <div className="ml-3">
             <span className="inline-flex items-center px-2.5 sm:px-3 py-0.5 rounded-full text-xs sm:text-sm text-center font-medium bg-indigo-100 text-indigo-800">
               <svg
                 className="-ml-0.5 sm:-ml-1 mr-1.5 h-2 w-2 text-indigo-400"

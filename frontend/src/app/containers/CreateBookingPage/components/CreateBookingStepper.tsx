@@ -77,10 +77,7 @@ const CreateBookingStepper: React.FC<CreateBookingStepperProps> = props => {
         <Step>
           <StepLabel>Booking Reason</StepLabel>
           <StepContent>
-            <BookingReasonStep
-              handleBack={handleBack}
-              handleNext={handleNext}
-            />
+            <BookingReasonStep handleBack={handleBack} />
           </StepContent>
         </Step>
       </Stepper>

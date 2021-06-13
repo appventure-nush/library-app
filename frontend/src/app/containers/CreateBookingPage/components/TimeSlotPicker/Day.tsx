@@ -1,37 +1,63 @@
 import { DateTime } from 'luxon';
-import React, { MouseEvent, TouchEvent, useRef, useState } from 'react';
+import React, {
+  MouseEvent,
+  TouchEvent,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
 import { toDate } from './utils';
-import { DisabledSlot, OccupiedSlot, Slot } from './types';
+import { DisabledSlot, OccupiedSlot, Slot } from 'types/Week';
 import SelectionSlot from './SelectionSlot';
-import { useField } from 'formik';
+
+export interface DayCallables {
+  removeSelection: () => void;
+}
 
 export interface DayProps {
   available?: boolean;
-  fieldName: string;
   numberOfIntervals: number;
   date: DateTime;
+  maximumDuration: number;
 
   disabledSlots?: DisabledSlot[];
   occupiedSlots?: OccupiedSlot[];
 
-  onStartSelect?: () => void;
+  onSelectStart?: () => void;
+  onSelectFinish?: (selection: Slot) => void;
 }
 
-const Day: React.FC<DayProps> = props => {
+const Day = React.forwardRef<DayCallables, DayProps>((props, ref) => {
   const {
     available,
-    fieldName,
     numberOfIntervals,
     date,
+    maximumDuration,
     disabledSlots = [],
     occupiedSlots = [],
-    onStartSelect,
+    onSelectStart,
+    onSelectFinish,
   } = props;
 
-  const parentDivRef = useRef<HTMLDivElement>(null);
+  const dayHasPassed = date < DateTime.local().startOf('days');
   const divRef = useRef<HTMLDivElement>(null);
+  const [parentDiv, setParentDiv] = useState<HTMLDivElement | null>(null);
+  const [parentDivHeight, setParentDivHeight] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const [field, , helpers] = useField<Slot | null>(fieldName);
+  const [selection, setSelection] = useState<Slot | null>(null);
+
+  useImperativeHandle(ref, () => ({
+    removeSelection: () => {
+      selection !== null && setSelection(null);
+    },
+  }));
+
+  useEffect(() => {
+    if (parentDiv !== null) {
+      setParentDivHeight(parentDiv.getBoundingClientRect().height);
+    }
+  }, [parentDiv, parentDiv?.getBoundingClientRect]);
 
   const isInIllegalSlot = (date: DateTime) => {
     for (let i = 0; i < disabledSlots.length; i++) {
@@ -68,13 +94,14 @@ const Day: React.FC<DayProps> = props => {
     }
 
     let end = dateAtPosition.plus({ minutes: 30 });
-    helpers.setValue({ start: dateAtPosition, end: end });
+
+    setSelection({ start: dateAtPosition, end: end });
     setIsDragging(true);
-    onStartSelect && onStartSelect();
+    onSelectStart && onSelectStart();
   };
 
   const handleMove = (clientY: number) => {
-    if (!isDragging || field.value === null) return;
+    if (!isDragging || selection === null) return;
     if (divRef === null || divRef.current === null) return;
     let divBound = divRef.current.getBoundingClientRect();
     const position = relativeY(clientY, divBound);
@@ -87,8 +114,10 @@ const Day: React.FC<DayProps> = props => {
     const endDateAtPosition = dateAtPosition.plus({ minutes: 30 });
 
     if (
-      endDateAtPosition <= field.value.start ||
-      endDateAtPosition.diff(field.value.start, 'minutes').minutes > 120
+      endDateAtPosition <= selection.start ||
+      endDateAtPosition.diff(selection.start, 'minutes').minutes >
+        maximumDuration ||
+      endDateAtPosition.hour >= 18
     )
       return;
 
@@ -96,11 +125,15 @@ const Day: React.FC<DayProps> = props => {
       setIsDragging(false);
       return;
     }
-    helpers.setValue({ start: field.value.start, end: endDateAtPosition });
+
+    setSelection({ start: selection.start, end: endDateAtPosition });
   };
 
   const handleEnd = () => {
-    setIsDragging(false);
+    if (isDragging) {
+      onSelectFinish && selection !== null && onSelectFinish(selection);
+      setIsDragging(false);
+    }
   };
 
   const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
@@ -121,10 +154,12 @@ const Day: React.FC<DayProps> = props => {
 
   return (
     <div
-      ref={parentDivRef}
-      className="h-full select-none relative border-l border-solid border-gray-400"
+      ref={el => setParentDiv(el)}
+      className={`h-full select-none relative border-l border-solid border-gray-400 ${
+        dayHasPassed && 'bg-gray-600'
+      }`}
     >
-      {available && (
+      {!dayHasPassed && available && (
         <div
           ref={divRef}
           className="h-full w-full absolute cursor-default z-10"
@@ -136,20 +171,25 @@ const Day: React.FC<DayProps> = props => {
           onTouchEnd={handleEnd}
         />
       )}
-      {field.value &&
-        field.value.start.day === date.day &&
-        parentDivRef &&
-        parentDivRef.current && (
+      {selection && selection.start.day === date.day && (
+        <SelectionSlot
+          selection={selection}
+          intervalInPixels={parentDivHeight / numberOfIntervals}
+        />
+      )}
+      {occupiedSlots
+        .filter(slot => slot.start.day === date.day)
+        .map((slot, idx) => (
           <SelectionSlot
-            selection={field.value}
-            intervalInPixels={
-              parentDivRef.current.getBoundingClientRect().height /
-              numberOfIntervals
-            }
+            key={idx}
+            selection={slot}
+            intervalInPixels={parentDivHeight / numberOfIntervals}
+            slotColor="bg-gray-600"
+            selectable={false}
           />
-        )}
+        ))}
     </div>
   );
-};
+});
 
 export default Day;

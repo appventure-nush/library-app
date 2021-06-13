@@ -58,13 +58,13 @@ export default class WeeksController {
                 .startOf('days')
                 .plus({ days: weekDay - 1, hours: 16, minutes: 30 });
               moreDisabledSlots.push({
-                startTime: morning8.toJSDate(),
-                endTime: evening430.toJSDate(),
+                start: morning8.toJSDate(),
+                end: evening430.toJSDate(),
               });
             }
           }
           const weekViewData: WeekViewData = {
-            bookedSlots: resultArray[0],
+            occupiedSlots: resultArray[0],
             disabledSlots: [...resultArray[1], ...moreDisabledSlots],
           };
           res.status(201).json(weekViewData);
@@ -94,8 +94,8 @@ export default class WeeksController {
     }).then((bookings: Array<Booking>) =>
       bookings.map(booking => {
         return {
-          startTime: booking.startTime,
-          endTime: booking.endTime,
+          start: booking.startTime,
+          end: booking.endTime,
         };
       }),
     );

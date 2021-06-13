@@ -16,15 +16,16 @@ import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 import { createBookingPageSaga } from './saga';
 import { reducer, sliceKey } from './slice';
 
-import Week from './components/TimeSlotPicker/Week';
-import { Slot } from './components/TimeSlotPicker/types';
+import { Slot } from 'types/Week';
+import SelectTimeSlotStep from './components/SelectTimeSlotStep';
+import BookingReasonStep from './components/BookingReasonStep';
 
 interface Props {}
 
 export interface BookingFormValues {
   roomId: number;
-  purpose: String;
-  details: String;
+  purpose: string;
+  details: string;
   selection: Slot | null;
 }
 
@@ -42,7 +43,16 @@ export const CreateBookingPage = memo((props: Props) => {
     const stepNext = stepRefs[stepNextIndex];
     if (stepNext === null || stepNext.current === null) return;
     stepNext.current.scrollIntoView({ behavior: 'smooth' });
-    setStepCurrentIdx(stepNextIndex + 1);
+    setStepCurrentIdx(stepNextIndex);
+  }, [stepRefs, stepCurrentIdx]);
+
+  const scrollToPrevStep = useCallback(() => {
+    if (stepCurrentIdx === 0 || stepRefs.length !== stepLength) return;
+    const stepPrevIndex = stepCurrentIdx - 1;
+    const stepPrev = stepRefs[stepPrevIndex];
+    if (stepPrev === null || stepPrev.current === null) return;
+    stepPrev.current.scrollIntoView({ behavior: 'smooth' });
+    setStepCurrentIdx(stepPrevIndex);
   }, [stepRefs, stepCurrentIdx]);
 
   const history = useHistory();
@@ -97,8 +107,17 @@ export const CreateBookingPage = memo((props: Props) => {
           }}
         >
           <Form className="h-full">
-            <div ref={stepRefs[0]} className="h-full">
-              <Week fieldName={'selection'} />
+            <div
+              ref={stepRefs[0]}
+              className={`${stepCurrentIdx === 0 ? '' : 'hidden'} h-full`}
+            >
+              <SelectTimeSlotStep handleNext={scrollToNextStep} />
+            </div>
+            <div
+              ref={stepRefs[1]}
+              className={`${stepCurrentIdx === 1 ? '' : 'hidden'} h-full`}
+            >
+              <BookingReasonStep handleBack={scrollToPrevStep} />
             </div>
           </Form>
         </Formik>

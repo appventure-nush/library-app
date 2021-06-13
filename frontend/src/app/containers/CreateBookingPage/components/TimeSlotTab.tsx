@@ -9,9 +9,9 @@ import { useHistory } from 'react-router-dom';
 import { Role } from 'types/User';
 
 import {
-  selectBookedSlots,
   selectCurrentRoom,
   selectDisabledSlots,
+  selectOccupiedSlots,
 } from '../selectors';
 import { actions } from '../slice';
 
@@ -20,7 +20,7 @@ export interface TimeSlotTabProps {}
 const TimeSlotTab: React.FC<TimeSlotTabProps> = props => {
   const [deltaWeek, setDeltaWeek] = useState(0);
   const currentUser = useSelector(getCurrentUser);
-  const bookedSlots = useSelector(selectBookedSlots);
+  const occupiedSlots = useSelector(selectOccupiedSlots);
   const disabledSlots = useSelector(selectDisabledSlots);
   const currentRoom = useSelector(selectCurrentRoom);
   const history = useHistory();
@@ -68,16 +68,16 @@ const TimeSlotTab: React.FC<TimeSlotTabProps> = props => {
       }}
       disabledSlots={disabledSlots.map(slot => {
         const pickerSlot: Slot = {
-          startTime: DateTime.fromISO(slot.startTime),
-          endTime: DateTime.fromISO(slot.endTime),
+          startTime: slot.start,
+          endTime: slot.end,
           color: 'volcano',
         };
         return pickerSlot;
       })}
-      bookedSlots={bookedSlots.map(slot => {
+      bookedSlots={occupiedSlots.map(slot => {
         const pickerSlot: Slot = {
-          startTime: DateTime.fromISO(slot.startTime),
-          endTime: DateTime.fromISO(slot.endTime),
+          startTime: slot.start,
+          endTime: slot.end,
           color: 'volcano',
         };
         return pickerSlot;
@@ -87,14 +87,20 @@ const TimeSlotTab: React.FC<TimeSlotTabProps> = props => {
       onChangeNextWeek={() => {
         setDeltaWeek(deltaWeek + 1);
         dispatch(
-          actions.saveCurrentWeekSlots({ bookedSlots: [], disabledSlots: [] }),
+          actions.saveCurrentWeekSlots({
+            occupiedSlots: [],
+            disabledSlots: [],
+          }),
         );
         setFieldValue('timeSlot', undefined);
       }}
       onChangePrevWeek={() => {
         setDeltaWeek(deltaWeek - 1);
         dispatch(
-          actions.saveCurrentWeekSlots({ bookedSlots: [], disabledSlots: [] }),
+          actions.saveCurrentWeekSlots({
+            occupiedSlots: [],
+            disabledSlots: [],
+          }),
         );
         setFieldValue('timeSlot', undefined);
       }}

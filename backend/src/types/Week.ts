@@ -1,9 +1,9 @@
 export interface Slot {
-  startTime: Date;
-  endTime: Date;
+  start: Date;
+  end: Date;
 }
 
 export interface WeekViewData {
   disabledSlots: Slot[];
-  bookedSlots: Slot[];
+  occupiedSlots: Slot[];
 }

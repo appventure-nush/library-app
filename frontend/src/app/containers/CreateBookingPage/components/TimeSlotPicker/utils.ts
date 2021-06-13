@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { Slot } from './types';
+import { Slot } from 'types/Week';
 
 type MinimumInterval = 15 | 30 | 60;
 

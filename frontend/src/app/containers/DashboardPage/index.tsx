@@ -44,8 +44,8 @@ export const DashboardPage = memo((props: Props) => {
               <span className="text-2xl sm:text-3xl font-bold text-black dark:text-white">
                 Welcome, {titleCase(currentUser.name)}!
               </span>
-              {dashboardPage.userStats !== null && (
-                <div className="flex items-center justify-between w-full mt-3">
+              <div className="flex items-center justify-between w-full mt-3">
+                {dashboardPage.userStats !== null && (
                   <div className="flex items-center">
                     <BookmarkIcon
                       className="mb-2 mr-1 flex-shrink-0 h-8 w-8 text-black dark:text-white"
@@ -65,24 +65,26 @@ export const DashboardPage = memo((props: Props) => {
                       </span>
                     </div>
                   </div>
-                  {(dashboardPage.userStats === null ||
-                    dashboardPage.userStats.bookedPerWeek < 2) && (
-                    <button
-                      type="button"
-                      className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-sm sm:rounded-md text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
-                      onClick={() => {
-                        history.push('/newbooking');
-                      }}
-                    >
-                      <PlusIcon
-                        className="-ml-1 mr-2 h-5 w-5"
-                        aria-hidden="true"
-                      />
-                      New booking
-                    </button>
-                  )}
-                </div>
-              )}
+                )}
+                {(currentUser.role !== Role.STUDENT ||
+                  (currentUser.role === Role.STUDENT &&
+                    (dashboardPage.userStats === null ||
+                      dashboardPage.userStats.bookedPerWeek < 2))) && (
+                  <button
+                    type="button"
+                    className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-sm sm:rounded-md text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+                    onClick={() => {
+                      history.push('/newbooking');
+                    }}
+                  >
+                    <PlusIcon
+                      className="-ml-1 mr-2 h-5 w-5"
+                      aria-hidden="true"
+                    />
+                    New booking
+                  </button>
+                )}
+              </div>
               <div className="mt-3 mb-2 text-xl sm:text-2xl text-black dark:text-white font-bold">
                 My Bookings
               </div>

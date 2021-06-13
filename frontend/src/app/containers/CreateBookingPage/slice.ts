@@ -1,5 +1,5 @@
 import { RoomListData } from 'types/Room';
-import { WeekViewData } from 'types/Week';
+import { RawWeekViewData } from 'types/Week';
 import { createSlice } from 'utils/@reduxjs/toolkit';
 
 import { PayloadAction } from '@reduxjs/toolkit';
@@ -8,7 +8,7 @@ import { ContainerState } from './types';
 
 // The initial state of the CreateBookingPage container
 export const initialState: ContainerState = {
-  bookedSlots: [],
+  occupiedSlots: [],
   disabledSlots: [],
   rooms: [],
   currentRoom: null,
@@ -22,8 +22,8 @@ const createBookingPageSlice = createSlice({
       state,
       action: PayloadAction<{ roomId: number; delta: number }>,
     ) {},
-    saveCurrentWeekSlots(state, action: PayloadAction<WeekViewData>) {
-      state.bookedSlots = action.payload.bookedSlots;
+    saveCurrentWeekSlots(state, action: PayloadAction<RawWeekViewData>) {
+      state.occupiedSlots = action.payload.occupiedSlots;
       state.disabledSlots = action.payload.disabledSlots;
     },
     loadBookableRooms(state, action: PayloadAction) {},

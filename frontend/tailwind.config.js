@@ -13,7 +13,9 @@ module.exports = {
   },
   variants: {
     scrollSnapType: ['responsive'],
-    extend: {},
+    extend: {
+      opacity: ['disabled'],
+    },
   },
   plugins: [
     require('tailwindcss-scrollbar'),
