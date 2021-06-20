@@ -8,6 +8,7 @@ import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { Badge, Space, Table, Tag } from 'antd';
+import { ColumnsType } from 'antd/es/table';
 
 import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 import { actions, reducer, sliceKey } from './slice';
@@ -23,6 +24,8 @@ import {
   UserStatusString,
 } from 'types/User';
 import { Link } from 'react-router-dom';
+import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint';
+import { ChevronRightIcon } from '@heroicons/react/outline';
 
 interface Props {}
 
@@ -33,17 +36,14 @@ export function UserListPage(props: Props) {
   const userList = useSelector(selectUserList, shallowEqual);
   const dispatch = useDispatch();
 
+  const screens = useBreakpoint();
+
   useEffect(() => {
     dispatch(actions.saveUsers([]));
     dispatch(actions.loadUsers());
   }, [dispatch]);
 
-  const columns = [
-    {
-      title: 'id',
-      dataIndex: 'id',
-      key: 'id',
-    },
+  const columns: ColumnsType<UserListViewData> = [
     {
       title: 'Name',
       dataIndex: 'name',
@@ -80,6 +80,7 @@ export function UserListPage(props: Props) {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
+      responsive: ['md'],
     },
     {
       title: 'Status',
@@ -104,7 +105,16 @@ export function UserListPage(props: Props) {
       key: 'action',
       render: (text, record) => (
         <Space size="middle">
-          <Link to={`users/${record.id}`}>View</Link>
+          <Link to={`users/${record.id}`}>
+            {!!screens['sm'] ? (
+              'View'
+            ) : (
+              <ChevronRightIcon
+                className="h-5 w-5 text-gray-400"
+                aria-hidden="true"
+              />
+            )}
+          </Link>
         </Space>
       ),
     },
@@ -116,19 +126,11 @@ export function UserListPage(props: Props) {
         <title>UserList</title>
         <meta name="description" content="Description of UserListPage" />
       </Helmet>
-      <div style={{ height: 400, width: '100%' }}>
-        <Table
+      <div className="py-8 px-4 sm:px-6 md:px-8">
+        <Table<UserListViewData>
+          className="w-full"
           columns={columns}
-          dataSource={userList.map((user: UserListViewData, index: number) => {
-            return {
-              key: index,
-              id: user.id,
-              name: user.name,
-              role: user.role,
-              email: user.email,
-              status: user.status,
-            };
-          })}
+          dataSource={userList}
         />
       </div>
     </>

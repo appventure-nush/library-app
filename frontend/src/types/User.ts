@@ -1,4 +1,5 @@
 import { PresetStatusColorType } from 'antd/lib/_util/colors';
+import { BookingListViewData } from './Booking';
 import { InfringmentData } from './Infringement';
 
 export enum UserStatus {
@@ -56,6 +57,7 @@ export interface UserViewData extends UserListViewData {
   bannedEndTime: string | null;
   bookedPerWeek: number;
   infringementThisTerm: InfringmentData[];
+  bookings: BookingListViewData[];
 }
 
 export interface UserStatsListData {
