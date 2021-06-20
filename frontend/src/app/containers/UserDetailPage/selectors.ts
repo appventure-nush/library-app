@@ -6,7 +6,12 @@ import { initialState } from './slice';
 
 const selectDomain = (state: RootState) => state.userDetailPage || initialState;
 
-export const selectUserDetailPage = createSelector(
+export const selectUserDetails = createSelector(
   [selectDomain],
-  userDetailPageState => userDetailPageState,
+  userDetailPageState => userDetailPageState.user,
+);
+
+export const selectUserBookings = createSelector(
+  [selectDomain],
+  userDetailPageState => userDetailPageState.userBookings,
 );
