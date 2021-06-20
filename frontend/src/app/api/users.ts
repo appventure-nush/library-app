@@ -1,4 +1,5 @@
 import { AxiosResponse } from 'axios';
+import { BookingListViewData } from 'types/Booking';
 import {
   UserData,
   UserViewData,
@@ -32,6 +33,12 @@ export async function getUser(
   id: String,
 ): Promise<AxiosResponse<UserViewData>> {
   return client.get(`${URL}/${id}`);
+}
+
+export async function getUserBookings(
+  id: String,
+): Promise<AxiosResponse<BookingListViewData[]>> {
+  return client.get(`${URL}/${id}/bookings`);
 }
 
 export async function updateUserRole(

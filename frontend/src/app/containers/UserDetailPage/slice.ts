@@ -4,10 +4,12 @@ import { PayloadAction } from '@reduxjs/toolkit';
 
 import { ContainerState } from './types';
 import { UserViewData } from 'types/User';
+import { BookingListViewData } from 'types/Booking';
 
 // The initial state of the UserDetailPage container
 export const initialState: ContainerState = {
   user: null,
+  userBookings: [],
 };
 
 const userDetailPageSlice = createSlice({
@@ -18,6 +20,10 @@ const userDetailPageSlice = createSlice({
       state.user = action.payload;
     },
     loadUser(state, action: PayloadAction<String>) {},
+    saveUserBookings(state, action: PayloadAction<BookingListViewData[]>) {
+      state.userBookings = action.payload;
+    },
+    loadUserBookings(state, action: PayloadAction<String>) {},
   },
 });
 

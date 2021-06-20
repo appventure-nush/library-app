@@ -11,12 +11,13 @@ import { useParams } from 'react-router-dom';
 import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 
 import { userDetailPageSaga } from './saga';
-import { selectUserDetailPage } from './selectors';
+import { selectUserDetails } from './selectors';
 import { actions, reducer, sliceKey } from './slice';
 import { roleString, UserStatusBadge, UserStatusString } from 'types/User';
 import { getCurrentUser } from '../AuthenticatedPages/selectors';
 import { Badge } from 'antd';
 import UpdateRoleButton from './components/UpdateRoleButton';
+import UserBookingsTable from './components/UserBookingsTable';
 
 interface Props {}
 
@@ -24,7 +25,7 @@ export function UserDetailPage(props: Props) {
   useInjectReducer({ key: sliceKey, reducer: reducer });
   useInjectSaga({ key: sliceKey, saga: userDetailPageSaga });
 
-  const { user } = useSelector(selectUserDetailPage);
+  const user = useSelector(selectUserDetails);
   const dispatch = useDispatch();
   const { id } = useParams<{ id: string }>();
 
@@ -205,59 +206,11 @@ export function UserDetailPage(props: Props) {
                   </ul>
                 </dd>
               </div>
+
               <div className="py-4 sm:grid sm:py-5 sm:grid-cols-3 sm:gap-4">
                 <dt className="text-sm font-medium text-gray-500">Bookings</dt>
                 <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
-                  <ul className="border border-gray-200 rounded-md divide-y divide-gray-200">
-                    <li className="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
-                      <div className="w-0 flex-1 flex items-center">
-                        <span className="ml-2 flex-1 w-0 truncate">
-                          resume_back_end_developer.pdf
-                        </span>
-                      </div>
-                      <div className="ml-4 flex-shrink-0 flex space-x-4">
-                        <button
-                          type="button"
-                          className="bg-transparent rounded-md font-medium text-teal-600 hover:text-teal-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
-                        >
-                          Update
-                        </button>
-                        <span className="text-gray-300" aria-hidden="true">
-                          |
-                        </span>
-                        <button
-                          type="button"
-                          className="bg-transparent rounded-md font-medium text-teal-600 hover:text-teal-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    </li>
-                    <li className="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
-                      <div className="w-0 flex-1 flex items-center">
-                        <span className="ml-2 flex-1 w-0 truncate">
-                          coverletter_back_end_developer.pdf
-                        </span>
-                      </div>
-                      <div className="ml-4 flex-shrink-0 flex space-x-4">
-                        <button
-                          type="button"
-                          className="bg-transparent rounded-md font-medium text-teal-600 hover:text-teal-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
-                        >
-                          Update
-                        </button>
-                        <span className="text-gray-300" aria-hidden="true">
-                          |
-                        </span>
-                        <button
-                          type="button"
-                          className="bg-transparent rounded-md font-medium text-teal-600 hover:text-teal-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    </li>
-                  </ul>
+                  <UserBookingsTable userId={id} />
                 </dd>
               </div>
             </dl>
