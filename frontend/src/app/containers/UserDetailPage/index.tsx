@@ -18,6 +18,9 @@ import { getCurrentUser } from '../AuthenticatedPages/selectors';
 import { Badge } from 'antd';
 import UpdateRoleButton from './components/UpdateRoleButton';
 import UserBookingsTable from './components/UserBookingsTable';
+import BanButton from './components/BanButton';
+import { toast } from 'react-toastify';
+import { forceReducerReload } from 'redux-injectors';
 
 interface Props {}
 
@@ -25,7 +28,7 @@ export function UserDetailPage(props: Props) {
   useInjectReducer({ key: sliceKey, reducer: reducer });
   useInjectSaga({ key: sliceKey, saga: userDetailPageSaga });
 
-  const user = useSelector(selectUserDetails);
+  let user = useSelector(selectUserDetails);
   const dispatch = useDispatch();
   const { id } = useParams<{ id: string }>();
 
@@ -36,6 +39,8 @@ export function UserDetailPage(props: Props) {
   }, [dispatch, id]);
 
   if (user === null) return <></>;
+
+  console.log(user.id);
 
   return (
     <>
@@ -91,12 +96,13 @@ export function UserDetailPage(props: Props) {
                     />
                   </span>
                   <span className="ml-4 flex-shrink-0">
-                    <button
-                      type="button"
-                      className="bg-transparent rounded-md font-medium text-teal-600 hover:text-teal-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
-                    >
-                      Update
-                    </button>
+                    <BanButton
+                      userId={user.id}
+                      isBanned={user.status === 100}
+                      onBanStatusChanged={function () {
+                        toast.success('User status changed successfully');
+                      }}
+                    ></BanButton>
                   </span>
                 </dd>
               </div>
