@@ -8,6 +8,7 @@ import { UserDetailPageState } from 'app/containers/UserDetailPage/types';
 import { RoomPinPageState } from 'app/containers/RoomPinPage/types';
 import { UserListPageState } from 'app/containers/UserListPage/types';
 import { ConsolidatedRoomPinPageState } from 'app/containers/ConsolidatedRoomPinPage/types';
+import { MyBookingListPageState } from 'app/containers/MyBookingListPage/types';
 // [IMPORT NEW CONTAINERSTATE ABOVE] < Needed for generating containers seamlessly
 
 /*
@@ -21,6 +22,7 @@ export interface RootState {
   createBookingPage?: CreateBookingPageState;
   login: LoginState;
   bookingListPage?: BookingListPageState;
+  myBookingListPage?: MyBookingListPageState;
   userDetailPage?: UserDetailPageState;
   bookingDetailPage?: BookingDetailPageState;
   roomPinPage?: RoomPinPageState;

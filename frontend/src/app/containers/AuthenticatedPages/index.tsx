@@ -7,6 +7,7 @@ import {
   MenuIcon,
   XIcon,
   LogoutIcon,
+  UsersIcon,
 } from '@heroicons/react/outline';
 import { useLocation, withRouter } from 'react-router';
 import api from 'app/api';
@@ -330,7 +331,7 @@ const AuthenticatedPages: React.FC = () => {
                     )}
                     onClick={navOnClick('/users')}
                   >
-                    <BookmarkIcon
+                    <UsersIcon
                       className="mr-3 flex-shrink-0 h-6 w-6 text-teal-200"
                       aria-hidden="true"
                     />
