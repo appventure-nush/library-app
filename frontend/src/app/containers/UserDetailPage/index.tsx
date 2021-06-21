@@ -28,7 +28,7 @@ export function UserDetailPage(props: Props) {
   useInjectReducer({ key: sliceKey, reducer: reducer });
   useInjectSaga({ key: sliceKey, saga: userDetailPageSaga });
 
-  let user = useSelector(selectUserDetails);
+  const user = useSelector(selectUserDetails);
   const dispatch = useDispatch();
   const { id } = useParams<{ id: string }>();
 
@@ -39,8 +39,6 @@ export function UserDetailPage(props: Props) {
   }, [dispatch, id]);
 
   if (user === null) return <></>;
-
-  console.log(user.id);
 
   return (
     <>
@@ -103,15 +101,6 @@ export function UserDetailPage(props: Props) {
                         toast.success('User status changed successfully');
                       }}
                     ></BanButton>
-                  </span>
-                </dd>
-              </div>
-              {!!user.bannedEndTime && (
-                <div className="py-4 sm:grid sm:py-5 sm:grid-cols-3 sm:gap-4">
-                  <dt className="text-sm font-medium text-gray-500">
-                    Banned End Time
-                  </dt>
-                  <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                     <span className="flex-grow">{user.bannedEndTime}</span>
                     <span className="ml-4 flex-shrink-0">
                       <button
