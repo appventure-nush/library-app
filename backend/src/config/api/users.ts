@@ -21,6 +21,13 @@ router.get(
 router.use('/stats', [checkBearerToken(BearerTokenType.AccessToken)], userStats);
 router.get('/self', [checkBearerToken(BearerTokenType.AccessToken)], controller.showSelf);
 
+router.get(
+  '/:id/bookings',
+  [checkBearerToken(BearerTokenType.AccessToken)],
+  [checkRole(Role.LIBRARIAN)],
+  controller.showBookings,
+);
+
 router.patch(
   '/:id/role',
   [checkBearerToken(BearerTokenType.AccessToken)],

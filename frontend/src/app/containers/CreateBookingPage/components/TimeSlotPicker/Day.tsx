@@ -165,6 +165,7 @@ const Day = React.forwardRef<DayCallables, DayProps>((props, ref) => {
           className="h-full w-full absolute cursor-default z-10"
           onMouseDown={handleMouseDown}
           onMouseUp={handleEnd}
+          onMouseOut={handleEnd}
           onMouseMove={handleMouseMove}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
