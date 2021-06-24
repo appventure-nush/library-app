@@ -110,8 +110,9 @@ export function UserDetailPage(props: Props) {
                         Update
                       </button>
                     </span>
-                  </dd>
-                </div>
+                  </span>
+                </dd>
+              </div>
               )}
               {!!user.bannedReason && (
                 <div className="py-4 sm:grid sm:py-5 sm:grid-cols-3 sm:gap-4">
@@ -201,7 +202,6 @@ export function UserDetailPage(props: Props) {
                   </ul>
                 </dd>
               </div>
-
               <div className="py-4 sm:grid sm:py-5 sm:grid-cols-3 sm:gap-4">
                 <dt className="text-sm font-medium text-gray-500">Bookings</dt>
                 <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
