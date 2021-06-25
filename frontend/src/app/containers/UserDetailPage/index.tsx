@@ -59,6 +59,22 @@ export function UserDetailPage(props: Props) {
     }
   };
 
+  const addUpdateButton = () => {
+    if (user === null) return <></>;
+    if (currentUser === null) return <></>;
+    if (user.bannedEndTime === null) {
+      return <></>;
+    }
+    return (
+      <button
+        type="button"
+        className="bg-white dark:bg-transparent rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+      >
+        Update
+      </button>
+    );
+  };
+
   return (
     <>
       <Helmet>
@@ -116,12 +132,7 @@ export function UserDetailPage(props: Props) {
                     {addBanButton()}
                     <span className="flex-grow">{user.bannedEndTime}</span>
                     <span className="ml-4 flex-shrink-0">
-                      <button
-                        type="button"
-                        className="bg-white dark:bg-transparent rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                      >
-                        Update
-                      </button>
+                      {addUpdateButton()}
                     </span>
                   </span>
                 </dd>
