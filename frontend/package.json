@@ -26,7 +26,7 @@
         "@types/webpack-env": "1.15.1",
         "@types/yup": "0.29.4",
         "antd": "4.9.4",
-        "axios": "0.21.0",
+        "axios": ">=0.21.0",
         "cross-env": "7.0.2",
         "eslint-config-prettier": "6.10.1",
         "eslint-plugin-prettier": "3.1.2",

@@ -1,9 +1,12 @@
 import { Request, Response } from 'express';
 import { DateTime } from 'luxon';
+import Booking from 'models/Booking';
 import Infringement from 'models/Infringement';
+import Room from 'models/Room';
 import User from 'models/User';
 import UserStats from 'models/UserStats';
 import { DestroyOptions, UpdateOptions } from 'sequelize';
+import { BookingListViewData, BookingType } from 'types/Booking';
 import { AccessTokenSignedPayload } from 'types/tokens';
 import { Role, UserListViewData, UserStatus, UserUpdateData, UserViewData } from 'types/User';
 
@@ -64,6 +67,45 @@ export default class UsersController {
         }),
       };
       res.status(201).json(userViewData);
+    } catch (err) {
+      res.sendStatus(500);
+    }
+  }
+
+  public async showBookings(req: Request, res: Response) {
+    try {
+      const targetUserId: string = req.params.id;
+      const bookings = await Booking.findAll<Booking>({
+        where: { type: BookingType.BOOKING, userId: targetUserId },
+        order: [['startTime', 'DESC']],
+      }).then((bookings: Array<Booking>) =>
+        bookings.map(async booking => {
+          const user = await User.findByPk<User>(booking.userId);
+          const room = await Room.findByPk<Room>(booking.roomId);
+          const bookingListViewData: BookingListViewData = {
+            id: booking.id,
+            status: booking.status,
+            user: {
+              id: user.id,
+              name: user.name,
+              role: user.role,
+            },
+            room: {
+              id: room.id,
+              name: room.name,
+            },
+            purpose: booking.purpose,
+            startTime: booking.startTime,
+            endTime: booking.endTime,
+          };
+          return bookingListViewData;
+        }),
+      );
+      Promise.all(bookings)
+        .then(bookings => res.status(201).json(bookings))
+        .catch((err: Error) => {
+          throw err;
+        });
     } catch (err) {
       res.sendStatus(500);
     }

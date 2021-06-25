@@ -4,152 +4,50 @@
  *
  */
 
-import { Badge, Button, Modal, Space, Table } from 'antd';
-import api from 'app/api';
-import { DateTime } from 'luxon';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
-import {
-  BookingListViewData,
-  BookingStatus,
-  BookingStatusBadge,
-  BookingStatusString,
-} from 'types/Booking';
+import { useDispatch, useSelector } from 'react-redux';
 import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 
-import { ExclamationCircleOutlined } from '@ant-design/icons';
-
-import { selectBookingList } from '../BookingListPage/selectors';
-import { actions, reducer, sliceKey } from '../BookingListPage/slice';
+import { selectMyBookingList } from './selectors';
+import { actions, reducer, sliceKey } from './slice';
 import { myBookingListPageSaga } from './saga';
+import BookingCard from './components/BookingCard';
 
-const { confirm } = Modal;
 interface Props {}
+
+const LIMIT = 5;
 
 export function MyBookingListPage(props: Props) {
   useInjectReducer({ key: sliceKey, reducer: reducer });
   useInjectSaga({ key: sliceKey, saga: myBookingListPageSaga });
 
-  const bookingList = useSelector(selectBookingList, shallowEqual);
+  const bookingList = useSelector(selectMyBookingList);
   const dispatch = useDispatch();
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const maxPage = Math.ceil(bookingList.length / LIMIT);
+
   useEffect(() => {
-    dispatch(actions.saveBookings([]));
     dispatch(actions.loadBookings());
   }, [dispatch]);
 
-  const showCancelConfirm = useCallback(
-    (bookingId: number, room: string, time: string) => () => {
-      confirm({
-        title: 'Do you want to cancel this booking?',
-        icon: <ExclamationCircleOutlined />,
-        content: (
-          <div>
-            {room} <br /> {time}
-          </div>
-        ),
-        okText: 'Yes',
-        okType: 'danger',
-        cancelText: 'No',
-        onOk: () => {
-          api.booking
-            .cancelBooking(bookingId)
-            .then(() => dispatch(actions.loadBookings()));
-        },
-      });
-    },
-    [dispatch],
+  const slicedBookingList = useMemo(
+    () =>
+      bookingList.slice(
+        (currentPage - 1) * LIMIT,
+        (currentPage - 1) * LIMIT + LIMIT,
+      ),
+    [bookingList, currentPage],
   );
 
-  const columns = [
-    {
-      title: 'id',
-      dataIndex: 'id',
-      key: 'id',
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status: BookingStatus) => (
-        <Badge
-          status={BookingStatusBadge[status]}
-          text={BookingStatusString[status]}
-        />
-      ),
-    },
-    {
-      title: 'Room',
-      dataIndex: 'roomname',
-      key: 'roomname',
-    },
-    {
-      title: 'Date',
-      dataIndex: 'date',
-      key: 'date',
-      render: (time: DateTime) => (
-        <div>{`${time.toISODate()} (${time.weekdayShort})`}</div>
-      ),
-    },
-    {
-      title: 'Start Time',
-      dataIndex: 'startTime',
-      key: 'startTime',
-      render: (time: DateTime) => (
-        <div>
-          {time.toISOTime({
-            suppressSeconds: true,
-            includeOffset: false,
-          })}
-        </div>
-      ),
-    },
-    {
-      title: 'End Time',
-      dataIndex: 'endTime',
-      key: 'endTime',
-      render: (time: DateTime) => (
-        <div>
-          {time.toISOTime({
-            suppressSeconds: true,
-            includeOffset: false,
-          })}
-        </div>
-      ),
-    },
-    {
-      title: 'Action',
-      key: 'action',
-      render: (text, record) => (
-        <Space size="middle">
-          <Link to={`/mybookings/${record.id}`}>View</Link>
-          {record.status === BookingStatus.CONFIRMED && (
-            <Button
-              type="link"
-              danger
-              onClick={showCancelConfirm(
-                record.id,
-                record.roomname,
-                `${record.date.toISODate()} (${
-                  record.date.weekdayShort
-                }) ${record.startTime.toISOTime({
-                  suppressSeconds: true,
-                  includeOffset: false,
-                })} ${record.endTime.toISOTime({
-                  suppressSeconds: true,
-                  includeOffset: false,
-                })}`,
-              )}
-            >
-              Cancel
-            </Button>
-          )}
-        </Space>
-      ),
-    },
-  ];
+  const onNextPageChanged = useCallback(() => {
+    if (currentPage < maxPage) setCurrentPage(currentPage + 1);
+  }, [currentPage, maxPage]);
+
+  const onPrevPageChanged = useCallback(() => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  }, [currentPage]);
 
   return (
     <>
@@ -157,23 +55,62 @@ export function MyBookingListPage(props: Props) {
         <title>Bookings</title>
         <meta name="description" content="Description of BookingListPage" />
       </Helmet>
-      <div style={{ height: 400, width: '100%' }}>
-        <Table
-          columns={columns}
-          dataSource={bookingList.map(
-            (booking: BookingListViewData, index: number) => {
-              return {
-                key: index,
-                id: booking.id,
-                status: booking.status,
-                roomname: booking.room.name,
-                date: DateTime.fromISO(booking.startTime),
-                startTime: DateTime.fromISO(booking.startTime),
-                endTime: DateTime.fromISO(booking.endTime),
-              };
-            },
-          )}
-        />
+      <div className="flex flex-col items-center w-full py-8 px-4 sm:px-6 md:px-8">
+        <div className="bg-white shadow dark:bg-black overflow-visible rounded-sm sm:rounded-md w-full">
+          <ul className="divide-y divide-gray-200 dark:divide-gray-800">
+            {slicedBookingList.length === 0 && (
+              <li>
+                <div className="block">
+                  <p className="text-lg text-gray-400 px-4 py-4 flex items-center sm:px-6">
+                    You don't have any upcoming bookings!
+                  </p>
+                </div>
+              </li>
+            )}
+
+            {slicedBookingList.map(booking => (
+              <BookingCard key={booking.id} booking={booking} />
+            ))}
+          </ul>
+        </div>
+        <nav
+          className="px-4 py-3 flex items-center w-full justify-between sm:px-6"
+          aria-label="Pagination"
+        >
+          <div className="hidden sm:block">
+            <p className="text-sm text-gray-700 dark:text-gray-200">
+              Showing{' '}
+              <span className="font-medium">
+                {(currentPage - 1) * LIMIT + 1}
+              </span>{' '}
+              to{' '}
+              <span className="font-medium">
+                {Math.min(
+                  (currentPage - 1) * LIMIT + LIMIT,
+                  bookingList.length,
+                )}
+              </span>{' '}
+              of <span className="font-medium">{bookingList.length}</span>{' '}
+              results
+            </p>
+          </div>
+          <div className="flex-1 flex justify-between sm:justify-end">
+            <button
+              onClick={onPrevPageChanged}
+              disabled={currentPage <= 1}
+              className="disabled:opacity-50 relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm md:rounded-md text-white bg-teal-500 focus:outline-none"
+            >
+              Previous
+            </button>
+            <button
+              onClick={onNextPageChanged}
+              disabled={currentPage >= maxPage}
+              className="disabled:opacity-50 ml-3 relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm md:rounded-md text-white bg-teal-500 focus:outline-none"
+            >
+              Next
+            </button>
+          </div>
+        </nav>
       </div>
     </>
   );

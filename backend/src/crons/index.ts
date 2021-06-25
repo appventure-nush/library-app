@@ -3,7 +3,9 @@ import Booking from 'models/Booking';
 import Room from 'models/Room';
 import User from 'models/User';
 import UserStats from 'models/UserStats';
-import { generatePinSync } from 'secure-pin';
+
+import { refreshCheckInPin } from './roomCrons';
+
 import { Op } from 'sequelize';
 import { BookingStatus } from 'types/Booking';
 import { Role } from 'types/User';
@@ -34,27 +36,6 @@ const resetBookedPerWeek = new CronJob(
   'Asia/Singapore',
 );
 
-const refreshCheckInPin = new CronJob(
-  '*/15 8-18 * * *',
-  () => {
-    Room.findAll<Room>()
-      .then(rooms => {
-        rooms.forEach(room => {
-          var roomVar = room;
-          roomVar.checkInPin = generatePinSync(6);
-          roomVar.save();
-        });
-      })
-      .then(() => console.log('[Crons] Pin refreshed'))
-      .catch(err =>
-        console.log(`[Crons] Error encountered when refreshing check-in PIN : ${err.message}`),
-      );
-  },
-  null,
-  false,
-  'Asia/Singapore',
-);
-
 const autoReleaseRoom = () => {
   const now = new Date();
   Booking.update<Booking>(
@@ -65,12 +46,13 @@ const autoReleaseRoom = () => {
       console.log(`[Crons] Bookings auto-cancelled: ${count}`);
       bookings.forEach(async booking => {
         const user = await User.findByPk(booking.userId);
-        await Infringement.create({
-          userId: user.id,
-          details: 'Failed to attend booked session',
-        });
 
         if (user.role === Role.STUDENT) {
+          await Infringement.create({
+            userId: user.id,
+            details: 'Failed to attend booked session',
+          });
+
           const infringements = await Infringement.findAll({ where: { userId: user.id } });
           const oneMonthLater = DateTime.local().endOf('days').plus({ months: 1 });
           if (infringements.length >= 2) {

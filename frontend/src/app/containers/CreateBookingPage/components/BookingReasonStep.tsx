@@ -41,7 +41,7 @@ const BookingReasonStep: React.FC<BookingReasonStepProps> = props => {
               }}
             >
               <div className="relative mt-1 w-full">
-                <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left bg-white rounded-lg shadow-md cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-orange-300 focus-visible:ring-offset-2 focus-visible:border-indigo-500 sm:text-sm">
+                <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left bg-white rounded-lg shadow-md cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-orange-300 focus-visible:ring-offset-2 focus-visible:border-teal-500 sm:text-sm">
                   <span className="block truncate">{purpose || ' - '}</span>
                   <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                     <SelectorIcon
@@ -116,13 +116,13 @@ const BookingReasonStep: React.FC<BookingReasonStepProps> = props => {
             id="detail"
             name="detail"
             rows={3}
-            className="max-w-lg shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
+            className="max-w-lg shadow-sm block w-full focus:ring-teal-500 focus:border-teal-500 sm:text-sm border border-gray-300 rounded-md"
             defaultValue={''}
             value={details}
-            onChange={(e: React.FocusEvent<HTMLTextAreaElement>) => {
+            onInput={(e: React.FocusEvent<HTMLTextAreaElement>) => {
               setDetails(e.target.value);
             }}
-            onBlur={(e: React.FocusEvent<HTMLTextAreaElement>) => {
+            onChange={(e: React.FocusEvent<HTMLTextAreaElement>) => {
               detailsHelper.setValue(e.target.value);
             }}
           />

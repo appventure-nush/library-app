@@ -20,7 +20,7 @@ const SelectionSlot: React.FC<SelectionSlotProps> = props => {
   return (
     <div
       className={`${
-        selectable ? '' : 'pointer-events-none'
+        selectable ? 'pointer-events-none' : ''
       } absolute ${slotColor} rounded-sm md:rounded-md z-20`}
       style={{
         top: toPosition(selection.start, intervalInPixels) + 4,

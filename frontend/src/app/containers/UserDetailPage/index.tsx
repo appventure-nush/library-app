@@ -4,22 +4,23 @@
  *
  */
 
-import { Breadcrumbs, Typography, Link } from '@material-ui/core';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
-import { Fragment } from 'react';
-import { Menu, Transition } from '@headlessui/react';
-import { ChevronDownIcon } from '@heroicons/react/solid';
 
 import { userDetailPageSaga } from './saga';
-import { selectUserDetailPage } from './selectors';
+import { selectUserDetails } from './selectors';
 import { actions, reducer, sliceKey } from './slice';
-import { roleString } from 'types/User';
+import { roleString, UserStatusBadge, UserStatusString } from 'types/User';
 import { getCurrentUser } from '../AuthenticatedPages/selectors';
-import api from 'app/api';
+import { Badge } from 'antd';
+import UpdateRoleButton from './components/UpdateRoleButton';
+import UserBookingsTable from './components/UserBookingsTable';
+import BanButton from './components/BanButton';
+import { toast } from 'react-toastify';
+import { forceReducerReload } from 'redux-injectors';
 
 interface Props {}
 
@@ -27,10 +28,9 @@ export function UserDetailPage(props: Props) {
   useInjectReducer({ key: sliceKey, reducer: reducer });
   useInjectSaga({ key: sliceKey, saga: userDetailPageSaga });
 
-  const { user } = useSelector(selectUserDetailPage);
+  const user = useSelector(selectUserDetails);
   const dispatch = useDispatch();
   const { id } = useParams<{ id: string }>();
-  const history = useHistory();
 
   const currentUser = useSelector(getCurrentUser);
 
@@ -38,86 +38,7 @@ export function UserDetailPage(props: Props) {
     dispatch(actions.loadUser(id));
   }, [dispatch, id]);
 
-  function handleMenuClick(role) {
-    if (user != null) {
-      if (id === user.id) {
-        alert('You cannot change your own role!');
-        return;
-      }
-    }
-    api.users
-      .updateUserRole(id, role)
-      .then(() => dispatch(actions.loadUser(id)));
-  }
-
-  function classNames(...classes) {
-    return classes.filter(Boolean).join(' ');
-  }
-
-  function roleMenuItem(role) {
-    return (
-      <Menu.Item>
-        {({ active }) => (
-          <button
-            className={classNames(
-              active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-              'block w-full text-left px-4 py-2 text-sm',
-            )}
-            onClick={e => {
-              handleMenuClick(role);
-            }}
-            key={role}
-          >
-            {roleString[role]}
-          </button>
-        )}
-      </Menu.Item>
-    );
-  }
-
-  function dropDownMenu() {
-    return (
-      <Menu as="div" className="relative inline-block text-left">
-        {({ open }) => (
-          <>
-            <div>
-              <Menu.Button className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
-                {user && roleString[user.role]}
-                <ChevronDownIcon
-                  className="-mr-1 ml-2 h-5 w-5"
-                  aria-hidden="true"
-                />
-              </Menu.Button>
-            </div>
-
-            <Transition
-              show={open}
-              as={Fragment}
-              enter="transition ease-out duration-100"
-              enterFrom="transform opacity-0 scale-95"
-              enterTo="transform opacity-100 scale-100"
-              leave="transition ease-in duration-75"
-              leaveFrom="transform opacity-100 scale-100"
-              leaveTo="transform opacity-0 scale-95"
-            >
-              <Menu.Items
-                static
-                className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
-              >
-                <div className="py-1">
-                  {/*TODO: Un-Hardcode this */}
-                  {roleMenuItem(1)}
-                  {roleMenuItem(11)}
-                  {roleMenuItem(12)}
-                  {roleMenuItem(100)}
-                </div>
-              </Menu.Items>
-            </Transition>
-          </>
-        )}
-      </Menu>
-    );
-  }
+  if (user === null) return <></>;
 
   return (
     <>
@@ -127,64 +48,164 @@ export function UserDetailPage(props: Props) {
       </Helmet>
       <div className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-          <Breadcrumbs
-            className="text-black dark:text-white"
-            separator="›"
-            style={{ marginBottom: 20 }}
-          >
-            <Link
-              className="text-black dark:text-white"
-              component="button"
-              onClick={() => history.push('/users')}
-            >
-              Users
-            </Link>
-            {user && (
-              <div className="text-black dark:text-white">{user.name}</div>
-            )}
-          </Breadcrumbs>
-          <div className="border-t border-gray-200">
-            <dl>
-              <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <div>
+            <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
+              User Information
+            </h3>
+            <p className="mt-1 max-w-2xl text-sm text-gray-500">
+              User details and bookings.
+            </p>
+          </div>
+          <div className="mt-5 border-t border-gray-200">
+            <dl className="divide-y divide-gray-200">
+              <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
                 <dt className="text-sm font-medium text-gray-500">Name</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                  {user && user.name}
+                <dd className="mt-1 flex text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
+                  <span className="flex-grow">{user.name}</span>
+                  <span className="ml-4 flex-shrink-0">
+                    <button
+                      type="button"
+                      className="bg-transparent rounded-md font-medium text-teal-600 hover:text-teal-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+                    >
+                      Update
+                    </button>
+                  </span>
                 </dd>
               </div>
-              <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">ID</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                  {user && user.id}
-                </dd>
-              </div>
-              <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
                 <dt className="text-sm font-medium text-gray-500">
                   Email address
                 </dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                  {user && user.email}
+                <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
+                  {user.email}
                 </dd>
               </div>
-              <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt className="text-sm font-medium text-gray-500">Status</dt>
+                <dd className="mt-1 flex text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
+                  <span className="flex-grow">
+                    <Badge
+                      status={UserStatusBadge[user.status]}
+                      text={
+                        <span className="text-sm text-gray-900 dark:text-gray-100">
+                          {UserStatusString[user.status]}
+                        </span>
+                      }
+                    />
+                  </span>
+                  <span className="ml-4 flex-shrink-0">
+                    <BanButton
+                      userId={user.id}
+                      isBanned={user.status === 100}
+                      onBanStatusChanged={function () {
+                        toast.success('User status changed successfully');
+                      }}
+                    ></BanButton>
+                    <span className="flex-grow">{user.bannedEndTime}</span>
+                    <span className="ml-4 flex-shrink-0">
+                      <button
+                        type="button"
+                        className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      >
+                        Update
+                      </button>
+                    </span>
+                  </span>
+                </dd>
+              </div>
+              )}
+              {!!user.bannedReason && (
+                <div className="py-4 sm:grid sm:py-5 sm:grid-cols-3 sm:gap-4">
+                  <dt className="text-sm font-medium text-gray-500">
+                    Banned Reason
+                  </dt>
+                  <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    <span className="flex-grow">{user.bannedReason}</span>
+                    <span className="ml-4 flex-shrink-0">
+                      <button
+                        type="button"
+                        className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      >
+                        Update
+                      </button>
+                    </span>
+                  </dd>
+                </div>
+              )}
+              <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
                 <dt className="text-sm font-medium text-gray-500">Role</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                  {dropDownMenu()}
+                <dd className="mt-1 flex text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
+                  <span className="flex-grow">{roleString[user.role]}</span>
+                  <span className="ml-4 flex-shrink-0">
+                    <UpdateRoleButton
+                      userId={user.id}
+                      currentRole={user.role}
+                      isSelf={!!currentUser && currentUser.id === user.id}
+                    />
+                  </span>
                 </dd>
               </div>
-              <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <div className="py-4 sm:grid sm:py-5 sm:grid-cols-3 sm:gap-4">
                 <dt className="text-sm font-medium text-gray-500">
-                  Number of bookings this week
+                  Infringements
                 </dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                  {user && user.bookedPerWeek}
+                <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
+                  <ul className="border border-gray-200 rounded-md divide-y divide-gray-200">
+                    <li className="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
+                      <div className="w-0 flex-1 flex items-center">
+                        <span className="ml-2 flex-1 w-0 truncate">
+                          resume_back_end_developer.pdf
+                        </span>
+                      </div>
+                      <div className="ml-4 flex-shrink-0 flex space-x-4">
+                        <button
+                          type="button"
+                          className="bg-transparent rounded-md font-medium text-teal-600 hover:text-teal-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+                        >
+                          Update
+                        </button>
+                        <span className="text-gray-300" aria-hidden="true">
+                          |
+                        </span>
+                        <button
+                          type="button"
+                          className="bg-transparent rounded-md font-medium text-teal-600 hover:text-teal-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </li>
+                    <li className="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
+                      <div className="w-0 flex-1 flex items-center">
+                        <span className="ml-2 flex-1 w-0 truncate">
+                          coverletter_back_end_developer.pdf
+                        </span>
+                      </div>
+                      <div className="ml-4 flex-shrink-0 flex space-x-4">
+                        <button
+                          type="button"
+                          className="bg-transparent rounded-md font-medium text-teal-600 hover:text-teal-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+                        >
+                          Update
+                        </button>
+                        <span className="text-gray-300" aria-hidden="true">
+                          |
+                        </span>
+                        <button
+                          type="button"
+                          className="bg-transparent rounded-md font-medium text-teal-600 hover:text-teal-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </li>
+                  </ul>
                 </dd>
               </div>
-              <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">
-                  Number of infringements this term
-                </dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                  {user && user.infringementThisTerm.length}
+              <div className="py-4 sm:grid sm:py-5 sm:grid-cols-3 sm:gap-4">
+                <dt className="text-sm font-medium text-gray-500">Bookings</dt>
+                <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
+                  <UserBookingsTable userId={id} />
                 </dd>
               </div>
             </dl>
