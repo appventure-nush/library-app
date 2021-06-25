@@ -7,7 +7,7 @@
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 
 import { userDetailPageSaga } from './saga';
@@ -29,6 +29,7 @@ export function UserDetailPage(props: Props) {
   useInjectSaga({ key: sliceKey, saga: userDetailPageSaga });
 
   const user = useSelector(selectUserDetails);
+  const history = useHistory();
   const dispatch = useDispatch();
   const { id } = useParams<{ id: string }>();
 
@@ -39,6 +40,25 @@ export function UserDetailPage(props: Props) {
   }, [dispatch, id]);
 
   if (user === null) return <></>;
+
+  const addBanButton = () => {
+    if (user === null) return <></>;
+    if (currentUser === null) return <></>;
+    if (user.id === currentUser.id) {
+      return <></>;
+    } else {
+      return (
+        <BanButton
+          userId={user.id}
+          isBanned={user.status === 100}
+          onBanStatusChanged={function () {
+            toast.success('User status changed successfully');
+            history.push('.');
+          }}
+        ></BanButton>
+      );
+    }
+  };
 
   return (
     <>
@@ -94,18 +114,12 @@ export function UserDetailPage(props: Props) {
                     />
                   </span>
                   <span className="ml-4 flex-shrink-0">
-                    <BanButton
-                      userId={user.id}
-                      isBanned={user.status === 100}
-                      onBanStatusChanged={function () {
-                        toast.success('User status changed successfully');
-                      }}
-                    ></BanButton>
+                    {addBanButton()}
                     <span className="flex-grow">{user.bannedEndTime}</span>
                     <span className="ml-4 flex-shrink-0">
                       <button
                         type="button"
-                        className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        className="bg-white dark:bg-transparent rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                       >
                         Update
                       </button>
