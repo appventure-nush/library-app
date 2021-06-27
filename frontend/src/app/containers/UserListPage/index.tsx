@@ -126,9 +126,9 @@ export function UserListPage(props: Props) {
         <title>UserList</title>
         <meta name="description" content="Description of UserListPage" />
       </Helmet>
-      <div className="py-8 px-4 sm:px-6 md:px-8">
+      <div className="py-8 px-4 sm:px-6 md:px-8 flex w-full flex-col items-center">
         <Table<UserListViewData>
-          className="w-full"
+          className="w-full md:max-w-7xl"
           columns={columns}
           dataSource={userList}
         />

@@ -217,25 +217,27 @@ export function BookingListPage(props: Props) {
         <title>Bookings</title>
         <meta name="description" content="Description of BookingListPage" />
       </Helmet>
-      <div style={{ height: 400, width: '100%' }}>
-        <Table
-          columns={columns}
-          dataSource={bookingList.map(
-            (booking: BookingListViewData, index: number) => {
-              return {
-                key: index,
-                id: booking.id,
-                status: booking.status,
-                username: booking.user.name,
-                role: booking.user.role,
-                roomname: booking.room.name,
-                date: DateTime.fromISO(booking.startTime),
-                startTime: DateTime.fromISO(booking.startTime),
-                endTime: DateTime.fromISO(booking.endTime),
-              };
-            },
-          )}
-        />
+      <div className="py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+          <Table
+            columns={columns}
+            dataSource={bookingList.map(
+              (booking: BookingListViewData, index: number) => {
+                return {
+                  key: index,
+                  id: booking.id,
+                  status: booking.status,
+                  username: booking.user.name,
+                  role: booking.user.role,
+                  roomname: booking.room.name,
+                  date: DateTime.fromISO(booking.startTime),
+                  startTime: DateTime.fromISO(booking.startTime),
+                  endTime: DateTime.fromISO(booking.endTime),
+                };
+              },
+            )}
+          />
+        </div>
       </div>
     </>
   );
