@@ -56,7 +56,7 @@ const BookingCard: React.FC<BookingCardProps> = props => {
       .checkInBooking(id, roomPinRef.current.value)
       .then(() => {
         setOpenCheckInDialog(false);
-        history.go(0);
+        dispatch(actions.loadBookings());
       })
       .catch(() => {
         setIsSubmitting(false);
@@ -70,7 +70,7 @@ const BookingCard: React.FC<BookingCardProps> = props => {
       .checkOutBooking(id)
       .then(() => {
         setOpenCheckOutDialog(false);
-        history.go(0);
+        dispatch(actions.loadBookings());
       })
       .catch(() => {
         setIsSubmitting(false);

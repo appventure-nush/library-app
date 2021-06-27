@@ -7,7 +7,6 @@ import {
   BookingStatusString,
 } from 'types/Booking';
 import api from 'app/api';
-import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import {
   DotsVerticalIcon,
@@ -28,7 +27,6 @@ const DashboardCard: React.FC<DashboardCardProps> = props => {
   const startTime = DateTime.fromISO(props.booking.startTime);
   const endTime = DateTime.fromISO(props.booking.endTime);
 
-  const history = useHistory();
   const dispatch = useDispatch();
   const [openCancelDialog, setOpenCancelDialog] = React.useState(false);
   const [openCheckInDialog, setOpenCheckInDialog] = React.useState(false);
@@ -56,7 +54,8 @@ const DashboardCard: React.FC<DashboardCardProps> = props => {
       .checkInBooking(id, roomPinRef.current.value)
       .then(() => {
         setOpenCheckInDialog(false);
-        history.go(0);
+        dispatch(actions.dashboardRequest());
+        dispatch(actions.loadOwnUserStats());
       })
       .catch(() => {
         setIsSubmitting(false);
@@ -70,7 +69,8 @@ const DashboardCard: React.FC<DashboardCardProps> = props => {
       .checkOutBooking(id)
       .then(() => {
         setOpenCheckOutDialog(false);
-        history.go(0);
+        dispatch(actions.dashboardRequest());
+        dispatch(actions.loadOwnUserStats());
       })
       .catch(() => {
         setIsSubmitting(false);
@@ -426,109 +426,6 @@ const DashboardCard: React.FC<DashboardCardProps> = props => {
         </Dialog>
       </Transition>
     </li>
-    // <Card className={classes.root}>
-    //   <CardContent>
-    //     <Typography variant="h5" component="h2">
-    //       {`${startTime.day} ${startTime.monthShort} (${
-    //         startTime.weekdayShort
-    //       }), ${getTimeString(startTime)} - ${getTimeString(endTime)}`}
-    //     </Typography>
-    //     <Typography color="textSecondary">
-    //       {purpose} in {room.name}
-    //     </Typography>
-    //     {status === BookingStatus.CONFIRMED &&
-    //       now.diff(startTime, 'minutes').minutes >= 0 &&
-    //       now.diff(endTime, 'minutes').minutes < 0 && (
-    //         <>
-    //           <Button
-    //             variant="outlined"
-    //             color="primary"
-    //             onClick={() => setOpenCheckInDialog(true)}
-    //           >
-    //             Check In
-    //           </Button>
-    //           <Dialog
-    //             open={openCheckInDialog}
-    //             onClose={() => setOpenCheckInDialog(false)}
-    //             aria-labelledby="form-dialog-title"
-    //           >
-    //             <DialogTitle id="form-dialog-title">Check In</DialogTitle>
-    //             <DialogContent>
-    //               <DialogContentText>
-    //                 Please key in the current room PIN to check in
-    //               </DialogContentText>
-    //               <TextField
-    //                 error={!!helperText}
-    //                 helperText={helperText}
-    //                 autoFocus
-    //                 margin="dense"
-    //                 type="tel"
-    //                 inputProps={{ maxLength: 6 }}
-    //                 onChange={e => setPin(e.target.value)}
-    //                 fullWidth
-    //               />
-    //             </DialogContent>
-    //             <DialogActions>
-    //               <Button
-    //                 onClick={() => setOpenCheckInDialog(false)}
-    //                 color="primary"
-    //               >
-    //                 Cancel
-    //               </Button>
-    //               <Button
-    //                 onClick={handleCheckIn}
-    //                 disabled={isSubmitting || pin.length < 6}
-    //                 color="primary"
-    //               >
-    //                 Submit
-    //               </Button>
-    //             </DialogActions>
-    //           </Dialog>
-    //         </>
-    //       )}
-    //     {status === BookingStatus.CHECKEDIN &&
-    //       now.diff(startTime, 'minutes').minutes >= 0 &&
-    //       now.diff(endTime, 'minutes').minutes < 0 && (
-    //         <>
-    //           <Button
-    //             variant="outlined"
-    //             color="primary"
-    //             onClick={() => setOpenCheckOutDialog(true)}
-    //           >
-    //             Check Out
-    //           </Button>
-    //           <Dialog
-    //             open={openCheckOutDialog}
-    //             onClose={() => setOpenCheckOutDialog(false)}
-    //           >
-    //             <DialogTitle id="alert-dialog-title">Check Out</DialogTitle>
-    //             <DialogContent>
-    //               <DialogContentText id="alert-dialog-description">
-    //                 Confirm checking out room? Your remaining time will become
-    //                 bookable by others
-    //               </DialogContentText>
-    //             </DialogContent>
-    //             <DialogActions>
-    //               <Button
-    //                 onClick={() => setOpenCheckOutDialog(false)}
-    //                 color="primary"
-    //               >
-    //                 Cancel
-    //               </Button>
-    //               <Button
-    //                 onClick={handleCheckOut}
-    //                 color="primary"
-    //                 disabled={isSubmitting}
-    //                 autoFocus
-    //               >
-    //                 Confirm
-    //               </Button>
-    //             </DialogActions>
-    //           </Dialog>
-    //         </>
-    //       )}
-    //   </CardContent>
-    // </Card>
   );
 };
 

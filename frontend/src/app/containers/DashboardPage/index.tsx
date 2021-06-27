@@ -45,27 +45,28 @@ export const DashboardPage = memo((props: Props) => {
                 Welcome, {titleCase(currentUser.name)}!
               </span>
               <div className="flex items-center justify-between w-full mt-3">
-                {dashboardPage.userStats !== null && (
-                  <div className="flex items-center">
-                    <BookmarkIcon
-                      className="mb-2 mr-1 flex-shrink-0 h-8 w-8 text-black dark:text-white"
-                      aria-hidden="true"
-                    />
-                    <div>
-                      <div className="flex items-end">
-                        <span className="text-2xl sm:text-3xl font-bold text-black dark:text-white">
-                          {dashboardPage.userStats.bookedPerWeek}
-                        </span>
-                        <span className="ml-1 pt-3 text-lg sm:text-xl text-gray-500">
-                          / 2
+                {currentUser.role === Role.STUDENT &&
+                  dashboardPage.userStats !== null && (
+                    <div className="flex items-center">
+                      <BookmarkIcon
+                        className="mb-2 mr-1 flex-shrink-0 h-8 w-8 text-black dark:text-white"
+                        aria-hidden="true"
+                      />
+                      <div>
+                        <div className="flex items-end">
+                          <span className="text-2xl sm:text-3xl font-bold text-black dark:text-white">
+                            {dashboardPage.userStats.bookedPerWeek}
+                          </span>
+                          <span className="ml-1 pt-3 text-lg sm:text-xl text-gray-500">
+                            / 2
+                          </span>
+                        </div>
+                        <span className="tracking-wide text-sm sm:text-base text-gray-500">
+                          This week's bookings
                         </span>
                       </div>
-                      <span className="tracking-wide text-sm sm:text-base text-gray-500">
-                        This week's bookings
-                      </span>
                     </div>
-                  </div>
-                )}
+                  )}
                 {(currentUser.role !== Role.STUDENT ||
                   (currentUser.role === Role.STUDENT &&
                     (dashboardPage.userStats === null ||
