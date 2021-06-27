@@ -31,6 +31,7 @@ export default class UsersController {
           throw err;
         });
     } catch (err) {
+      console.log(err);
       res.sendStatus(500);
     }
   }
