@@ -12,11 +12,8 @@ import { actions, reducer, sliceKey } from './slice';
 import { selectRoomPinPage } from './selectors';
 import { roomPinPageSaga } from './saga';
 import { useParams } from 'react-router-dom';
-import { Typography } from '@material-ui/core';
 
-interface Props {}
-
-export function RoomPinPage(props: Props) {
+export function RoomPinPage() {
   useInjectReducer({ key: sliceKey, reducer: reducer });
   useInjectSaga({ key: sliceKey, saga: roomPinPageSaga });
 
@@ -34,17 +31,8 @@ export function RoomPinPage(props: Props) {
   }, [dispatch, id]);
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '80vh',
-      }}
-    >
-      <Typography variant="h1" component="h2">
-        {roomPinPage.pin}
-      </Typography>
+    <div className="flex items-center justify-center w-full h-screen">
+      <p className="text-9xl text-gray-500">{roomPinPage.pin}</p>
     </div>
   );
 }

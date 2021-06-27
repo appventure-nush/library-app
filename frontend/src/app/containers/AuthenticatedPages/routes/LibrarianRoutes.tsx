@@ -3,8 +3,6 @@ import { Route } from 'react-router-dom';
 
 import { BookingDetailPage } from '../../BookingDetailPage';
 import { BookingListPage } from '../../BookingListPage';
-import { RoomPinPage } from '../../RoomPinPage';
-import { ConsolidatedRoomPinPage } from '../../ConsolidatedRoomPinPage';
 import { UserDetailPage } from '../../UserDetailPage';
 import { UserListPage } from '../../UserListPage';
 import StaffRoutes from './StaffRoutes';
@@ -18,14 +16,6 @@ const LibrarianRoutes = [
   <Route
     path={process.env.PUBLIC_URL + '/bookings/:id'}
     component={BookingDetailPage}
-  />,
-  <Route
-    path={process.env.PUBLIC_URL + '/rooms/:id/pin'}
-    component={RoomPinPage}
-  />,
-  <Route
-    path={process.env.PUBLIC_URL + '/rooms/pin'}
-    component={ConsolidatedRoomPinPage}
   />,
   <Route
     exact
