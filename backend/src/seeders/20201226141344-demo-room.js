@@ -6,13 +6,13 @@ module.exports = {
       'rooms',
       [
         {
-          name: 'Lary 0',
+          name: 'Nary 0',
           staffOnly: false,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: 'Lary 1',
+          name: 'Nary 1',
           staffOnly: false,
           createdAt: new Date(),
           updatedAt: new Date(),

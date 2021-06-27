@@ -127,12 +127,12 @@ export function BookingListPage(props: Props) {
       key: 'roomname',
       filters: [
         {
-          text: 'Lary 0',
-          value: 'Lary 0',
+          text: 'Nary 0',
+          value: 'Nary 0',
         },
         {
-          text: 'Lary 1',
-          value: 'Lary 1',
+          text: 'Nary 1',
+          value: 'Nary 1',
         },
         {
           text: 'Lemma 2',
@@ -141,6 +141,18 @@ export function BookingListPage(props: Props) {
         {
           text: 'Lemma 3',
           value: 'Lemma 3',
+        },
+        {
+          text: 'Electron',
+          value: 'Electron',
+        },
+        {
+          text: 'Vivo',
+          value: 'Vivo',
+        },
+        {
+          text: 'Event Horizon',
+          value: 'Event Horizon',
         },
       ],
       onFilter: (value, record) => record.roomname === value,
