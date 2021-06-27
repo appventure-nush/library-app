@@ -9,6 +9,7 @@ import { isLoggedIn } from '../AuthenticatedPages/selectors';
 import { actions, sliceKey, reducer } from '../AuthenticatedPages/slice';
 import { loginPageSaga } from './saga';
 import MicrosoftLogin from 'react-microsoft-login';
+import { toast } from 'react-toastify';
 
 export const LoginPage: React.FC = () => {
   useInjectReducer({ key: sliceKey, reducer: reducer });
@@ -27,11 +28,15 @@ export const LoginPage: React.FC = () => {
   }, [loggedIn, history]);
 
   const authHandler = (err, data) => {
-    dispatch(
-      actions.loginRequest({
-        azureAdIdToken: data.idToken.rawIdToken,
-      }),
-    );
+    if (err !== null) {
+      dispatch(
+        actions.loginRequest({
+          azureAdIdToken: data.idToken.rawIdToken,
+        }),
+      );
+    } else {
+      toast.error('Login failed');
+    }
   };
 
   return (
