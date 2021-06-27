@@ -4,17 +4,14 @@
  *
  */
 
-import { Badge, Descriptions, Space, Tag } from 'antd';
+import { Badge } from 'antd';
 import { DateTime } from 'luxon';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { BookingStatusBadge, BookingStatusString } from 'types/Booking';
-import { roleColor, roleString } from 'types/User';
 import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
-
-import { Breadcrumbs, Link, Typography } from '@material-ui/core';
 
 import { selectBookingDetailPage } from '../BookingDetailPage/selectors';
 import { actions, reducer, sliceKey } from '../BookingDetailPage/slice';
@@ -29,11 +26,12 @@ export function MyBookingDetailPage(props: Props) {
   const { booking } = useSelector(selectBookingDetailPage);
   const dispatch = useDispatch();
   const { id } = useParams<{ id: string }>();
-  const history = useHistory();
 
   useEffect(() => {
     dispatch(actions.loadBooking(id));
   }, [dispatch, id]);
+
+  if (booking === null) return <></>;
 
   return (
     <>
@@ -41,98 +39,80 @@ export function MyBookingDetailPage(props: Props) {
         <title>My Booking Info</title>
         <meta name="description" content="Description of BookingDetailPage" />
       </Helmet>
-      <Breadcrumbs separator="›" style={{ marginBottom: 20 }}>
-        <Link
-          color="inherit"
-          component="button"
-          onClick={() => history.push('/mybookings')}
-        >
-          My Bookings
-        </Link>
-        {booking && <Typography color="textPrimary">{booking.id}</Typography>}
-      </Breadcrumbs>
-      {booking && (
-        <Descriptions bordered>
-          <Descriptions.Item
-            label="ID"
-            labelStyle={{ backgroundColor: '#c9c9c9' }}
-          >
-            {booking.id}
-          </Descriptions.Item>
-          <Descriptions.Item
-            label="Room"
-            labelStyle={{ backgroundColor: '#c9c9c9' }}
-            span={2}
-          >
-            {booking.room.name}
-          </Descriptions.Item>
-          <Descriptions.Item
-            label="Date"
-            labelStyle={{ backgroundColor: '#c9c9c9' }}
-          >
-            {DateTime.fromISO(booking.startTime).toISODate()} (
-            {DateTime.fromISO(booking.startTime).weekdayShort})
-          </Descriptions.Item>
-          <Descriptions.Item
-            label="Start time"
-            labelStyle={{ backgroundColor: '#c9c9c9' }}
-          >
-            {DateTime.fromISO(booking.startTime).toISOTime({
-              suppressSeconds: true,
-              includeOffset: false,
-            })}
-          </Descriptions.Item>
-          <Descriptions.Item
-            label="End Time"
-            labelStyle={{ backgroundColor: '#c9c9c9' }}
-          >
-            {DateTime.fromISO(booking.endTime).toISOTime({
-              suppressSeconds: true,
-              includeOffset: false,
-            })}
-          </Descriptions.Item>
-          <Descriptions.Item
-            label="User"
-            labelStyle={{ backgroundColor: '#c9c9c9' }}
-          >
-            {booking.user.name}
-          </Descriptions.Item>
-          <Descriptions.Item
-            label="Role"
-            span={2}
-            labelStyle={{ backgroundColor: '#c9c9c9' }}
-          >
-            <Tag color={roleColor[booking.user.role]}>
-              {roleString[booking.user.role]}
-            </Tag>
-          </Descriptions.Item>
-          <Descriptions.Item
-            label="Purpose"
-            labelStyle={{ backgroundColor: '#c9c9c9' }}
-          >
-            {booking.purpose}
-          </Descriptions.Item>
-          <Descriptions.Item
-            label="Status"
-            span={2}
-            labelStyle={{ backgroundColor: '#c9c9c9' }}
-          >
-            <Badge
-              status={BookingStatusBadge[booking.status]}
-              text={BookingStatusString[booking.status]}
-            />
-          </Descriptions.Item>
-          <Descriptions.Item
-            label="Details"
-            span={3}
-            labelStyle={{ backgroundColor: '#c9c9c9' }}
-          >
-            <Space wrap style={{ width: '50vw' }}>
-              {booking.details}
-            </Space>
-          </Descriptions.Item>
-        </Descriptions>
-      )}
+      <div className="py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+          <div>
+            <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
+              My Booking
+            </h3>
+            <p className="mt-1 max-w-2xl text-sm text-gray-500">
+              Booking details.
+            </p>
+          </div>
+          <div className="mt-5 border-t border-gray-200">
+            <dl className="divide-y divide-gray-200">
+              <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt className="text-sm font-medium text-gray-500">ID</dt>
+                <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
+                  {booking.id}
+                </dd>
+              </div>
+              <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt className="text-sm font-medium text-gray-500">Status</dt>
+                <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
+                  <Badge
+                    status={BookingStatusBadge[booking.status]}
+                    text={
+                      <span className="text-sm text-gray-900 dark:text-gray-100">
+                        {BookingStatusString[booking.status]}
+                      </span>
+                    }
+                  />
+                </dd>
+              </div>
+              <div className="py-4 sm:grid sm:py-5 sm:grid-cols-3 sm:gap-4">
+                <dt className="text-sm font-medium text-gray-500">Room</dt>
+                <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
+                  {booking.room.name}
+                </dd>
+              </div>
+              <div className="py-4 sm:grid sm:py-5 sm:grid-cols-3 sm:gap-4">
+                <dt className="text-sm font-medium text-gray-500">Date</dt>
+                <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
+                  {DateTime.fromISO(booking.startTime).toISODate()} (
+                  {DateTime.fromISO(booking.startTime).weekdayShort})
+                </dd>
+              </div>
+              <div className="py-4 sm:grid sm:py-5 sm:grid-cols-3 sm:gap-4">
+                <dt className="text-sm font-medium text-gray-500">Time</dt>
+                <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
+                  {DateTime.fromISO(booking.startTime).toISOTime({
+                    suppressSeconds: true,
+                    includeOffset: false,
+                  })}{' '}
+                  -{' '}
+                  {DateTime.fromISO(booking.endTime).toISOTime({
+                    suppressSeconds: true,
+                    includeOffset: false,
+                  })}
+                </dd>
+              </div>
+              <div className="py-4 sm:grid sm:py-5 sm:grid-cols-3 sm:gap-4">
+                <dt className="text-sm font-medium text-gray-500">Purpose</dt>
+                <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
+                  {booking.purpose}
+                </dd>
+              </div>
+              <div className="py-4 sm:grid sm:py-5 sm:grid-cols-3 sm:gap-4">
+                <dt className="text-sm font-medium text-gray-500">Details</dt>
+                <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
+                  {booking.details}
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

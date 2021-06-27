@@ -56,7 +56,7 @@ export function MyBookingListPage(props: Props) {
         <meta name="description" content="Description of BookingListPage" />
       </Helmet>
       <div className="flex flex-col items-center w-full py-8 px-4 sm:px-6 md:px-8">
-        <div className="bg-white shadow dark:bg-black overflow-visible rounded-sm sm:rounded-md w-full">
+        <div className="bg-white shadow dark:bg-black overflow-visible rounded-sm sm:rounded-md w-full md:max-w-7xl">
           <ul className="divide-y divide-gray-200 dark:divide-gray-800">
             {slicedBookingList.length === 0 && (
               <li>
@@ -74,7 +74,7 @@ export function MyBookingListPage(props: Props) {
           </ul>
         </div>
         <nav
-          className="px-4 py-3 flex items-center w-full justify-between sm:px-6"
+          className="px-4 py-3 flex items-center w-full md:max-w-7xl justify-between sm:px-6"
           aria-label="Pagination"
         >
           <div className="hidden sm:block">
