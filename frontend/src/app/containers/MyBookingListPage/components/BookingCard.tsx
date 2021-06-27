@@ -1,4 +1,3 @@
-import { getTimeString } from 'app/components/TimeSlotPicker';
 import { DateTime } from 'luxon';
 import React, { Fragment, useRef } from 'react';
 
@@ -86,7 +85,9 @@ const BookingCard: React.FC<BookingCardProps> = props => {
           <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
             <div className="text-gray-400 truncate">
               <p className="text-sm md:text-lg">
-                {`${getTimeString(startTime)} - ${getTimeString(endTime)}`}
+                {`${startTime.toFormat("HH':'mm")} - ${endTime.toFormat(
+                  "HH':'mm",
+                )}`}
               </p>
               <p className="text-xs md:text-sm">
                 {`${startTime.day} ${startTime.monthShort} (${startTime.weekdayShort})`}

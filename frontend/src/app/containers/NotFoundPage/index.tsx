@@ -1,28 +1,30 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link as RouterLink } from 'react-router-dom';
-
-import { Link, Typography } from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 
 export function NotFoundPage() {
+  const history = useHistory();
+
   return (
     <>
       <Helmet>
         <title>404 Page Not Found</title>
         <meta name="description" content="Page not found" />
       </Helmet>
-      <div>
-        <div>
-          4
-          <span role="img" aria-label="Crying Face">
-            😢
-          </span>
-          4
+      <div className="w-full flex flex-col items-center h-full justify-center">
+        <div className="text-9xl text-transparent bg-clip-text bg-gradient-to-br from-green-300 to-teal-600">
+          404
         </div>
-        <Typography variant="body1">Page not found.</Typography>
-        <Link component={RouterLink} to={process.env.PUBLIC_URL + '/'}>
+        <div className="text-2xl text-black dark:text-white">
+          Oops, page not found.
+        </div>
+        <button
+          type="button"
+          className="bg-transparent rounded-md font-medium text-teal-600 hover:text-teal-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+          onClick={() => history.push(`/`)}
+        >
           Return to Home Page
-        </Link>
+        </button>
       </div>
     </>
   );
