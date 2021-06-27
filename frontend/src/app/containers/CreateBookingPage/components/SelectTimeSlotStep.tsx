@@ -89,7 +89,7 @@ const SelectTimeSlotStep: React.FC<SelectTimeSlotStepProps> = props => {
   if (rooms.length === 0 || currentRoom === null) return <></>;
 
   return (
-    <div className="h-full flex flex-col overscroll-none">
+    <div className="h-full flex flex-col overscroll-contain">
       <div className="flex-none sm:hidden">
         <label htmlFor="tabs" className="sr-only">
           Select a tab

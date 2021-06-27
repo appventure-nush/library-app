@@ -28,7 +28,7 @@ export function ConsolidatedRoomPinPage() {
   }, [dispatch]);
 
   return (
-    <div className="rounded-lg bg-gray-200 overflow-hidden shadow divide-y divide-gray-200 sm:divide-y-0 sm:grid sm:grid-cols-2 sm:gap-px h-screen">
+    <div className="rounded-lg bg-gray-200 overflow-hidden shadow divide-y divide-gray-200 sm:divide-y-0 sm:grid sm:grid-cols-2 sm:gap-px h-full">
       {pins.map((pin, pinIdx) => (
         <div
           key={pin.name}

@@ -40,7 +40,7 @@ export const LoginPage: React.FC = () => {
         <title>Login</title>
         <meta name="description" content="Description of Login" />
       </Helmet>
-      <div className="flex flex-col h-screen items-stretch bg-white dark:bg-gray-800 ">
+      <div className="flex flex-col h-full items-stretch bg-white dark:bg-gray-800 ">
         <header className="bg-teal-600">
           <nav
             className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"

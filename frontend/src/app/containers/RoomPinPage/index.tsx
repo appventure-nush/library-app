@@ -31,7 +31,7 @@ export function RoomPinPage() {
   }, [dispatch, id]);
 
   return (
-    <div className="flex items-center justify-center w-full h-screen">
+    <div className="flex items-center justify-center w-full h-full">
       <p className="text-9xl text-gray-500">{roomPinPage.pin}</p>
     </div>
   );

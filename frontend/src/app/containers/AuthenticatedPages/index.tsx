@@ -117,7 +117,7 @@ const AuthenticatedPages: React.FC = () => {
           />
         </>
       )}
-      <div className="h-screen flex overflow-hidden bg-gray-100 dark:bg-gray-900">
+      <div className="h-full flex overflow-hidden bg-gray-100 dark:bg-gray-900">
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog
             as="div"
@@ -383,7 +383,7 @@ const AuthenticatedPages: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col w-0 flex-1 overflow-hidden h-screen">
+        <div className="flex flex-col w-0 flex-1 overflow-hidden h-full">
           <div className="md:hidden pl-1 pt-1 sm:pl-3 sm:pt-3">
             <button
               className="-ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 focus:outline-none"
