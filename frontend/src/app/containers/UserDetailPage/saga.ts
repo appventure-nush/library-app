@@ -12,7 +12,6 @@ export function* loadUser(action: PayloadAction<String>) {
     yield put(actions.saveUser(user.data));
   } catch (err) {
     toast.error('Failed to load user');
-    console.log(err);
   }
 }
 

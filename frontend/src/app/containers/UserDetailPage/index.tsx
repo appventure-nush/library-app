@@ -20,7 +20,6 @@ import UpdateRoleButton from './components/UpdateRoleButton';
 import UserBookingsTable from './components/UserBookingsTable';
 import BanButton from './components/BanButton';
 import { toast } from 'react-toastify';
-import { forceReducerReload } from 'redux-injectors';
 import AddInfringementButton from './components/AddInfringementButton';
 import { InfringmentData } from 'types/Infringement';
 interface Props {}
@@ -42,40 +41,16 @@ export function UserDetailPage(props: Props) {
 
   if (user === null) return <></>;
 
-  const addBanButton = () => {
-    if (user === null) return <></>;
-    if (currentUser === null) return <></>;
+  const banSelfCheck = () => {
+    if (user === null) return false;
+    if (currentUser === null) return false;
     if (user.id === currentUser.id) {
-      return <></>;
-    } else {
-      return (
-        <BanButton
-          userId={user.id}
-          isBanned={user.status === 100}
-          onBanStatusChanged={function () {
-            toast.success('User status changed successfully');
-            history.push('.');
-          }}
-        ></BanButton>
-      );
+      return false;
     }
+    return true;
   };
 
-  const addUpdateButton = () => {
-    if (user === null) return <></>;
-    if (currentUser === null) return <></>;
-    if (user.bannedEndTime === null) {
-      return <></>;
-    }
-    return (
-      <button
-        type="button"
-        className="bg-white dark:bg-transparent rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-      >
-        Update
-      </button>
-    );
-  };
+  const handleRemoveInfringement = index => {};
 
   const infringementListItems = (infringementList: InfringmentData[]) => {
     const arr: Array<any> = [];
@@ -96,7 +71,9 @@ export function UserDetailPage(props: Props) {
           <button
             type="button"
             className="bg-transparent rounded-md font-medium text-teal-600 hover:text-teal-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
-            key={key}
+            onClick={e => {
+              handleRemoveInfringement(parseInt(key));
+            }}
           >
             Remove
           </button>
@@ -159,10 +136,26 @@ export function UserDetailPage(props: Props) {
                     />
                   </span>
                   <span className="ml-4 flex-shrink-0">
-                    {addBanButton()}
+                    {banSelfCheck() && (
+                      <BanButton
+                        userId={user.id}
+                        isBanned={user.status === 100}
+                        onBanStatusChanged={function () {
+                          toast.success('User status changed successfully');
+                          history.push('.');
+                        }}
+                      ></BanButton>
+                    )}
                     <span className="flex-grow">{user.bannedEndTime}</span>
                     <span className="ml-4 flex-shrink-0">
-                      {addUpdateButton()}
+                      {user.bannedEndTime && (
+                        <button
+                          type="button"
+                          className="bg-white dark:bg-transparent rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        >
+                          Update
+                        </button>
+                      )}
                     </span>
                   </span>
                 </dd>
