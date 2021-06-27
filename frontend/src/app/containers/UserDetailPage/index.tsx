@@ -20,7 +20,6 @@ import UpdateRoleButton from './components/UpdateRoleButton';
 import UserBookingsTable from './components/UserBookingsTable';
 import BanButton from './components/BanButton';
 import { toast } from 'react-toastify';
-import { forceReducerReload } from 'redux-injectors';
 
 interface Props {}
 
@@ -113,7 +112,6 @@ export function UserDetailPage(props: Props) {
                   </span>
                 </dd>
               </div>
-              )}
               {!!user.bannedReason && (
                 <div className="py-4 sm:grid sm:py-5 sm:grid-cols-3 sm:gap-4">
                   <dt className="text-sm font-medium text-gray-500">

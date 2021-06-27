@@ -135,7 +135,7 @@ const UserBookingsTable: React.FC<UserBookingsTableProps> = props => {
       key: 'action',
       render: (text, record) => (
         <Space size="middle">
-          <Link to={`bookings/${record.id}`}>View</Link>
+          <Link to={`/bookings/${record.id}`}>View</Link>
           {record.status === BookingStatus.CONFIRMED && (
             <Button
               type="link"
