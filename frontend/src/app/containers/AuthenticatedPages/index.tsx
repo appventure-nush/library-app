@@ -8,6 +8,7 @@ import {
   XIcon,
   LogoutIcon,
   UsersIcon,
+  QuestionMarkCircleIcon,
 } from '@heroicons/react/outline';
 import { useLocation, withRouter } from 'react-router';
 import api from 'app/api';
@@ -247,6 +248,23 @@ const AuthenticatedPages: React.FC = () => {
                     )}
                   </nav>
                 </div>
+                <div className="flex-shrink-0 flex justify-between items-center px-2">
+                  <button
+                    className="text-white hover:bg-teal-500 hover:bg-opacity-75 group w-full focus:outline-none flex items-center px-2 py-2 text-base font-medium rounded-md"
+                    onClick={() =>
+                      window.open(
+                        `${process.env.PUBLIC_URL}/user_guide.pdf`,
+                        '_blank',
+                      )
+                    }
+                  >
+                    <QuestionMarkCircleIcon
+                      className="mr-3 flex-shrink-0 h-6 w-6 text-teal-200"
+                      aria-hidden="true"
+                    />
+                    User Guide
+                  </button>
+                </div>
                 <div className="flex-shrink-0 flex justify-between items-center border-t border-teal-700 p-4">
                   <button className="flex-shrink-0 group block focus:outline-none">
                     <span>
@@ -357,6 +375,23 @@ const AuthenticatedPages: React.FC = () => {
                     </button>
                   )}
                 </nav>
+              </div>
+              <div className="flex-shrink-0 flex justify-between items-center px-2">
+                <button
+                  className="text-white hover:bg-teal-500 hover:bg-opacity-75 group w-full focus:outline-none flex items-center px-2 py-2 text-base font-medium rounded-md"
+                  onClick={() =>
+                    window.open(
+                      `${process.env.PUBLIC_URL}/user_guide.pdf`,
+                      '_blank',
+                    )
+                  }
+                >
+                  <QuestionMarkCircleIcon
+                    className="mr-3 flex-shrink-0 h-6 w-6 text-teal-200"
+                    aria-hidden="true"
+                  />
+                  User Guide
+                </button>
               </div>
               <div className="flex-shrink-0 flex border-t border-teal-700 p-4">
                 <div className="flex-shrink-0 flex justify-between items-center w-full">
