@@ -16,6 +16,7 @@ import { DateTime } from 'luxon';
 import { Role } from 'types/User';
 import { getCurrentUser } from 'app/containers/AuthenticatedPages/selectors';
 import { useHistory } from 'react-router';
+import FloorPlanButton from './FloorPlanButton';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -90,14 +91,15 @@ const SelectTimeSlotStep: React.FC<SelectTimeSlotStepProps> = props => {
 
   return (
     <div className="h-full flex flex-col overscroll-contain">
-      <div className="flex-none sm:hidden">
+      <div className="flex sm:hidden">
+        <FloorPlanButton />
         <label htmlFor="tabs" className="sr-only">
           Select a tab
         </label>
         <select
           id="tabs"
           name="tabs"
-          className="block w-full focus:ring-teal-500 focus:border-teal-500 border-gray-300 rounded-md"
+          className="block flex-1 focus:ring-teal-500 focus:border-teal-500 border-gray-300 rounded-md"
           value={currentRoomIdx}
           onChange={e => handleRoomChange(Number(e.target.value))}
         >
@@ -108,9 +110,10 @@ const SelectTimeSlotStep: React.FC<SelectTimeSlotStepProps> = props => {
           ))}
         </select>
       </div>
-      <div className="hidden sm:block">
+      <div className="hidden sm:flex">
+        <FloorPlanButton />
         <nav
-          className="relative z-0 rounded-lg shadow flex divide-x divide-gray-200"
+          className="flex-1 relative z-0 rounded-lg shadow flex divide-x divide-gray-200"
           aria-label="Rooms"
         >
           {rooms.map((room, roomIdx) => (

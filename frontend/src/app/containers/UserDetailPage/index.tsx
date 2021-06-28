@@ -57,7 +57,6 @@ export function UserDetailPage(props: Props) {
     for (let i = 0; i < infringementList.length; i++) {
       arr.push(infringementListItem(infringementList[i].details, i.toString()));
     }
-    console.log(arr);
     return arr;
   };
 

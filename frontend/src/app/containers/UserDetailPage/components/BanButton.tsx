@@ -19,7 +19,6 @@ const BanButton: React.FC<BanButtonProps> = props => {
   };
 
   const handleBan = () => {
-    console.log('Handling ban for ' + userId);
     setConfirmLoading(true);
     setIsModalVisible(false);
     api.users
@@ -31,7 +30,6 @@ const BanButton: React.FC<BanButtonProps> = props => {
   };
 
   const handleUnban = () => {
-    console.log('Handling unban for ' + userId);
     setConfirmLoading(true);
     setIsModalVisible(false);
     api.users

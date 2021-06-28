@@ -12,6 +12,7 @@ import { actions, reducer, sliceKey } from './slice';
 import { selectRoomPinPage } from './selectors';
 import { roomPinPageSaga } from './saga';
 import { useParams } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 export function RoomPinPage() {
   useInjectReducer({ key: sliceKey, reducer: reducer });
@@ -31,8 +32,14 @@ export function RoomPinPage() {
   }, [dispatch, id]);
 
   return (
-    <div className="flex items-center justify-center w-full h-full">
-      <p className="text-9xl text-gray-500">{roomPinPage.pin}</p>
-    </div>
+    <>
+      <Helmet>
+        <title>Room Pin</title>
+        <meta name="description" content="NUSH Library App Room Pin" />
+      </Helmet>
+      <div className="flex items-center justify-center w-full h-full">
+        <p className="text-9xl text-gray-500">{roomPinPage.pin}</p>
+      </div>
+    </>
   );
 }
