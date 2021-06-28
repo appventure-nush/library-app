@@ -28,7 +28,7 @@ export const LoginPage: React.FC = () => {
   }, [loggedIn, history]);
 
   const authHandler = (err, data) => {
-    if (err !== null) {
+    if (data !== undefined) {
       dispatch(
         actions.loginRequest({
           azureAdIdToken: data.idToken.rawIdToken,
