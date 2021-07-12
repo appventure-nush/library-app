@@ -28,7 +28,9 @@ const createBookingPageSlice = createSlice({
     },
     loadBookableRooms(state, action: PayloadAction) {},
     saveBookableRooms(state, action: PayloadAction<RoomListData[]>) {
-      state.rooms = action.payload;
+      state.rooms = action.payload
+        .slice()
+        .sort((a, b) => (b.name > a.name ? -1 : 1));
     },
     updateCurrentRoom(state, action: PayloadAction<number>) {
       state.currentRoom = action.payload;
