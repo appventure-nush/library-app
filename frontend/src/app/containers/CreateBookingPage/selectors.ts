@@ -42,7 +42,11 @@ export const selectCurrentRoom = createSelector(
   [selectDomain],
   createBookingPage =>
     createBookingPage.currentRoom !== null
-      ? createBookingPage.rooms[createBookingPage.currentRoom]
+      ? createBookingPage.rooms
+          .slice()
+          .sort((a, b) => (b.name > a.name ? -1 : 1))[
+          createBookingPage.currentRoom
+        ]
       : null,
 );
 
