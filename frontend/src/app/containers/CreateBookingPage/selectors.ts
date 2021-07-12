@@ -34,8 +34,9 @@ export const selectDisabledSlots = createSelector(
     }),
 );
 
-export const selectRooms = createSelector([selectDomain], createBookingPage =>
-  createBookingPage.rooms.slice().sort((a, b) => (b.name > a.name ? -1 : 1)),
+export const selectRooms = createSelector(
+  [selectDomain],
+  createBookingPage => createBookingPage.rooms,
 );
 
 export const selectCurrentRoom = createSelector(
