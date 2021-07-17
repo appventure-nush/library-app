@@ -25,8 +25,21 @@ import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { bookingListPageSaga } from './saga';
 import { selectBookingList } from './selectors';
 import { actions, reducer, sliceKey } from './slice';
+import { ColumnsType } from 'antd/lib/table';
 
 const { confirm } = Modal;
+
+interface BookingList {
+  key: number;
+  id: number;
+  status: BookingStatus;
+  username: string;
+  role: Role;
+  roomname: string;
+  date: DateTime;
+  startTime: DateTime;
+  endTime: DateTime;
+}
 
 interface Props {}
 
@@ -65,7 +78,7 @@ export function BookingListPage(props: Props) {
     [dispatch],
   );
 
-  const columns = [
+  const columns: ColumnsType<BookingList> = [
     {
       title: 'id',
       dataIndex: 'id',
@@ -162,8 +175,9 @@ export function BookingListPage(props: Props) {
       dataIndex: 'date',
       key: 'date',
       render: (time: DateTime) => (
-        <div>{`${time.toISODate()} (${time.weekdayShort})`}</div>
+        <div>{`${time.day}-${time.monthShort}-${time.year} (${time.weekdayShort})`}</div>
       ),
+      sorter: (a: BookingList, b: BookingList) => (b.date < a.date ? 1 : -1),
     },
     {
       title: 'Start Time',
@@ -231,7 +245,7 @@ export function BookingListPage(props: Props) {
       </Helmet>
       <div className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-          <Table
+          <Table<BookingList>
             columns={columns}
             dataSource={bookingList.map(
               (booking: BookingListViewData, index: number) => {
