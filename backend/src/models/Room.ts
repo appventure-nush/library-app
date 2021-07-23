@@ -18,6 +18,7 @@ export default class Room
   implements RoomAttributes {
   public id!: number;
   public name!: string;
+  public capacity!: number;
   public staffOnly!: boolean;
   public checkInPin: string | null;
 
@@ -57,6 +58,10 @@ Room.init(
     },
     name: {
       type: new DataTypes.STRING(128),
+      allowNull: false,
+    },
+    capacity: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     staffOnly: {

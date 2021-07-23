@@ -22,6 +22,7 @@ export default class RoomsController {
           const roomListData: RoomListData = {
             id: room.id,
             name: room.name,
+            capacity: room.capacity,
           };
           return roomListData;
         }),
@@ -40,6 +41,7 @@ export default class RoomsController {
           name: params.name,
           staffOnly: params.staffOnly,
           checkInPin: generatePinSync(6),
+          capacity: 5,
         },
         { transaction: t },
       );
