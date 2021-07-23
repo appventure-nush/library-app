@@ -189,24 +189,33 @@ const SelectTimeSlotStep: React.FC<SelectTimeSlotStepProps> = props => {
         >
           Next
         </button>
-        {selectedTimeSlot[0].value && (
-          <div className="text-black dark:text-white text-center mr-1">
-            <p>You have selected:</p>
-            <p>
-              {currentRoom.name},{' '}
-              {selectedTimeSlot[0].value.start.hour.toString().padStart(2, '0')}
-              :
-              {selectedTimeSlot[0].value.start.minute
-                .toString()
-                .padStart(2, '0')}{' '}
-              - {selectedTimeSlot[0].value.end.hour.toString().padStart(2, '0')}
-              :
-              {selectedTimeSlot[1].value?.end.minute
-                .toString()
-                .padStart(2, '0')}
-            </p>
+
+        <div className="grid grid-flow-col auto-cols-auto gap-1 divide-x divide-green-500 items-center justify-center text-center text-black dark:text-white mr-1">
+          <div>
+            <p>{currentRoom.name}</p>
+            <p>maximum capcity: {currentRoom.capacity}</p>
           </div>
-        )}
+          {selectedTimeSlot[0].value && (
+            <div className="pl-2">
+              <p>You have selected:</p>
+              <p>
+                {selectedTimeSlot[0].value.start.hour
+                  .toString()
+                  .padStart(2, '0')}
+                :
+                {selectedTimeSlot[0].value.start.minute
+                  .toString()
+                  .padStart(2, '0')}{' '}
+                -{' '}
+                {selectedTimeSlot[0].value.end.hour.toString().padStart(2, '0')}
+                :
+                {selectedTimeSlot[1].value?.end.minute
+                  .toString()
+                  .padStart(2, '0')}
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

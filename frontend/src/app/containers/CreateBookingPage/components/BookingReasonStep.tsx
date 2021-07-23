@@ -117,7 +117,6 @@ const BookingReasonStep: React.FC<BookingReasonStepProps> = props => {
             name="detail"
             rows={3}
             className="max-w-lg shadow-sm block w-full focus:ring-teal-500 focus:border-teal-500 sm:text-sm border border-gray-300 rounded-md"
-            defaultValue={''}
             value={details}
             onInput={(e: React.FocusEvent<HTMLTextAreaElement>) => {
               setDetails(e.target.value);

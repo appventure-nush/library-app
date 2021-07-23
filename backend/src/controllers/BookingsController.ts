@@ -37,6 +37,7 @@ export default class BookingsController {
             room: {
               id: room.id,
               name: room.name,
+              capacity: room.capacity,
             },
             purpose: booking.purpose,
             startTime: booking.startTime,
@@ -163,6 +164,7 @@ export default class BookingsController {
         room: {
           id: room.id,
           name: room.name,
+          capacity: room.capacity,
         },
         purpose: booking.purpose,
         startTime: booking.startTime,
@@ -224,6 +226,7 @@ export default class BookingsController {
           room: {
             id: room.id,
             name: room.name,
+            capacity: room.capacity,
           },
           purpose: booking.purpose,
           startTime: booking.startTime,
@@ -276,6 +279,7 @@ export default class BookingsController {
           room: {
             id: room.id,
             name: room.name,
+            capacity: room.capacity,
           },
           purpose: booking.purpose,
           startTime: booking.startTime,

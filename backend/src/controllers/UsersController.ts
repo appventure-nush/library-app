@@ -93,6 +93,7 @@ export default class UsersController {
             room: {
               id: room.id,
               name: room.name,
+              capacity: room.capacity,
             },
             purpose: booking.purpose,
             startTime: booking.startTime,

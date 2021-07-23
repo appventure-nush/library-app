@@ -4,6 +4,7 @@ import { Role } from './User';
 export interface RoomAttributes {
   id: number;
   name: string;
+  capacity: number;
   staffOnly: boolean;
   checkInPin: string | null;
 }
@@ -11,10 +12,12 @@ export interface RoomAttributes {
 export interface RoomListData {
   id: number;
   name: string;
+  capacity: number;
 }
 
 export interface RoomCreateData {
   name: string;
+  capacity: number;
   staffOnly: boolean;
 }
 
