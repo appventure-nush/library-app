@@ -5,6 +5,7 @@ import { BookingDetailPage } from '../../BookingDetailPage';
 import { BookingListPage } from '../../BookingListPage';
 import { UserDetailPage } from '../../UserDetailPage';
 import { UserListPage } from '../../UserListPage';
+import ViewBookingPage from '../../ViewBookingPage';
 import StaffRoutes from './StaffRoutes';
 
 const LibrarianRoutes = [
@@ -25,6 +26,10 @@ const LibrarianRoutes = [
   <Route
     path={process.env.PUBLIC_URL + '/users/:id'}
     component={UserDetailPage}
+  />,
+  <Route
+    path={process.env.PUBLIC_URL + '/debug'}
+    component={ViewBookingPage}
   />,
 ].concat(StaffRoutes);
 
