@@ -20,5 +20,6 @@ module.exports = {
     require('tailwindcss-scrollbar'),
     require('@tailwindcss/forms'),
     require('tailwindcss-scroll-snap'),
+    require('@tailwindcss/typography'),
   ],
 };

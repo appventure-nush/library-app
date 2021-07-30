@@ -13,6 +13,7 @@ import React, { Fragment, useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Role, roleString, UserData } from 'types/User';
+import BookingRulesButton from './BookingRulesButton';
 
 interface SidebarProps {
   currentUser: UserData;
@@ -176,7 +177,7 @@ const Sidebar: React.FC<SidebarProps> = props => {
               </div>
               <div className="flex-shrink-0 flex justify-between items-center px-2">
                 <button
-                  className="text-white hover:bg-teal-500 hover:bg-opacity-75 group w-full focus:outline-none flex items-center px-2 py-2 text-base font-medium rounded-md"
+                  className="flex-1 text-white hover:bg-teal-500 hover:bg-opacity-75 group focus:outline-none flex items-center px-2 py-2 text-base font-medium rounded-md"
                   onClick={() =>
                     window.open(
                       `${process.env.PUBLIC_URL}/user_guide.pdf`,
@@ -190,6 +191,7 @@ const Sidebar: React.FC<SidebarProps> = props => {
                   />
                   User Guide
                 </button>
+                <BookingRulesButton />
               </div>
               <div className="flex-shrink-0 flex justify-between items-center border-t border-teal-700 p-4">
                 <button className="flex-shrink-0 group block focus:outline-none">
@@ -304,7 +306,7 @@ const Sidebar: React.FC<SidebarProps> = props => {
             </div>
             <div className="flex-shrink-0 flex justify-between items-center px-2">
               <button
-                className="text-white hover:bg-teal-500 hover:bg-opacity-75 group w-full focus:outline-none flex items-center px-2 py-2 text-base font-medium rounded-md"
+                className="flex-1 text-white hover:bg-teal-500 hover:bg-opacity-75 group w-full focus:outline-none flex items-center px-2 py-2 text-base font-medium rounded-md"
                 onClick={() =>
                   window.open(
                     `${process.env.PUBLIC_URL}/user_guide.pdf`,
@@ -318,6 +320,7 @@ const Sidebar: React.FC<SidebarProps> = props => {
                 />
                 User Guide
               </button>
+              <BookingRulesButton />
             </div>
             <div className="flex-shrink-0 flex border-t border-teal-700 p-4">
               <div className="flex-shrink-0 flex justify-between items-center w-full">
